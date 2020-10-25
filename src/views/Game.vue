@@ -1,7 +1,7 @@
 <template>
   <div class="game">
     <div class="grid">
-      <div></div>
+      <player-info />
       <template v-if="isGameStarted">
         <drawing />
       </template>
@@ -17,12 +17,14 @@
 import { defineComponent, Ref, ref } from "vue"
 import Drawing from "@/components/game/Drawing.vue"
 import Waiting from "@/components/game/Waiting.vue"
+import PlayerInfo from "@/components/game/PlayerInfo.vue"
 
 export default defineComponent({
   name: "Game",
   components: {
     Drawing,
     Waiting,
+    PlayerInfo,
   },
   setup() {
     const isGameStarted: Ref<boolean> = ref(true)
