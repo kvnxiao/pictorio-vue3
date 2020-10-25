@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue"
+import { defineComponent, Ref, ref } from "vue"
 
 export default defineComponent({
   name: "Home",
   setup() {
-    const roomID = ref("")
+    const roomID: Ref<string> = ref("")
 
     function joinRoom() {
       console.log(roomID.value)
