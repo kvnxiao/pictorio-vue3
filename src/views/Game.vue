@@ -1,24 +1,39 @@
 <template>
-  <div id="game">
-    <div class="grid">
-      <player-info />
-      <template v-if="isGameStarted">
-        <drawing />
-      </template>
-      <template v-else>
-        <waiting />
-      </template>
-      <chat />
+  <div class="game">
+    <div id="player-info" class="game-panel">
+      <div class="wrapper">
+        <player-info />
+      </div>
+    </div>
+
+    <div id="center" class="game-panel" ref="center">
+      <div class="wrapper">
+        <div class="aspect-ratio">
+          <template v-if="isGameStarted">
+            <drawing />
+          </template>
+          <template v-else>
+            <waiting />
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <div id="chat" class="game-panel">
+      <div class="wrapper">
+        <chat />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue"
+import { computed, defineComponent, Ref, ref } from "vue"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import Waiting from "@/components/game/Waiting.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
+import { useResizeObserver } from "@/composables/useResizeObserver"
 
 export default defineComponent({
   name: "Game",
@@ -30,39 +45,52 @@ export default defineComponent({
   },
   setup() {
     const isGameStarted: Ref<boolean> = ref(true)
+    const center: Ref<HTMLDivElement | null> = ref(null)
+    const { height } = useResizeObserver(center)
+
+    const canvasHeight = computed(() => `${height.value}px`)
 
     return {
       isGameStarted,
+      center,
+      canvasHeight,
     }
   },
 })
 </script>
 
-<style lang="sass">
-#game
+<style lang="sass" scoped vars="{ canvasHeight }">
+.game
   display: flex
   width: 100%
   height: calc(100% - 52px)
+  align-items: center
   justify-content: center
 
-  .grid
-    width: 100%
-    padding: 2rem
-    margin: auto
-    display: grid
-    grid-template-columns: 15% auto 15%
-    grid-column-gap: 1rem
+.wrapper
+  border-radius: 10px
+  background: white
+  display: block
+  position: relative
+  width: 100%
+  height: 100%
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
 
-  .box
-    padding: 0.25rem
-    width: 100%
-    height: 100%
-    background: #dadfdb
-    box-shadow: 0 0.25em 0.5em rgba(10, 10, 10, 0.15), 0 0px 2px 1px rgba(10, 10, 10, 0.05)
+#center
+  width: 70%
+  max-width: 1500px
 
-  .filler
-    border-radius: 3px
-    background: white
-    width: 100%
-    height: 100%
+.aspect-ratio
+  padding-top: (10 / 16) * 100%
+
+#chat, #player-info
+  width: 15%
+  height: var(--canvasHeight)
+
+.game-panel
+  margin: 0.5rem
+  &:first-of-type
+    margin-left: 1rem
+  &:last-of-type
+    margin-right: 1rem
 </style>

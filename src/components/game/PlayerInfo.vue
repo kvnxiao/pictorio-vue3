@@ -1,14 +1,10 @@
 <template>
-  <div id="info">
-    <div class="box">
-      <div class="filler">
-        <ul>
-          <li v-for="p of players" :key="p.name">
-            <player-entry :name="p.name" :points="p.points" />
-          </li>
-        </ul>
-      </div>
-    </div>
+  <div class="info">
+    <ul>
+      <li v-for="p of players" :key="p.name">
+        <player-entry :name="p.name" :points="p.points" />
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -35,7 +31,8 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.filler
+.info
+  user-select: none
   li
     padding: 1rem
 </style>

@@ -1,16 +1,12 @@
 <template>
-  <div class="drawing">
-    <div class="wrapper">
-      <div class="box">
-        <canvas id="canvas" ref="canvas" />
-        <canvas id="top-canvas" ref="topCanvas" />
-        <div class="toolbelts">
-          <div class="toolbelt">
-            <div class="toolbelt"></div>
-            <div class="toolbelt"></div>
-            <div class="toolbelt"></div>
-          </div>
-        </div>
+  <div id="drawing">
+    <canvas id="canvas" ref="canvas" />
+    <canvas id="top-canvas" ref="topCanvas" />
+    <div class="toolbelts">
+      <div class="toolbelt">
+        <div class="toolbelt"></div>
+        <div class="toolbelt"></div>
+        <div class="toolbelt"></div>
       </div>
     </div>
   </div>
@@ -34,6 +30,9 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
+#drawing
+  height: 0
+
 .tool
   display: flex
   justify-content: center
@@ -63,28 +62,17 @@ export default defineComponent({
 .toolbelt
   display: flex
 
-.wrapper
-  display: block
-  position: relative
+#canvas, #top-canvas
+  border-radius: 10px
   width: 100%
-  padding-top: (10 / 16) * 100%
-  .box
-    position: absolute
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
+  height: 100%
+  position: absolute
+  top: 0
+  left: 0
 
-  #canvas
-    border-radius: 3px
-    background: white
-    width: 100%
-    height: 100%
+#canvas
+  background: white
 
-  #top-canvas
-    position: absolute
-    left: 0
-    top: 0
-    padding: 0.25rem
-    pointer-events: none
+#top-canvas
+  pointer-events: none
 </style>
