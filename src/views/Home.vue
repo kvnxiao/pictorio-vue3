@@ -1,18 +1,57 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <div class="card">
+      <img src="/logo.svg" alt="Pictorio Logo" class="logo" />
+      <div class="card-content">
+        <a href="/create" class="button is-info">Create a new room</a>
+        <hr />
+        <div class="field">
+          <p class="control">
+            <input type="text" class="input" placeholder="Room ID" v-model="roomID" />
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+            <button class="button is-warning" @click="joinRoom">Join room</button>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
-import HelloWorld from "@/components/HelloWorld.vue" // @ is an alias to /src
+import { defineComponent, ref } from "vue"
 
 export default defineComponent({
   name: "Home",
-  components: {
-    HelloWorld,
+  setup() {
+    const roomID = ref("")
+
+    function joinRoom() {
+      console.log(roomID.value)
+    }
+
+    return {
+      roomID,
+      joinRoom,
+    }
   },
 })
 </script>
+
+<style lang="sass" scoped>
+.logo
+  padding: 2rem
+
+.home
+  display: flex
+  width: 100%
+  height: calc(100% - 52px)
+  align-items: center
+  justify-content: center
+  padding: 2rem
+
+.card
+  border-radius: 5px
+</style>
