@@ -55,6 +55,8 @@ export class CanvasDrawing implements Drawing {
   private readonly topCanvas: HTMLCanvasElement
   private readonly topCtx: CanvasRenderingContext2D
 
+  private readonly maxWidth: number
+
   private isDrawing = false
 
   private points: Point[] = []
@@ -66,9 +68,10 @@ export class CanvasDrawing implements Drawing {
   private colour = 1
   private size = 10
 
-  public constructor(canvas: HTMLCanvasElement, topCanvas: HTMLCanvasElement) {
+  public constructor(canvas: HTMLCanvasElement, topCanvas: HTMLCanvasElement, maxWidth: number) {
     this.canvas = canvas
     this.topCanvas = topCanvas
+    this.maxWidth = maxWidth
     const ctx = this.canvas.getContext("2d")
     if (ctx === null) {
       throw "Could not get 2D context of canvas"
@@ -90,16 +93,12 @@ export class CanvasDrawing implements Drawing {
   }
 
   public resizeCanvas(width: number, height: number) {
-    if (width === undefined || height === undefined) {
-      return
-    }
-
     // resize canvas
-    this.canvas.width = this.canvas.clientWidth
-    this.canvas.height = this.canvas.clientHeight
-    this.topCanvas.width = this.canvas.clientWidth
-    this.topCanvas.height = this.canvas.clientHeight
-    this.scale = this.canvas.width / 1600
+    this.canvas.width = width
+    this.canvas.height = height
+    this.topCanvas.width = width
+    this.topCanvas.height = height
+    this.scale = this.canvas.width / this.maxWidth
 
     // re-hydrate canvas context
     this.ctx.lineWidth = this.size * this.scale

@@ -22,6 +22,7 @@ export default defineComponent({
   props: {
     canvasWidth: Number,
     canvasHeight: Number,
+    maxCanvasWidth: Number,
   },
   setup(props) {
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
@@ -66,8 +67,8 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      if (canvas.value && topCanvas.value) {
-        drawing = new CanvasDrawing(canvas.value, topCanvas.value)
+      if (canvas.value && topCanvas.value && props.maxCanvasWidth) {
+        drawing = new CanvasDrawing(canvas.value, topCanvas.value, props.maxCanvasWidth)
       }
     })
 

@@ -10,7 +10,7 @@
       <div class="wrapper">
         <div class="aspect-ratio">
           <template v-if="isGameStarted">
-            <drawing :canvasWidth="width" :canvasHeight="height" />
+            <drawing :canvasWidth="width" :canvasHeight="height" :maxCanvasWidth="maxWidth" />
           </template>
           <template v-else>
             <waiting />
@@ -57,6 +57,7 @@ export default defineComponent({
       center,
       width,
       height,
+      maxWidth,
       canvasHeight,
       maxWidthPixels,
     }
