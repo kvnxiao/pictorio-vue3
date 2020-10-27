@@ -10,7 +10,7 @@
       <div class="wrapper">
         <div class="aspect-ratio">
           <template v-if="isGameStarted">
-            <drawing />
+            <drawing :canvasWidth="width" :canvasHeight="height" />
           </template>
           <template v-else>
             <waiting />
@@ -46,20 +46,25 @@ export default defineComponent({
   setup() {
     const isGameStarted: Ref<boolean> = ref(true)
     const center: Ref<HTMLDivElement | null> = ref(null)
-    const { height } = useResizeObserver(center)
+    const maxWidth: Ref<number> = ref(1500)
+    const { width, height } = useResizeObserver(center)
 
     const canvasHeight = computed(() => `${height.value}px`)
+    const maxWidthPixels = computed(() => `${maxWidth.value}px`)
 
     return {
       isGameStarted,
       center,
+      width,
+      height,
       canvasHeight,
+      maxWidthPixels,
     }
   },
 })
 </script>
 
-<style lang="sass" scoped vars="{ canvasHeight }">
+<style lang="sass" scoped vars="{ canvasHeight, maxWidthPixels }">
 .game
   display: flex
   width: 100%
@@ -78,7 +83,7 @@ export default defineComponent({
 
 #center
   width: 70%
-  max-width: 1500px
+  max-width: var(--maxWidthPixels)
 
 .aspect-ratio
   padding-top: (10 / 16) * 100%

@@ -1,8 +1,13 @@
 import { ResizeObserver } from "@juggle/resize-observer"
-import { onMounted, onUnmounted, reactive, Ref, toRefs } from "vue"
+import { onMounted, onUnmounted, reactive, Ref, ToRefs, toRefs } from "vue"
 
-export function useResizeObserver(element: Ref<HTMLElement | null>) {
-  const elementSize = reactive({ width: 0, height: 0 })
+export interface ResizeEvent {
+  width: number
+  height: number
+}
+
+export function useResizeObserver(element: Ref<HTMLElement | null>): ToRefs<ResizeEvent> {
+  const elementSize: ResizeEvent = reactive({ width: 0, height: 0 })
   const ro = new ResizeObserver(entries => {
     if (entries.length > 0) {
       const [size] = entries[0].borderBoxSize
