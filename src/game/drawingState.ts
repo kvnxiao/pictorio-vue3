@@ -1,5 +1,5 @@
 import { Line, Point } from "@/models/drawing"
-import { reactive } from "vue"
+import { reactive, toRef } from "vue"
 
 export interface DrawingState {
   isDrawing: boolean
@@ -20,21 +20,35 @@ const drawingState: DrawingState = reactive({
   scale: 1,
 })
 
-export function useDrawingState() {
-  function recentTwoPoints(): Point[] {
+export function useGlobalDrawingState() {
+  const isDrawing = toRef(drawingState, "isDrawing")
+  const colourIdx = toRef(drawingState, "colourIdx")
+  const thicknessIdx = toRef(drawingState, "thicknessIdx")
+  const points = toRef(drawingState, "points")
+  const lines = toRef(drawingState, "lines")
+  const scale = toRef(drawingState, "scale")
+
+  const getLatestTwoPoints = (): Point[] => {
     const lastIndex = drawingState.points.length - 1
     return [drawingState.points[lastIndex - 1], drawingState.points[lastIndex]]
   }
-  function getLine(): Line {
+
+  const getLatestLine = (): Line => {
     return {
       points: drawingState.points,
       colourIdx: drawingState.colourIdx,
       thicknessIdx: drawingState.thicknessIdx,
     }
   }
+
   return {
-    drawingState,
-    recentTwoPoints,
-    getLine,
+    isDrawing,
+    colourIdx,
+    thicknessIdx,
+    points,
+    lines,
+    scale,
+    getLatestLine,
+    getLatestTwoPoints,
   }
 }

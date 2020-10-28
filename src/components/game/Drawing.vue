@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent, Ref, ref, toRef, watch, watchEffect } from "vue"
 import { InputCoordinates, InputEvent, useInputCoordinates } from "@/game/useInputCoordinates"
-import { useDrawingState } from "@/game/drawingState"
+import { useGlobalDrawingState } from "@/game/drawingState"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { scaledPoint } from "@/models/drawing"
@@ -26,7 +26,16 @@ export default defineComponent({
     const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
     const topCanvasRef: Ref<HTMLCanvasElement | null> = ref(null)
     const coordinates: InputCoordinates = useInputCoordinates(topCanvasRef, canvasRef)
-    const { drawingState, recentTwoPoints, getLine } = useDrawingState()
+    const {
+      isDrawing,
+      points,
+      lines,
+      scale,
+      colourIdx,
+      thicknessIdx,
+      getLatestTwoPoints,
+      getLatestLine,
+    } = useGlobalDrawingState()
     const { drawTemp, drawMain, clearTemp, clearMain, resize } = useDualLayerCanvasContext(
       canvasRef,
       topCanvasRef,
@@ -35,48 +44,45 @@ export default defineComponent({
     // Resize watcher to redraw contents onto screen
     watch([toRef(props, "canvasWidth"), toRef(props, "canvasHeight")], ([width, height]) => {
       if (width && height && props.maxCanvasWidth) {
-        const scale = width / props.maxCanvasWidth
+        const newScale = width / props.maxCanvasWidth
         resize(width, height)
         clearTemp()
         clearMain()
-        drawingState.scale = scale
-        for (const line of drawingState.lines) {
-          drawMain(line, scale)
+        scale.value = newScale
+        for (const line of lines.value) {
+          drawMain(line, scale.value)
         }
       }
     })
 
     function onPencilDown(x: number, y: number) {
-      drawingState.isDrawing = true
-      const scale = drawingState.scale
-      const point = scaledPoint(x, y, scale)
-      drawingState.points.push(point)
+      isDrawing.value = true
+      const point = scaledPoint(x, y, scale.value)
+      points.value.push(point)
     }
 
     function onPencilMove(x: number, y: number) {
-      if (drawingState.isDrawing) {
-        const scale = drawingState.scale
-        const point = scaledPoint(x, y, scale)
-        drawingState.points.push(point)
+      if (isDrawing.value) {
+        const point = scaledPoint(x, y, scale.value)
+        points.value.push(point)
 
-        const [p1, p2] = recentTwoPoints()
-        drawTemp(p1, p2, drawingState.scale, drawingState.colourIdx, drawingState.thicknessIdx)
+        const [p1, p2] = getLatestTwoPoints()
+        drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)
       }
     }
 
     function onPencilUp(x: number, y: number) {
-      if (drawingState.isDrawing) {
-        drawingState.isDrawing = false
+      if (isDrawing.value) {
+        isDrawing.value = false
         // TODO: undo / redo functionality (clear the undo / redo stack)
-        const scale = drawingState.scale
-        const point = scaledPoint(x, y, scale)
-        drawingState.points.push(point)
+        const point = scaledPoint(x, y, scale.value)
+        points.value.push(point)
 
         // Draw line on main layer canvas, then add line to history
-        const line = getLine()
-        drawMain(line, scale)
-        drawingState.lines.push(line)
-        drawingState.points = []
+        const line = getLatestLine()
+        drawMain(line, scale.value)
+        lines.value.push(line)
+        points.value = []
         clearTemp()
       }
     }

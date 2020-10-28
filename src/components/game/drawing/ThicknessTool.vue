@@ -10,9 +10,9 @@ import { computed, defineComponent } from "vue"
 
 export default defineComponent({
   name: "ThicknessTool",
-  props: { sizeIdx: Number },
+  props: { thicknessIdx: Number },
   setup(props) {
-    const thickness = computed(() => `${THICKNESSES[props.sizeIdx ?? 0]}px`)
+    const thickness = computed(() => `${THICKNESSES[props.thicknessIdx ?? 0]}px`)
     return {
       thickness,
     }
