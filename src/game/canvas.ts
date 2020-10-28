@@ -1,17 +1,18 @@
 import { onMounted, ref, Ref, unref } from "vue"
-import { COLOURS, Line, Point, THICKNESSES } from "@/models/drawing"
+import { COLOURS, Line, midPoint, Point, THICKNESSES } from "@/models/drawing"
 
-function midPoint(p1: Point, p2: Point): Point {
-  return {
-    x: p1.x + (p2.x - p1.x) / 2,
-    y: p1.y + (p2.y - p1.y) / 2,
-  }
+export interface DualLayerCanvas {
+  drawTemp: (p1: Point, p2: Point, scale: number, colourIdx: number, thicknessIdx: number) => void
+  drawMain: (line: Line, scale: number) => void
+  clearTemp: () => void
+  clearMain: () => void
+  resize: (width: number, height: number) => void
 }
 
 export function useDualLayerCanvasContext(
   canvasRef: Ref<HTMLCanvasElement | null>,
   topCanvasRef: Ref<HTMLCanvasElement | null>,
-) {
+): DualLayerCanvas {
   const ctxRef: Ref<CanvasRenderingContext2D | null> = ref(null)
   const topCtxRef: Ref<CanvasRenderingContext2D | null> = ref(null)
 

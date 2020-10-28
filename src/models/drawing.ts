@@ -55,3 +55,10 @@ export function scaledPoint(x: number, y: number, scale: number): Point {
     y: y / scale,
   }
 }
+
+export function midPoint(p1: Point, p2: Point): Point {
+  return {
+    x: p1.x + (p2.x - p1.x) / 2,
+    y: p1.y + (p2.y - p1.y) / 2,
+  }
+}

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, Ref, ref, toRef, watch, watchEffect } from "vue"
-import { InputCoordinates, InputEvent, useInputCoordinates } from "@/game/useInputCoordinates"
+import { InputEvent, useInputCoordinates } from "@/game/useInputCoordinates"
 import { useGlobalDrawingState } from "@/game/drawingState"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { useDualLayerCanvasContext } from "@/game/canvas"
@@ -25,7 +25,7 @@ export default defineComponent({
   setup(props) {
     const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
     const topCanvasRef: Ref<HTMLCanvasElement | null> = ref(null)
-    const coordinates: InputCoordinates = useInputCoordinates(topCanvasRef, canvasRef)
+    const { x, y, button, eventType, isTargetCanvas } = useInputCoordinates(topCanvasRef, canvasRef)
     const {
       isDrawing,
       points,
@@ -88,19 +88,19 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      switch (coordinates.eventType) {
+      switch (eventType.value) {
         case InputEvent.MOVE: {
-          onPencilMove(coordinates.x, coordinates.y)
+          onPencilMove(x.value, y.value)
           break
         }
         case InputEvent.CLICK: {
-          if (coordinates.isTargetCanvas && coordinates.button === 0) {
-            onPencilDown(coordinates.x, coordinates.y)
+          if (isTargetCanvas.value && button.value === 0) {
+            onPencilDown(x.value, y.value)
           }
           break
         }
         case InputEvent.RELEASE: {
-          onPencilUp(coordinates.x, coordinates.y)
+          onPencilUp(x.value, y.value)
           break
         }
       }

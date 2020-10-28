@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, reactive, Ref } from "vue"
+import { onMounted, onUnmounted, reactive, Ref, toRefs } from "vue"
 
 export enum InputEvent {
   MOVE = 0,
@@ -6,7 +6,7 @@ export enum InputEvent {
   RELEASE = 2,
 }
 
-export interface InputCoordinates {
+interface InputCoordinates {
   x: number
   y: number
   button: number
@@ -14,10 +14,18 @@ export interface InputCoordinates {
   isTargetCanvas: boolean
 }
 
+export interface InputCoordinateRefs {
+  x: Ref<number>
+  y: Ref<number>
+  button: Ref<number>
+  eventType: Ref<InputEvent>
+  isTargetCanvas: Ref<boolean>
+}
+
 export function useInputCoordinates(
   topCanvasRef: Ref<HTMLElement | null>,
   canvasRef: Ref<HTMLElement | null>,
-): InputCoordinates {
+): InputCoordinateRefs {
   const body = document.body as HTMLBodyElement
   const coordinates: InputCoordinates = reactive({
     x: 0,
@@ -65,5 +73,5 @@ export function useInputCoordinates(
     body.removeEventListener("mouseup", releaseFunc)
   })
 
-  return coordinates
+  return toRefs(coordinates)
 }
