@@ -5,14 +5,14 @@
 </template>
 
 <script lang="ts">
+import { THICKNESSES } from "@/models/drawing"
 import { computed, defineComponent } from "vue"
-import { THICKNESS_MULTIPLIER } from "@/game/drawing"
 
 export default defineComponent({
   name: "ThicknessTool",
   props: { sizeIdx: Number },
   setup(props) {
-    const thickness = computed(() => `${((props.sizeIdx ?? 0) + 1) * THICKNESS_MULTIPLIER}px`)
+    const thickness = computed(() => `${THICKNESSES[props.sizeIdx ?? 0]}px`)
     return {
       thickness,
     }

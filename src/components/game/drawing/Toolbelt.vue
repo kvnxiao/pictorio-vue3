@@ -6,7 +6,7 @@
       </template>
     </div>
     <div class="tools">
-      <template v-for="(thickness, index) of THICKNESS" :key="thickness">
+      <template v-for="(thickness, index) of THICKNESSES" :key="thickness">
         <thickness-tool :sizeIdx="index" @click="setThickness(index)" />
       </template>
     </div>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import { COLOURS, THICKNESS } from "@/game/drawing"
+import { COLOURS, THICKNESSES } from "@/models/drawing"
 import { useDrawingState } from "@/game/drawingState"
 import ColourTool from "@/components/game/drawing/ColourTool.vue"
 import ThicknessTool from "@/components/game/drawing/ThicknessTool.vue"
@@ -34,12 +34,12 @@ export default defineComponent({
     }
 
     function setThickness(sizeIdx: number) {
-      drawingState.sizeIdx = sizeIdx
+      drawingState.thicknessIdx = sizeIdx
     }
 
     return {
       COLOURS,
-      THICKNESS,
+      THICKNESSES,
       setColour,
       setThickness,
     }

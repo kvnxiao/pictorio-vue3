@@ -1,17 +1,18 @@
 <template>
   <div id="drawing">
-    <canvas id="canvas" ref="canvas" />
-    <canvas id="top-canvas" ref="topCanvas" />
+    <canvas id="canvas" ref="canvasRef" />
+    <canvas id="top-canvas" ref="topCanvasRef" />
     <toolbelt />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, Ref, ref, watch } from "vue"
-import { MouseEventType, useDrawingCoordinates } from "@/game/useDrawingCoordinates"
-import { Drawing, CanvasDrawing } from "@/game/drawing"
+import { defineComponent, Ref, ref, toRef, watch, watchEffect } from "vue"
+import { InputCoordinates, InputEvent, useInputCoordinates } from "@/game/useInputCoordinates"
 import { useDrawingState } from "@/game/drawingState"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
+import { useDualLayerCanvasContext } from "@/game/canvas"
+import { scaledPoint } from "@/models/drawing"
 
 export default defineComponent({
   name: "Drawing",
@@ -22,67 +23,86 @@ export default defineComponent({
     maxCanvasWidth: Number,
   },
   setup(props) {
-    const canvas: Ref<HTMLCanvasElement | null> = ref(null)
-    const topCanvas: Ref<HTMLCanvasElement | null> = ref(null)
-    const { x, y, type, isTargetCanvas } = useDrawingCoordinates(topCanvas, canvas)
-    const { drawingState } = useDrawingState()
-
-    let drawing: Drawing | null = null
-
-    // Resize the drawing canvas when center div is resized
-    watch(
-      () => [props.canvasWidth, props.canvasHeight],
-      ([width, height]) => {
-        if (width && height) {
-          drawing?.resizeCanvas(width, height)
-        }
-      },
+    const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
+    const topCanvasRef: Ref<HTMLCanvasElement | null> = ref(null)
+    const coordinates: InputCoordinates = useInputCoordinates(topCanvasRef, canvasRef)
+    const { drawingState, recentTwoPoints, getLine } = useDrawingState()
+    const { drawTemp, drawMain, clearTemp, clearMain, resize } = useDualLayerCanvasContext(
+      canvasRef,
+      topCanvasRef,
     )
 
-    watch([x, y, type, isTargetCanvas], ([newX, newY, newType, newTargetted]) => {
-      if (canvas.value && topCanvas.value) {
-        const x = newX as number
-        const y = newY as number
-        const type = newType as MouseEventType
-        const isTargetCanvas = newTargetted as boolean
-        switch (type) {
-          case MouseEventType.MOVE: {
-            drawing?.onPencilMove(x, y)
-            break
-          }
-          case MouseEventType.CLICK: {
-            if (isTargetCanvas) {
-              drawing?.onPencilDown(x, y)
-            }
-            break
-          }
-          case MouseEventType.RELEASE: {
-            drawing?.onPencilUp(x, y)
-            break
-          }
+    // Resize watcher to redraw contents onto screen
+    watch([toRef(props, "canvasWidth"), toRef(props, "canvasHeight")], ([width, height]) => {
+      if (width && height && props.maxCanvasWidth) {
+        const scale = width / props.maxCanvasWidth
+        resize(width, height)
+        clearTemp()
+        clearMain()
+        drawingState.scale = scale
+        for (const line of drawingState.lines) {
+          drawMain(line, scale)
         }
       }
     })
 
-    onMounted(() => {
-      if (canvas.value && topCanvas.value && props.maxCanvasWidth) {
-        drawing = new CanvasDrawing(
-          canvas.value,
-          topCanvas.value,
-          props.maxCanvasWidth,
-          drawingState,
-        )
-      }
-    })
+    function onPencilDown(x: number, y: number) {
+      drawingState.isDrawing = true
+      const scale = drawingState.scale
+      const point = scaledPoint(x, y, scale)
+      drawingState.points.push(point)
+    }
 
-    onUnmounted(() => {
-      drawing?.destroy()
-      drawing = null
+    function onPencilMove(x: number, y: number) {
+      if (drawingState.isDrawing) {
+        const scale = drawingState.scale
+        const point = scaledPoint(x, y, scale)
+        drawingState.points.push(point)
+
+        const [p1, p2] = recentTwoPoints()
+        drawTemp(p1, p2, drawingState.scale, drawingState.colourIdx, drawingState.thicknessIdx)
+      }
+    }
+
+    function onPencilUp(x: number, y: number) {
+      if (drawingState.isDrawing) {
+        drawingState.isDrawing = false
+        // TODO: undo / redo functionality (clear the undo / redo stack)
+        const scale = drawingState.scale
+        const point = scaledPoint(x, y, scale)
+        drawingState.points.push(point)
+
+        // Draw line on main layer canvas, then add line to history
+        const line = getLine()
+        drawMain(line, scale)
+        drawingState.lines.push(line)
+        drawingState.points = []
+        clearTemp()
+      }
+    }
+
+    watchEffect(() => {
+      switch (coordinates.eventType) {
+        case InputEvent.MOVE: {
+          onPencilMove(coordinates.x, coordinates.y)
+          break
+        }
+        case InputEvent.CLICK: {
+          if (coordinates.isTargetCanvas && coordinates.button === 0) {
+            onPencilDown(coordinates.x, coordinates.y)
+          }
+          break
+        }
+        case InputEvent.RELEASE: {
+          onPencilUp(coordinates.x, coordinates.y)
+          break
+        }
+      }
     })
 
     return {
-      canvas,
-      topCanvas,
+      canvasRef,
+      topCanvasRef,
     }
   },
 })
@@ -101,7 +121,7 @@ export default defineComponent({
   left: 0
 
 #canvas
-  background: white
+  background: #FFFFFF
 
 #top-canvas
   pointer-events: none

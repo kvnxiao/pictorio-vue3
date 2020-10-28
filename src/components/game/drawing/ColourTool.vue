@@ -4,13 +4,13 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
-import { COLOURS } from "@/game/drawing"
+import { COLOURS } from "@/models/drawing"
 
 export default defineComponent({
   name: "ColourTool",
   props: { colourIdx: Number },
   setup(props) {
-    const colour = computed(() => COLOURS[props.colourIdx ?? 1])
+    const colour = computed(() => COLOURS[props.colourIdx ?? 0])
     return {
       colour,
     }
