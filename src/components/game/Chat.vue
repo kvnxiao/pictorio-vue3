@@ -12,7 +12,7 @@
     </div>
 
     <div class="chatbox-text field has-addons">
-      <div class="control" id="chat-input">
+      <div id="chat-input" class="control">
         <input type="text" class="input" placeholder="Enter your guess" />
       </div>
       <div class="control">

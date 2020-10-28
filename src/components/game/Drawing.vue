@@ -18,9 +18,18 @@ export default defineComponent({
   name: "Drawing",
   components: { Toolbelt },
   props: {
-    canvasWidth: Number,
-    canvasHeight: Number,
-    maxCanvasWidth: Number,
+    canvasWidth: {
+      type: Number,
+      default: 0,
+    },
+    canvasHeight: {
+      type: Number,
+      default: 0,
+    },
+    maxCanvasWidth: {
+      type: Number,
+      default: 0,
+    },
   },
   setup(props) {
     const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)

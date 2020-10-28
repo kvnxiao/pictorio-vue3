@@ -8,7 +8,12 @@ import { COLOURS } from "@/models/drawing"
 
 export default defineComponent({
   name: "ColourTool",
-  props: { colourIdx: Number },
+  props: {
+    colourIdx: {
+      type: Number,
+      default: 0,
+    },
+  },
   setup(props) {
     const colour = computed(() => COLOURS[props.colourIdx ?? 0])
     return {

@@ -7,7 +7,7 @@
         <hr />
         <div class="field">
           <p class="control">
-            <input type="text" class="input" placeholder="Room ID" v-model="roomID" />
+            <input v-model="roomID" type="text" class="input" placeholder="Room ID" />
           </p>
         </div>
         <div class="field">

@@ -1,21 +1,21 @@
 <template>
   <div id="nav" class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <div class="navbar-item" id="logo">
+      <div id="logo" class="navbar-item">
         <router-link class="navbar-item" to="/">
           <img src="/logo.svg" alt="Pictorio Logo" />
         </router-link>
       </div>
 
       <a
-        @click="hamburger"
+        ref="navBurger"
         :class="{ 'is-active': enabledMobile }"
         class="navbar-burger burger"
         role="button"
         aria-label="menu"
         aria-expanded="false"
         data-target="nav-menu"
-        ref="navBurger"
+        @click="hamburger"
       >
         <span aria-hidden="true" />
         <span aria-hidden="true" />
@@ -23,7 +23,7 @@
       </a>
     </div>
 
-    <div id="nav-menu" class="navbar-menu" :class="{ 'is-active': enabledMobile }" ref="navMenu">
+    <div id="nav-menu" ref="navMenu" class="navbar-menu" :class="{ 'is-active': enabledMobile }">
       <div class="navbar-end">
         <router-link class="navbar-item" to="/">Home</router-link>
       </div>

@@ -6,11 +6,11 @@
       </div>
     </div>
 
-    <div id="center" class="game-panel" ref="center">
+    <div id="center" ref="center" class="game-panel">
       <div class="wrapper">
         <div class="aspect-ratio">
           <template v-if="isGameStarted">
-            <drawing :canvasWidth="width" :canvasHeight="height" :maxCanvasWidth="maxWidth" />
+            <drawing :canvas-width="width" :canvas-height="height" :max-canvas-width="maxWidth" />
           </template>
           <template v-else>
             <waiting />

@@ -16,8 +16,14 @@ import { computed, ComputedRef, defineComponent } from "vue"
 export default defineComponent({
   name: "PlayerEntry",
   props: {
-    name: String,
-    points: Number,
+    name: {
+      type: String,
+      default: "",
+    },
+    points: {
+      type: Number,
+      default: 0,
+    },
   },
   setup(props) {
     const character: ComputedRef<string> = computed(() => props.name?.[0] ?? "")
