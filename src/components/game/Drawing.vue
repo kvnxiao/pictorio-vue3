@@ -2,7 +2,7 @@
   <div id="drawing">
     <canvas id="canvas" ref="canvasRef" />
     <canvas id="top-canvas" ref="topCanvasRef" />
-    <toolbelt />
+    <Toolbelt />
   </div>
 </template>
 
@@ -18,11 +18,11 @@ export default defineComponent({
   name: "Drawing",
   components: { Toolbelt },
   props: {
-    canvasWidth: {
+    canvasHeight: {
       type: Number,
       default: 0,
     },
-    canvasHeight: {
+    canvasWidth: {
       type: Number,
       default: 0,
     },

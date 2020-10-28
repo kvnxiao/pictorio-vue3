@@ -2,7 +2,7 @@
   <div class="game">
     <div id="player-info" class="game-panel">
       <div class="wrapper">
-        <player-info />
+        <PlayerInfo />
       </div>
     </div>
 
@@ -10,10 +10,10 @@
       <div class="wrapper">
         <div class="aspect-ratio">
           <template v-if="isGameStarted">
-            <drawing :canvas-width="width" :canvas-height="height" :max-canvas-width="maxWidth" />
+            <Drawing :canvas-width="width" :canvas-height="height" :max-canvas-width="maxWidth" />
           </template>
           <template v-else>
-            <waiting />
+            <Waiting />
           </template>
         </div>
       </div>
@@ -21,7 +21,7 @@
 
     <div id="chat" class="game-panel">
       <div class="wrapper">
-        <chat />
+        <Chat />
       </div>
     </div>
   </div>
@@ -38,10 +38,10 @@ import { useResizeObserver } from "@/composables/useResizeObserver"
 export default defineComponent({
   name: "Game",
   components: {
-    Drawing,
-    Waiting,
-    PlayerInfo,
     Chat,
+    Drawing,
+    PlayerInfo,
+    Waiting,
   },
   setup() {
     const isGameStarted: Ref<boolean> = ref(true)
@@ -53,13 +53,13 @@ export default defineComponent({
     const maxWidthPixels = computed(() => `${maxWidth.value}px`)
 
     return {
-      isGameStarted,
-      center,
-      width,
-      height,
-      maxWidth,
       canvasHeight,
+      center,
+      height,
+      isGameStarted,
+      maxWidth,
       maxWidthPixels,
+      width,
     }
   },
 })

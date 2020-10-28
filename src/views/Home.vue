@@ -33,8 +33,8 @@ export default defineComponent({
     }
 
     return {
-      roomID,
       joinRoom,
+      roomID,
     }
   },
 })

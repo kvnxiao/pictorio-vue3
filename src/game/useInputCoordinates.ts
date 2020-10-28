@@ -7,11 +7,11 @@ export enum InputEvent {
 }
 
 interface InputCoordinates {
-  x: number
-  y: number
   button: number
   eventType: InputEvent
   isTargetCanvas: boolean
+  x: number
+  y: number
 }
 
 export interface InputCoordinateRefs {
@@ -28,11 +28,11 @@ export function useInputCoordinates(
 ): InputCoordinateRefs {
   const body = document.body as HTMLBodyElement
   const coordinates: InputCoordinates = reactive({
-    x: 0,
-    y: 0,
     button: 0,
     eventType: InputEvent.MOVE,
     isTargetCanvas: false,
+    x: 0,
+    y: 0,
   })
 
   const setMouseCoordinates = (type: InputEvent) => (event: MouseEvent | TouchEvent) => {

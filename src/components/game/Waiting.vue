@@ -36,9 +36,9 @@ export default defineComponent({
     }
 
     return {
+      maxPlayers,
       ready,
       readyPlayers,
-      maxPlayers,
       readyText,
       readyToggle,
     }

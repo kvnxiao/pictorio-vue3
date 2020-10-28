@@ -2,7 +2,7 @@
   <div class="info">
     <ul>
       <li v-for="p of players" :key="p.name">
-        <player-entry :name="p.name" :points="p.points" />
+        <PlayerEntry :name="p.name" :points="p.points" />
       </li>
     </ul>
   </div>

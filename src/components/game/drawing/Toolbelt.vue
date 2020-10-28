@@ -2,12 +2,12 @@
   <div class="toolbelt">
     <div class="tools">
       <template v-for="(colour, index) of COLOURS" :key="colour">
-        <colour-tool :colour-idx="index" @click="setColour(index)" />
+        <ColourTool :colour-idx="index" @click="setColour(index)" />
       </template>
     </div>
     <div class="tools">
       <template v-for="(thickness, index) of THICKNESSES" :key="thickness">
-        <thickness-tool :thickness-idx="index" @click="setThickness(index)" />
+        <ThicknessTool :thickness-idx="index" @click="setThickness(index)" />
       </template>
     </div>
   </div>
