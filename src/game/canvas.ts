@@ -1,5 +1,5 @@
-import { onMounted, ref, Ref, unref } from "vue"
-import { COLOURS, Line, midPoint, Point, THICKNESSES } from "@/models/drawing"
+import { COLOURS, Line, Point, THICKNESSES, midPoint } from "@/models/drawing"
+import { Ref, onMounted, ref, unref } from "vue"
 
 export interface DualLayerCanvas {
   drawTemp: (p1: Point, p2: Point, scale: number, colourIdx: number, thicknessIdx: number) => void

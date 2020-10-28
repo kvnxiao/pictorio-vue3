@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue"
+import { Ref, defineComponent, ref } from "vue"
 
 export default defineComponent({
   name: "Home",

@@ -1,5 +1,5 @@
 import { Line, Point } from "@/models/drawing"
-import { reactive, Ref, toRef } from "vue"
+import { Ref, reactive, toRef } from "vue"
 
 interface DrawingState {
   isDrawing: boolean

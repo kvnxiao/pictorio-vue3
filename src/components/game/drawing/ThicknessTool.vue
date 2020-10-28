@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { THICKNESSES } from "@/models/drawing"
 import { computed, defineComponent } from "vue"
+import { THICKNESSES } from "@/models/drawing"
 
 export default defineComponent({
   name: "ThicknessTool",

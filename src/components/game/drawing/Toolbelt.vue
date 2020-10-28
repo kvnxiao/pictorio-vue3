@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
 import { COLOURS, THICKNESSES } from "@/models/drawing"
-import { useGlobalDrawingState } from "@/game/drawingState"
 import ColourTool from "@/components/game/drawing/ColourTool.vue"
 import ThicknessTool from "@/components/game/drawing/ThicknessTool.vue"
+import { defineComponent } from "vue"
+import { useGlobalDrawingState } from "@/game/drawingState"
 
 export default defineComponent({
   name: "Toolbelt",

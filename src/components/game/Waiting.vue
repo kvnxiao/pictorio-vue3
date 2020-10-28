@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from "vue"
+import { Ref, computed, defineComponent, ref } from "vue"
 
 export default defineComponent({
   name: "Waiting",

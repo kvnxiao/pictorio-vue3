@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from "vue"
+import { defineComponent, reactive } from "vue"
 import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
 
 interface Player {

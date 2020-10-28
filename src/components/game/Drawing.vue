@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, toRef, watch, watchEffect } from "vue"
 import { InputEvent, useInputCoordinates } from "@/game/useInputCoordinates"
-import { useGlobalDrawingState } from "@/game/drawingState"
+import { Ref, defineComponent, ref, toRef, watch, watchEffect } from "vue"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
-import { useDualLayerCanvasContext } from "@/game/canvas"
 import { scaledPoint } from "@/models/drawing"
+import { useDualLayerCanvasContext } from "@/game/canvas"
+import { useGlobalDrawingState } from "@/game/drawingState"
 
 export default defineComponent({
   name: "Drawing",

@@ -28,11 +28,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from "vue"
+import { Ref, computed, defineComponent, ref } from "vue"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
-import Waiting from "@/components/game/Waiting.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
+import Waiting from "@/components/game/Waiting.vue"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 
 export default defineComponent({

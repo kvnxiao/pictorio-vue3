@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent } from "vue"
+import { ComputedRef, computed, defineComponent } from "vue"
 
 export default defineComponent({
   name: "PlayerEntry",

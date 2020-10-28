@@ -1,5 +1,5 @@
+import { Ref, ToRefs, onMounted, onUnmounted, reactive, toRefs } from "vue"
 import { ResizeObserver } from "@juggle/resize-observer"
-import { onMounted, onUnmounted, reactive, Ref, ToRefs, toRefs } from "vue"
 
 export interface ResizeEvent {
   width: number

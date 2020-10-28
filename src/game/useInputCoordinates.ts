@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, reactive, Ref, toRefs } from "vue"
+import { Ref, onMounted, onUnmounted, reactive, toRefs } from "vue"
 
 export enum InputEvent {
   MOVE = 0,
