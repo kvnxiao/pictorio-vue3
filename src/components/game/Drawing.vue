@@ -2,13 +2,7 @@
   <div id="drawing">
     <canvas id="canvas" ref="canvas" />
     <canvas id="top-canvas" ref="topCanvas" />
-    <div class="toolbelts">
-      <div class="toolbelt">
-        <div class="toolbelt"></div>
-        <div class="toolbelt"></div>
-        <div class="toolbelt"></div>
-      </div>
-    </div>
+    <toolbelt />
   </div>
 </template>
 
@@ -16,9 +10,12 @@
 import { defineComponent, onMounted, onUnmounted, Ref, ref, watch } from "vue"
 import { MouseEventType, useDrawingCoordinates } from "@/game/useDrawingCoordinates"
 import { Drawing, CanvasDrawing } from "@/game/drawing"
+import { useDrawingState } from "@/game/drawingState"
+import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 
 export default defineComponent({
   name: "Drawing",
+  components: { Toolbelt },
   props: {
     canvasWidth: Number,
     canvasHeight: Number,
@@ -28,6 +25,7 @@ export default defineComponent({
     const canvas: Ref<HTMLCanvasElement | null> = ref(null)
     const topCanvas: Ref<HTMLCanvasElement | null> = ref(null)
     const { x, y, type, isTargetCanvas } = useDrawingCoordinates(topCanvas, canvas)
+    const { drawingState } = useDrawingState()
 
     let drawing: Drawing | null = null
 
@@ -68,7 +66,12 @@ export default defineComponent({
 
     onMounted(() => {
       if (canvas.value && topCanvas.value && props.maxCanvasWidth) {
-        drawing = new CanvasDrawing(canvas.value, topCanvas.value, props.maxCanvasWidth)
+        drawing = new CanvasDrawing(
+          canvas.value,
+          topCanvas.value,
+          props.maxCanvasWidth,
+          drawingState,
+        )
       }
     })
 
@@ -88,35 +91,6 @@ export default defineComponent({
 <style lang="sass" scoped>
 #drawing
   height: 0
-
-.tool
-  display: flex
-  justify-content: center
-  align-items: center
-  width: 30px
-  height: 30px
-  border-radius: 50%
-  margin: 0 3px
-
-#draw
-  display: flex
-  justify-content: center
-  align-items: center
-  position: relative
-
-.toolbelts
-  max-width: 880px
-  display: flex
-  justify-content: space-evenly
-  position: relative
-  bottom: 3.5rem
-  background-color: #ECF0F0
-  margin: 0 auto
-  padding: 5px
-  border-radius: 3rem
-
-.toolbelt
-  display: flex
 
 #canvas, #top-canvas
   border-radius: 10px

@@ -1,3 +1,6 @@
+import { computed, ComputedRef, toRef, watch } from "vue"
+import { DrawingState } from "./drawingState"
+
 function midPoint(p1: Point, p2: Point): Point {
   return {
     x: p1.x + (p2.x - p1.x) / 2,
@@ -6,6 +9,7 @@ function midPoint(p1: Point, p2: Point): Point {
 }
 
 export const THICKNESS = ["SMALL", "MEDIUM", "LARGE"]
+export const THICKNESS_MULTIPLIER = 10
 
 export const COLOURS = [
   "#808080",
@@ -39,8 +43,6 @@ export interface Drawing {
   undo(): void
   redo(): void
   destroy(): void
-  setColour(index: number): void
-  setSize(index: number): void
   resizeCanvas(width: number, height: number): void
   onPencilMove(x: number, y: number): void
   onPencilDown(x: number, y: number): void
@@ -59,16 +61,18 @@ export class CanvasDrawing implements Drawing {
 
   private isDrawing = false
 
-  private points: Point[] = []
-  private lines: Line[] = []
-  private scale = 1
+  private state: DrawingState
+  private size: ComputedRef<number>
 
   private redoStack: Line[] = []
 
-  private colour = 1
-  private size = 10
-
-  public constructor(canvas: HTMLCanvasElement, topCanvas: HTMLCanvasElement, maxWidth: number) {
+  public constructor(
+    canvas: HTMLCanvasElement,
+    topCanvas: HTMLCanvasElement,
+    maxWidth: number,
+    drawingState: DrawingState,
+  ) {
+    // Setup canvas and 2D canvas context
     this.canvas = canvas
     this.topCanvas = topCanvas
     this.maxWidth = maxWidth
@@ -82,13 +86,26 @@ export class CanvasDrawing implements Drawing {
     }
     this.ctx = ctx
     this.topCtx = topCtx
-    this.ctx.strokeStyle = COLOURS[this.colour]
-    this.topCtx.strokeStyle = COLOURS[this.colour]
+
+    // Set up state and watchers for state changes
+    this.state = drawingState
+    this.size = computed(() => (this.state.sizeIdx + 1) * 10)
+    this.ctx.strokeStyle = COLOURS[this.state.colourIdx]
+    this.topCtx.strokeStyle = COLOURS[this.state.colourIdx]
+
+    watch(this.size, size => {
+      this.ctx.lineWidth = size
+      this.topCtx.lineWidth = size
+    })
+    watch(toRef(this.state, "colourIdx"), colourIdx => {
+      this.ctx.strokeStyle = COLOURS[colourIdx]
+      this.topCtx.strokeStyle = COLOURS[colourIdx]
+    })
   }
 
   public destroy() {
-    this.lines.length = 0
-    this.points.length = 0
+    this.state.lines.length = 0
+    this.state.points.length = 0
     this.redoStack.length = 0
   }
 
@@ -98,10 +115,10 @@ export class CanvasDrawing implements Drawing {
     this.canvas.height = height
     this.topCanvas.width = width
     this.topCanvas.height = height
-    this.scale = this.canvas.width / this.maxWidth
+    this.state.scale = this.canvas.width / this.maxWidth
 
     // re-hydrate canvas context
-    this.ctx.lineWidth = this.size * this.scale
+    this.ctx.lineWidth = this.size.value * this.state.scale
     this.ctx.lineJoin = "round"
     this.ctx.lineCap = "round"
     this.topCtx.lineWidth = this.ctx.lineWidth
@@ -113,7 +130,7 @@ export class CanvasDrawing implements Drawing {
   }
 
   public undo() {
-    const line = this.lines.pop()
+    const line = this.state.lines.pop()
     if (line) {
       this.redoStack.push(line)
       this.clearMainCanvas()
@@ -124,37 +141,21 @@ export class CanvasDrawing implements Drawing {
   public redo() {
     const line = this.redoStack.pop()
     if (line) {
-      this.lines.push(line)
+      this.state.lines.push(line)
       this.clearMainCanvas()
       this.redraw()
     }
   }
 
   public clear() {
-    this.lines.splice(0, this.lines.length)
+    this.state.lines.splice(0, this.state.lines.length)
     this.redoStack.splice(0, this.redoStack.length)
     this.clearMainCanvas()
   }
 
-  public setColour(index: number) {
-    if (index >= 0 && index < COLOURS.length) {
-      this.colour = index
-      this.ctx.strokeStyle = COLOURS[this.colour]
-      this.topCtx.strokeStyle = COLOURS[this.colour]
-    }
-  }
-
-  public setSize(index: number) {
-    if (index >= 0 && index < THICKNESS.length) {
-      this.size = (index + 1) * 10
-      this.ctx.lineWidth = this.size * this.scale
-      this.topCtx.lineWidth = this.ctx.lineWidth
-    }
-  }
-
   public onPencilMove(x: number, y: number) {
     if (this.isDrawing) {
-      this.points.push(this.scaledPoint(x, y))
+      this.state.points.push(this.scaledPoint(x, y))
       // draw temporary line on top canvas
       this.drawTempLine()
     }
@@ -162,7 +163,7 @@ export class CanvasDrawing implements Drawing {
 
   public onPencilDown(x: number, y: number) {
     this.isDrawing = true
-    this.points.push(this.scaledPoint(x, y))
+    this.state.points.push(this.scaledPoint(x, y))
   }
 
   public onPencilUp(x: number, y: number) {
@@ -170,18 +171,18 @@ export class CanvasDrawing implements Drawing {
       this.isDrawing = false
       this.redoStack.splice(0, this.redoStack.length) // clear redo-stack since a new line was created
 
-      this.points.push(this.scaledPoint(x, y))
+      this.state.points.push(this.scaledPoint(x, y))
 
       // draw line on bottom layer canvas, then add line to list of points
       const line: Line = {
-        pts: this.points,
-        colour: this.colour,
-        size: this.size,
+        pts: this.state.points,
+        colour: this.state.colourIdx,
+        size: this.size.value,
       }
 
       this.drawLineQuadratic(line)
-      this.lines.push(line)
-      this.points = []
+      this.state.lines.push(line)
+      this.state.points = []
 
       this.clearTempCanvas()
     }
@@ -198,19 +199,19 @@ export class CanvasDrawing implements Drawing {
   private drawLineQuadratic(line: Line) {
     if (line.pts.length) {
       this.ctx.strokeStyle = COLOURS[line.colour]
-      this.ctx.lineWidth = line.size * this.scale
+      this.ctx.lineWidth = line.size * this.state.scale
       this.ctx.beginPath()
-      this.ctx.moveTo(line.pts[0].x * this.scale, line.pts[0].y * this.scale)
+      this.ctx.moveTo(line.pts[0].x * this.state.scale, line.pts[0].y * this.state.scale)
 
       for (let i = 0; i < line.pts.length - 1; i++) {
         const p1 = line.pts[i]
         const p2 = line.pts[i + 1]
         const mid = midPoint(p1, p2)
         this.ctx.quadraticCurveTo(
-          p1.x * this.scale,
-          p1.y * this.scale,
-          mid.x * this.scale,
-          mid.y * this.scale,
+          p1.x * this.state.scale,
+          p1.y * this.state.scale,
+          mid.x * this.state.scale,
+          mid.y * this.state.scale,
         )
       }
 
@@ -219,27 +220,24 @@ export class CanvasDrawing implements Drawing {
   }
 
   private drawTempLine() {
-    this.clearTempCanvas()
+    const latestPoint = this.state.points[this.state.points.length - 1]
+    const prevLatestPoint = this.state.points[this.state.points.length - 2]
     this.topCtx.beginPath()
-    this.topCtx.moveTo(this.points[0].x * this.scale, this.points[0].y * this.scale)
-
-    for (let i = 1; i < this.points.length; i++) {
-      this.topCtx.lineTo(this.points[i].x * this.scale, this.points[i].y * this.scale)
-    }
-
+    this.topCtx.moveTo(prevLatestPoint.x * this.state.scale, prevLatestPoint.y * this.state.scale)
+    this.topCtx.lineTo(latestPoint.x * this.state.scale, latestPoint.y * this.state.scale)
     this.topCtx.stroke()
   }
 
   private redraw() {
-    for (const line of this.lines) {
+    for (const line of this.state.lines) {
       this.drawLineQuadratic(line)
     }
   }
 
   private scaledPoint(x: number, y: number): Point {
     return {
-      x: x / this.scale,
-      y: y / this.scale,
+      x: x / this.state.scale,
+      y: y / this.state.scale,
     }
   }
 }
