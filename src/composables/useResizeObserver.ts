@@ -6,7 +6,9 @@ export interface ResizeEvent {
   height: number
 }
 
-export function useResizeObserver(element: Ref<HTMLElement | null>): ToRefs<ResizeEvent> {
+export function useResizeObserver(
+  element: Ref<HTMLElement | null>,
+): ToRefs<ResizeEvent> {
   const elementSize: ResizeEvent = reactive({ width: 0, height: 0 })
   const ro = new ResizeObserver(entries => {
     if (entries.length > 0) {

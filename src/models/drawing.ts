@@ -4,7 +4,11 @@ export enum Thickness {
   LARGE = 30,
 }
 
-export const THICKNESSES: Thickness[] = [Thickness.SMALL, Thickness.MEDIUM, Thickness.LARGE]
+export const THICKNESSES: Thickness[] = [
+  Thickness.SMALL,
+  Thickness.MEDIUM,
+  Thickness.LARGE,
+]
 
 export enum Colours {
   BLACK = "#000000",

@@ -1,4 +1,9 @@
-import { faCaretRight, faRedo, faTrash, faUndo } from "@fortawesome/free-solid-svg-icons"
+import {
+  faCaretRight,
+  faRedo,
+  faTrash,
+  faUndo,
+} from "@fortawesome/free-solid-svg-icons"
 import FontAwesomeIcon from "@/libs/FontAwesomeIcon.vue"
 import { library } from "@fortawesome/fontawesome-svg-core"
 

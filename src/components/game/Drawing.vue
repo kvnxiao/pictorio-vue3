@@ -2,7 +2,11 @@
   <div id="drawing">
     <canvas id="canvas" ref="canvasRef" />
     <canvas id="top-canvas" ref="topCanvasRef" />
-    <Toolbelt @tool-clear="clearDrawing()" @tool-undo="undoDrawing()" @tool-redo="redoDrawing()" />
+    <Toolbelt
+      @tool-clear="clearDrawing()"
+      @tool-undo="undoDrawing()"
+      @tool-redo="redoDrawing()"
+    />
   </div>
 </template>
 
@@ -34,7 +38,10 @@ export default defineComponent({
   setup(props) {
     const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
     const topCanvasRef: Ref<HTMLCanvasElement | null> = ref(null)
-    const { x, y, button, eventType, isTargetCanvas } = useInputCoordinates(topCanvasRef, canvasRef)
+    const { x, y, button, eventType, isTargetCanvas } = useInputCoordinates(
+      topCanvasRef,
+      canvasRef,
+    )
     const {
       isDrawing,
       points,
@@ -45,22 +52,28 @@ export default defineComponent({
       getLatestTwoPoints,
       getLatestLine,
     } = useGlobalDrawingState()
-    const { drawTemp, drawMain, clearTemp, clearMain, resize } = useDualLayerCanvasContext(
-      canvasRef,
-      topCanvasRef,
-    )
+    const {
+      drawTemp,
+      drawMain,
+      clearTemp,
+      clearMain,
+      resize,
+    } = useDualLayerCanvasContext(canvasRef, topCanvasRef)
 
     // Resize watcher to redraw contents onto screen
-    watch([toRef(props, "canvasWidth"), toRef(props, "canvasHeight")], ([width, height]) => {
-      const newScale = width / props.maxCanvasWidth
-      resize(width, height)
-      clearTemp()
-      clearMain()
-      scale.value = newScale
-      for (const line of lines.value) {
-        drawMain(line, scale.value)
-      }
-    })
+    watch(
+      [toRef(props, "canvasWidth"), toRef(props, "canvasHeight")],
+      ([width, height]) => {
+        const newScale = width / props.maxCanvasWidth
+        resize(width, height)
+        clearTemp()
+        clearMain()
+        scale.value = newScale
+        for (const line of lines.value) {
+          drawMain(line, scale.value)
+        }
+      },
+    )
 
     function onPencilDown(x: number, y: number) {
       isDrawing.value = true

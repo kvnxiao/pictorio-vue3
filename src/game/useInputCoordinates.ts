@@ -35,7 +35,9 @@ export function useInputCoordinates(
     y: 0,
   })
 
-  const setMouseCoordinates = (type: InputEvent) => (event: MouseEvent | TouchEvent) => {
+  const setMouseCoordinates = (type: InputEvent) => (
+    event: MouseEvent | TouchEvent,
+  ) => {
     const topCanvas = topCanvasRef.value
     const canvas = canvasRef.value
     if (topCanvas === null || canvas === null) {

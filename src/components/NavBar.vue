@@ -23,7 +23,12 @@
       </a>
     </div>
 
-    <div id="nav-menu" ref="navMenu" class="navbar-menu" :class="{ 'is-active': enabledMobile }">
+    <div
+      id="nav-menu"
+      ref="navMenu"
+      class="navbar-menu"
+      :class="{ 'is-active': enabledMobile }"
+    >
       <div class="navbar-end">
         <router-link class="navbar-item" to="/">Home</router-link>
       </div>

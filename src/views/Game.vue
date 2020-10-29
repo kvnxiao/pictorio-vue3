@@ -10,7 +10,11 @@
       <div class="wrapper">
         <div class="aspect-ratio">
           <template v-if="isGameStarted">
-            <Drawing :canvas-width="width" :canvas-height="height" :max-canvas-width="maxWidth" />
+            <Drawing
+              :canvas-width="width"
+              :canvas-height="height"
+              :max-canvas-width="maxWidth"
+            />
           </template>
           <template v-else>
             <Waiting />

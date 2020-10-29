@@ -2,7 +2,13 @@ import { COLOURS, Line, Point, THICKNESSES, midPoint } from "@/models/drawing"
 import { Ref, onMounted, ref, unref } from "vue"
 
 export interface DualLayerCanvas {
-  drawTemp: (p1: Point, p2: Point, scale: number, colourIdx: number, thicknessIdx: number) => void
+  drawTemp: (
+    p1: Point,
+    p2: Point,
+    scale: number,
+    colourIdx: number,
+    thicknessIdx: number,
+  ) => void
   drawMain: (line: Line, scale: number) => void
   clearTemp: () => void
   clearMain: () => void
@@ -16,6 +22,24 @@ export function useDualLayerCanvasContext(
   const ctxRef: Ref<CanvasRenderingContext2D | null> = ref(null)
   const topCtxRef: Ref<CanvasRenderingContext2D | null> = ref(null)
 
+  // Set ctxRef and topCtxRef on mount
+  onMounted(() => {
+    const ctx = canvasRef.value?.getContext("2d")
+    const topCtx = topCanvasRef.value?.getContext("2d")
+    if (ctx && topCtx) {
+      ctxRef.value = ctx
+      topCtxRef.value = topCtx
+    }
+  })
+
+  /**
+   * Draws a temporary line without any quadratic smoothing on the top canvas
+   * @param p1 first point to start drawing at
+   * @param p2 second point to finish at
+   * @param scale scale of the canvas viewport
+   * @param colourIdx colour index
+   * @param thicknessIdx thickness index
+   */
   const drawTemp = (
     p1: Point,
     p2: Point,
@@ -36,6 +60,12 @@ export function useDualLayerCanvasContext(
     }
   }
 
+  /**
+   * Draws a line consisting of an array of points on the bottom main canvas using
+   * quadratic smoothing
+   * @param line line to draw
+   * @param scale scale of the canvas viewport
+   */
   const drawMain = (line: Line, scale: number) => {
     const ctx = unref(ctxRef)
     if (line.points.length > 0 && ctx) {
@@ -57,16 +87,27 @@ export function useDualLayerCanvasContext(
     }
   }
 
+  /**
+   * Clears the top canvas that is used to display the temporary points being drawn
+   */
   const clearTemp = () => {
     const topCtx = unref(topCtxRef)
     topCtx && topCtx.clearRect(0, 0, topCtx.canvas.width, topCtx.canvas.height)
   }
 
+  /**
+   * Clears the main bottom canvas that is used to display the saved lines after drawing
+   */
   const clearMain = () => {
     const ctx = unref(ctxRef)
     ctx && ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
   }
 
+  /**
+   * Resizes the canvas based on the provided width and height
+   * @param width width number (pixels)
+   * @param height height number (pixels)
+   */
   const resize = (width: number, height: number) => {
     const canvas = unref(canvasRef)
     const topCanvas = unref(topCanvasRef)
@@ -78,15 +119,6 @@ export function useDualLayerCanvasContext(
       topCanvas.height = height
     }
   }
-
-  onMounted(() => {
-    const ctx = canvasRef.value?.getContext("2d")
-    const topCtx = topCanvasRef.value?.getContext("2d")
-    if (ctx && topCtx) {
-      ctxRef.value = ctx
-      topCtxRef.value = topCtx
-    }
-  })
 
   return {
     drawTemp,
