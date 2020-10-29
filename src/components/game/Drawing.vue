@@ -75,13 +75,13 @@ export default defineComponent({
       },
     )
 
-    function onPencilDown(x: number, y: number) {
+    const onPencilDown = (x: number, y: number) => {
       isDrawing.value = true
       const point = scaledPoint(x, y, scale.value)
       points.value.push(point)
     }
 
-    function onPencilMove(x: number, y: number) {
+    const onPencilMove = (x: number, y: number) => {
       if (isDrawing.value) {
         const point = scaledPoint(x, y, scale.value)
         points.value.push(point)
@@ -91,7 +91,7 @@ export default defineComponent({
       }
     }
 
-    function onPencilUp(x: number, y: number) {
+    const onPencilUp = (x: number, y: number) => {
       if (isDrawing.value) {
         isDrawing.value = false
         // TODO: undo / redo functionality (clear the undo / redo stack)
