@@ -26,4 +26,8 @@ body, html
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   text-align: center
+
+svg
+  width: 100%
+  height: 100%
 </style>
