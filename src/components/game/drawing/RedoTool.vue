@@ -1,6 +1,6 @@
 <template>
-  <div class="tool icon" @click="$emit('tool-clear')">
-    <fa icon="trash" type="fas" />
+  <div class="tool icon" @click="$emit('tool-redo')">
+    <fa icon="redo" type="fas" />
   </div>
 </template>
 
@@ -8,8 +8,8 @@
 import { defineComponent } from "vue"
 
 export default defineComponent({
-  name: "ClearTool",
-  emits: ["tool-clear"],
+  name: "RedoTool",
+  emits: ["tool-redo"],
 })
 </script>
 

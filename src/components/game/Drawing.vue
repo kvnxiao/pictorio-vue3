@@ -2,7 +2,7 @@
   <div id="drawing">
     <canvas id="canvas" ref="canvasRef" />
     <canvas id="top-canvas" ref="topCanvasRef" />
-    <Toolbelt @tool-clear="clearDrawing()" />
+    <Toolbelt @tool-clear="clearDrawing()" @tool-undo="undoDrawing()" @tool-redo="redoDrawing()" />
   </div>
 </template>
 
@@ -118,10 +118,20 @@ export default defineComponent({
       clearMain()
     }
 
+    const undoDrawing = () => {
+      console.log("UNDO")
+    }
+
+    const redoDrawing = () => {
+      console.log("REDO")
+    }
+
     return {
       canvasRef,
       topCanvasRef,
       clearDrawing,
+      undoDrawing,
+      redoDrawing,
     }
   },
 })

@@ -14,6 +14,8 @@
     <div class="spacer" />
     <div class="tools">
       <ClearTool @tool-clear="$emit('tool-clear')" />
+      <UndoTool @tool-undo="$emit('tool-undo')" />
+      <RedoTool @tool-redo="$emit('tool-redo')" />
     </div>
   </div>
 </template>
@@ -22,7 +24,9 @@
 import { COLOURS, THICKNESSES } from "@/models/drawing"
 import ClearTool from "@/components/game/drawing/ClearTool.vue"
 import ColourTool from "@/components/game/drawing/ColourTool.vue"
+import RedoTool from "@/components/game/drawing/RedoTool.vue"
 import ThicknessTool from "@/components/game/drawing/ThicknessTool.vue"
+import UndoTool from "@/components/game/drawing/UndoTool.vue"
 import { defineComponent } from "vue"
 
 export default defineComponent({
@@ -30,9 +34,11 @@ export default defineComponent({
   components: {
     ClearTool,
     ColourTool,
+    RedoTool,
     ThicknessTool,
+    UndoTool,
   },
-  emits: ["tool-clear"],
+  emits: ["tool-clear", "tool-redo", "tool-undo"],
   setup() {
     return {
       COLOURS,
@@ -73,6 +79,9 @@ export default defineComponent({
   transition: all 0.15s ease
   &:hover
     transform: translate(0, -2px)
+
+.tool.icon
+  background: #FFFFFF
 
 .selected
   transform: translate(0, -2px)
