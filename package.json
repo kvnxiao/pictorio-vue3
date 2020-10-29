@@ -14,12 +14,14 @@
     "@fortawesome/vue-fontawesome": "3.0.0-2",
     "bulma": "^0.9.1",
     "core-js": "^3.6.5",
+    "lodash": "^4.17.20",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
     "@juggle/resize-observer": "^3.2.0",
+    "@types/lodash": "^4.14.163",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
