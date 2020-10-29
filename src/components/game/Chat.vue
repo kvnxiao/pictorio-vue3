@@ -17,7 +17,9 @@
       </div>
       <div class="control">
         <button class="button">
-          Send
+          <span class="icon">
+            <fa icon="caret-right" type="fas" />
+          </span>
         </button>
       </div>
     </div>
