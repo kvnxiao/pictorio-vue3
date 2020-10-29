@@ -2,7 +2,7 @@
   <div id="drawing">
     <canvas id="canvas" ref="canvasRef" />
     <canvas id="top-canvas" ref="topCanvasRef" />
-    <Toolbelt />
+    <Toolbelt @tool-clear="clearDrawing()" />
   </div>
 </template>
 
@@ -113,9 +113,15 @@ export default defineComponent({
       }
     })
 
+    const clearDrawing = () => {
+      clearTemp()
+      clearMain()
+    }
+
     return {
       canvasRef,
       topCanvasRef,
+      clearDrawing,
     }
   },
 })

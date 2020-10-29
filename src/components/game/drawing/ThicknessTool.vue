@@ -1,5 +1,5 @@
 <template>
-  <div class="tool">
+  <div class="tool" :class="{ selected: isSelected }" @click="setThickness()">
     <div class="inner" />
   </div>
 </template>
@@ -7,6 +7,7 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue"
 import { THICKNESSES } from "@/models/drawing"
+import { useGlobalDrawingState } from "@/game/drawingState"
 
 export default defineComponent({
   name: "ThicknessTool",
@@ -17,9 +18,20 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { thicknessIdx } = useGlobalDrawingState()
+
     const thickness = computed(() => `${THICKNESSES[props.thicknessIdx]}px`)
+
+    const setThickness = () => {
+      thicknessIdx.value = props.thicknessIdx
+    }
+
+    const isSelected = computed(() => thicknessIdx.value === props.thicknessIdx)
+
     return {
       thickness,
+      setThickness,
+      isSelected,
     }
   },
 })
@@ -28,13 +40,6 @@ export default defineComponent({
 <style lang="sass" scoped vars="{ thickness }">
 .tool
   background: #FFFFFF
-  display: flex
-  justify-content: center
-  align-items: center
-  width: 30px
-  height: 30px
-  border-radius: 50%
-  margin: 0 3px
 
 .inner
   border-radius: 50%

@@ -1,10 +1,11 @@
 <template>
-  <div class="tool" />
+  <div class="tool" :class="{ selected: isSelected }" @click="setColour()" />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
 import { COLOURS } from "@/models/drawing"
+import { useGlobalDrawingState } from "@/game/drawingState"
 
 export default defineComponent({
   name: "ColourTool",
@@ -15,9 +16,20 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { colourIdx } = useGlobalDrawingState()
+
     const colour = computed(() => COLOURS[props.colourIdx])
+
+    const setColour = () => {
+      colourIdx.value = props.colourIdx
+    }
+
+    const isSelected = computed(() => colourIdx.value === props.colourIdx)
+
     return {
       colour,
+      setColour,
+      isSelected,
     }
   },
 })
@@ -27,11 +39,4 @@ export default defineComponent({
 .tool
   background: var(--colour)
   border: 3px solid #FFFFFF
-  display: flex
-  justify-content: center
-  align-items: center
-  width: 30px
-  height: 30px
-  border-radius: 50%
-  margin: 0 3px
 </style>
