@@ -17,7 +17,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const thickness = computed(() => `${THICKNESSES[props.thicknessIdx ?? 0]}px`)
+    const thickness = computed(() => `${THICKNESSES[props.thicknessIdx]}px`)
     return {
       thickness,
     }

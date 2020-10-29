@@ -15,7 +15,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const colour = computed(() => COLOURS[props.colourIdx ?? 0])
+    const colour = computed(() => COLOURS[props.colourIdx])
     return {
       colour,
     }

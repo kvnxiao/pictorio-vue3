@@ -52,15 +52,13 @@ export default defineComponent({
 
     // Resize watcher to redraw contents onto screen
     watch([toRef(props, "canvasWidth"), toRef(props, "canvasHeight")], ([width, height]) => {
-      if (width && height && props.maxCanvasWidth) {
-        const newScale = width / props.maxCanvasWidth
-        resize(width, height)
-        clearTemp()
-        clearMain()
-        scale.value = newScale
-        for (const line of lines.value) {
-          drawMain(line, scale.value)
-        }
+      const newScale = width / props.maxCanvasWidth
+      resize(width, height)
+      clearTemp()
+      clearMain()
+      scale.value = newScale
+      for (const line of lines.value) {
+        drawMain(line, scale.value)
       }
     })
 

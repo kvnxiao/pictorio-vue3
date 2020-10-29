@@ -26,7 +26,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const character: ComputedRef<string> = computed(() => props.name?.[0] ?? "")
+    const character: ComputedRef<string> = computed(() => props.name[0])
     return {
       character,
     }
