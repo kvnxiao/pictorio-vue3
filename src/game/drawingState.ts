@@ -8,6 +8,7 @@ interface DrawingState {
   points: Point[]
   lines: Line[]
   scale: number
+  redoStack: Line[]
 }
 
 export interface DrawingStateRefs {
@@ -17,6 +18,7 @@ export interface DrawingStateRefs {
   points: Ref<Point[]>
   lines: Ref<Line[]>
   scale: Ref<number>
+  redoStack: Ref<Line[]>
   getLatestLine: () => Line
   getLatestTwoPoints: () => Point[]
 }
@@ -29,6 +31,7 @@ const drawingState: DrawingState = reactive({
   points: [],
   lines: [],
   scale: 1,
+  redoStack: [],
 })
 
 export function useGlobalDrawingState(): DrawingStateRefs {
@@ -38,6 +41,7 @@ export function useGlobalDrawingState(): DrawingStateRefs {
   const points = toRef(drawingState, "points")
   const lines = toRef(drawingState, "lines")
   const scale = toRef(drawingState, "scale")
+  const redoStack = toRef(drawingState, "redoStack")
 
   const getLatestTwoPoints = (): Point[] => {
     const lastIndex = drawingState.points.length - 1
@@ -59,6 +63,7 @@ export function useGlobalDrawingState(): DrawingStateRefs {
     points,
     lines,
     scale,
+    redoStack,
     getLatestLine,
     getLatestTwoPoints,
   }

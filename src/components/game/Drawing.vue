@@ -49,6 +49,7 @@ export default defineComponent({
       scale,
       colourIdx,
       thicknessIdx,
+      redoStack,
       getLatestTwoPoints,
       getLatestLine,
     } = useGlobalDrawingState()
@@ -60,6 +61,12 @@ export default defineComponent({
       resize,
     } = useDualLayerCanvasContext(canvasRef, topCanvasRef)
 
+    const drawMainCanvas = () => {
+      for (const line of lines.value) {
+        drawMain(line, scale.value)
+      }
+    }
+
     // Resize watcher to redraw contents onto screen
     watch(
       [toRef(props, "canvasWidth"), toRef(props, "canvasHeight")],
@@ -69,9 +76,7 @@ export default defineComponent({
         clearTemp()
         clearMain()
         scale.value = newScale
-        for (const line of lines.value) {
-          drawMain(line, scale.value)
-        }
+        drawMainCanvas()
       },
     )
 
@@ -94,7 +99,8 @@ export default defineComponent({
     const onPencilUp = (x: number, y: number) => {
       if (isDrawing.value) {
         isDrawing.value = false
-        // TODO: undo / redo functionality (clear the undo / redo stack)
+        redoStack.value.splice(0, redoStack.value.length)
+
         const point = scaledPoint(x, y, scale.value)
         points.value.push(point)
 
@@ -127,16 +133,28 @@ export default defineComponent({
     })
 
     const clearDrawing = () => {
+      lines.value.splice(0, lines.value.length)
+      redoStack.value.splice(0, redoStack.value.length)
       clearTemp()
       clearMain()
     }
 
     const undoDrawing = () => {
-      console.log("UNDO")
+      const line = lines.value.pop()
+      if (line) {
+        redoStack.value.push(line)
+        clearMain()
+        drawMainCanvas()
+      }
     }
 
     const redoDrawing = () => {
-      console.log("REDO")
+      const line = redoStack.value.pop()
+      if (line) {
+        lines.value.push(line)
+        clearMain()
+        drawMainCanvas()
+      }
     }
 
     return {
