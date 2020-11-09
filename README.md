@@ -1,6 +1,11 @@
 # pictorio-vue3
 
+A draw and guess game for the modern era.
+
 ## Project setup
+
+Requires Python 3.X to build, otherwise `node-gyp` will complain!
+
 ```
 yarn install
 ```
