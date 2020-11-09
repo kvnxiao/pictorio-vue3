@@ -9,7 +9,7 @@ export enum InputEvent {
 interface InputCoordinates {
   button: number
   eventType: InputEvent
-  isTargetCanvas: boolean
+  isTargetted: boolean
   x: number
   y: number
 }
@@ -19,18 +19,17 @@ export interface InputCoordinateRefs {
   y: Ref<number>
   button: Ref<number>
   eventType: Ref<InputEvent>
-  isTargetCanvas: Ref<boolean>
+  isTargetted: Ref<boolean>
 }
 
 export function useInputCoordinates(
-  topCanvasRef: Ref<HTMLElement | null>,
-  canvasRef: Ref<HTMLElement | null>,
+  ...refs: Ref<HTMLElement | null>[]
 ): InputCoordinateRefs {
   const body = document.body as HTMLBodyElement
   const coordinates: InputCoordinates = reactive({
     button: 0,
     eventType: InputEvent.MOVE,
-    isTargetCanvas: false,
+    isTargetted: false,
     x: 0,
     y: 0,
   })
@@ -38,25 +37,30 @@ export function useInputCoordinates(
   const setMouseCoordinates = (type: InputEvent) => (
     event: MouseEvent | TouchEvent,
   ) => {
-    const topCanvas = topCanvasRef.value
-    const canvas = canvasRef.value
-    if (topCanvas === null || canvas === null) {
+    if (refs.length === 0) {
+      return
+    }
+    const topEl = refs[0].value
+    if (
+      topEl === null ||
+      refs.some((el: Ref<HTMLElement | null>) => el.value === null)
+    ) {
       return
     }
 
     const x = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX
     const y = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY
     const button = event instanceof MouseEvent ? event.button : 0
-    const boundingRect = topCanvas.getBoundingClientRect()
-    const isTargetCanvas = event.target === topCanvas || event.target === canvas
-    if (isTargetCanvas && button === 0) {
+    const boundingRect = topEl.getBoundingClientRect()
+    const isTargetted = refs.map((r) => r.value).some((el) => event.target === el)
+    if (isTargetted && button === 0) {
       event.preventDefault()
     }
     coordinates.x = x - boundingRect.left
     coordinates.y = y - boundingRect.top
     coordinates.eventType = type
     coordinates.button = button
-    coordinates.isTargetCanvas = isTargetCanvas
+    coordinates.isTargetted = isTargetted
   }
 
   const moveFunc = setMouseCoordinates(InputEvent.MOVE)
