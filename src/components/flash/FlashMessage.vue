@@ -1,6 +1,6 @@
 <template>
   <div v-if="message !== null" class="flash-message">
-    <article class="message" :class="{ 'is-danger': isErrorMessage }">
+    <article class="message" :class="classObject">
       <div class="message-body">
         {{ message }}
       </div>
@@ -9,16 +9,24 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, onMounted, ref } from "vue"
+import { FlashMessage, FlashMessageType } from "@/models/flashMessage"
+import { Ref, computed, defineComponent, onMounted, ref } from "vue"
 import Cookies from "js-cookie"
 import { FLASH_MESSAGE } from "@/api/endpoints"
-import { FlashMessage } from "@/models/flashMessage"
 import axios from "axios"
 
 export default defineComponent({
   name: "FlashMessage",
   setup() {
     const message: Ref<string | null> = ref(null)
+    const messageType: Ref<FlashMessageType | null> = ref(null)
+    const classObject = computed(() => {
+      return {
+        "is-info": messageType.value === "info",
+        "is-warning": messageType.value === "warning",
+        "is-danger": messageType.value === "error",
+      }
+    })
     const isErrorMessage: Ref<boolean> = ref(false)
 
     onMounted(async () => {
@@ -35,6 +43,7 @@ export default defineComponent({
     return {
       message,
       isErrorMessage,
+      classObject,
     }
   },
 })

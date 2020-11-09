@@ -1,4 +1,6 @@
+export type FlashMessageType = "error" | "info" | "warning"
+
 export interface FlashMessage {
   message: string
-  type: "error" | "info" | "warning"
+  type: FlashMessageType
 }
