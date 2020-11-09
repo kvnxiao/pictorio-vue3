@@ -10,7 +10,7 @@ export function useResizeObserver(
   element: Ref<HTMLElement | null>,
 ): ToRefs<ResizeEvent> {
   const elementSize: ResizeEvent = reactive({ width: 0, height: 0 })
-  const ro = new ResizeObserver(entries => {
+  const ro = new ResizeObserver((entries) => {
     if (entries.length > 0) {
       const [size] = entries[0].borderBoxSize
       elementSize.width = size.inlineSize

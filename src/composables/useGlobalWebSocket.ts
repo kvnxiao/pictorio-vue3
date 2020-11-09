@@ -16,7 +16,19 @@ const READY_STATE_MAPPING = [
 
 let ws: WebSocket | null = null
 
-export function useGlobalWebSocket() {
+export interface GlobalWebSocket {
+  data: Ref<unknown>
+  state: ComputedRef<WebSocketState>
+  close(code?: number, reason?: string): void
+  send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void
+  connect(
+    url: string,
+    onOpen?: (event: Event) => void,
+    onClose?: (event: CloseEvent) => void,
+  ): void
+}
+
+export function useGlobalWebSocket(): GlobalWebSocket {
   const data: Ref<unknown> = ref(null)
   const error: Ref<Event | null> = ref(null)
   const state: ComputedRef<WebSocketState> = computed(

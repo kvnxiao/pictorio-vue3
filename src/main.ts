@@ -4,8 +4,4 @@ import { createApp } from "vue"
 import router from "./router"
 import store from "./store"
 
-createApp(App)
-  .use(store)
-  .use(router)
-  .component("fa", FontAwesomeIcon)
-  .mount("#app")
+createApp(App).use(store).use(router).component("fa", FontAwesomeIcon).mount("#app")
