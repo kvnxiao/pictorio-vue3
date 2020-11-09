@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="card">
-      <img src="/logo.svg" alt="Pictorio Logo" class="logo" />
+      <img src="@/assets/logo.svg" alt="Pictorio Logo" class="logo" />
       <div class="card-content">
         <button class="button is-info" @click="createRoom">Create room</button>
         <hr />

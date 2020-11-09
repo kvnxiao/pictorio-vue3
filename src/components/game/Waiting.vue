@@ -2,7 +2,7 @@
   <div class="waiting">
     <div class="card">
       <div class="card-image">
-        <img src="/logo.svg" alt="Pictorio Logo" />
+        <img src="/assets/logo.svg" alt="Pictorio Logo" />
       </div>
       <div class="card-content">
         <div class="content">Waiting for all players to be ready</div>

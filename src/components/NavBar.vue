@@ -3,7 +3,7 @@
     <div class="navbar-brand">
       <div id="logo" class="navbar-item">
         <router-link class="navbar-item" to="/">
-          <img src="/logo.svg" alt="Pictorio Logo" />
+          <img src="@/assets/logo.svg" alt="Pictorio Logo" />
         </router-link>
       </div>
 
