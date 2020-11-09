@@ -3,7 +3,7 @@
     <div class="card">
       <img src="/logo.svg" alt="Pictorio Logo" class="logo" />
       <div class="card-content">
-        <a href="/create" class="button is-info">Create a new room</a>
+        <button class="button is-info" @click="createRoom">Create room</button>
         <hr />
         <div class="field">
           <p class="control">
@@ -12,7 +12,7 @@
         </div>
         <div class="field">
           <p class="control">
-            <button class="button is-warning" @click="joinRoom">Join room</button>
+            <a :href="joinRoom" class="button is-warning">Join room</a>
           </p>
         </div>
       </div>
@@ -21,18 +21,29 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, ref } from "vue"
+import { CREATE_ROOM, ROOM } from "@/api/endpoints"
+import { Ref, computed, defineComponent, ref } from "vue"
+import { RoomResponse } from "@/models/room"
+import axios from "axios"
+import { useRouter } from "vue-router"
 
 export default defineComponent({
   name: "Home",
   setup() {
     const roomID: Ref<string> = ref("")
+    const router = useRouter()
 
-    function joinRoom() {
-      console.log(roomID.value)
+    const createRoom = async () => {
+      const resp = await axios.post<RoomResponse>(CREATE_ROOM)
+      if (resp.data.exists) {
+        router.push(ROOM(resp.data.roomID))
+      }
     }
 
+    const joinRoom = computed(() => ROOM(roomID.value))
+
     return {
+      createRoom,
       joinRoom,
       roomID,
     }
@@ -54,4 +65,5 @@ export default defineComponent({
 
 .card
   border-radius: 5px
+  padding: 1.5rem
 </style>
