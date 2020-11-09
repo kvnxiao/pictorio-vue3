@@ -1,15 +1,17 @@
 <template>
   <NavBar />
+  <FlashMessage />
   <router-view />
 </template>
 
 <script lang="ts">
+import FlashMessage from "@/components/flash/FlashMessage.vue"
 import NavBar from "@/components/NavBar.vue"
 import { defineComponent } from "vue"
 
 export default defineComponent({
   name: "App",
-  components: { NavBar },
+  components: { NavBar, FlashMessage },
 })
 </script>
 
