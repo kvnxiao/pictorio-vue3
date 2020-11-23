@@ -13,10 +13,12 @@
 <script lang="ts">
 import { InputEvent, useInputCoordinates } from "@/composables/useInputCoordinates"
 import { Ref, defineComponent, ref, toRef, watch, watchEffect } from "vue"
+import { useRoute } from "vue-router"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { scaledPoint } from "@/models/drawing"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { useGlobalDrawingState } from "@/game/drawingState"
+import { useGlobalWebSocket } from "@/composables/useGlobalWebSocket"
 
 export default defineComponent({
   name: "Drawing",
@@ -36,6 +38,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { connect, sendJSON } = useGlobalWebSocket();
+    const { params } = useRoute();
+    const roomID = params.roomID;
     const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
     const topCanvasRef: Ref<HTMLCanvasElement | null> = ref(null)
     const {
@@ -112,6 +117,7 @@ export default defineComponent({
         drawMain(line, scale.value)
         lines.value.push(line)
         points.value = []
+        sendJSON(line);
         clearTemp()
       }
     }

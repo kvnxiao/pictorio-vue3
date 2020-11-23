@@ -21,6 +21,8 @@ export interface GlobalWebSocket {
   state: ComputedRef<WebSocketState>
   close(code?: number, reason?: string): void
   send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void
+  // TODO: specify JSON data type
+  sendJSON(data: unknown): void
   connect(
     url: string,
     onOpen?: (event: Event) => void,
@@ -37,6 +39,11 @@ export function useGlobalWebSocket(): GlobalWebSocket {
 
   const close = (code?: number, reason?: string) => {
     ws?.close(code, reason)
+  }
+
+  // TODO: specify JSON data type
+  const sendJSON = (data: unknown) => {
+    ws?.send(JSON.stringify(data))
   }
 
   const send = (data: string | ArrayBufferLike | Blob | ArrayBufferView) => {
@@ -69,6 +76,7 @@ export function useGlobalWebSocket(): GlobalWebSocket {
     state,
     close,
     send,
+    sendJSON,
     connect,
   }
 }

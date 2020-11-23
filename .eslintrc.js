@@ -16,7 +16,7 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
-    "sort-imports": "error",
+    "sort-imports": "warn",
     "vue/block-tag-newline": "error",
     "vue/component-name-in-template-casing": "error",
     "vue/html-comment-content-newline": "error",

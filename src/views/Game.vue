@@ -33,10 +33,12 @@
 
 <script lang="ts">
 import { Ref, computed, defineComponent, ref } from "vue"
+import { useRoute } from "vue-router"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import Waiting from "@/components/game/Waiting.vue"
+import { useGlobalWebSocket } from "@/composables/useGlobalWebSocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 
 export default defineComponent({
@@ -55,6 +57,13 @@ export default defineComponent({
 
     const canvasHeight = computed(() => `${height.value}px`)
     const maxWidthPixels = computed(() => `${maxWidth.value}px`)
+
+    const { connect, send } = useGlobalWebSocket()
+    const route = useRoute()
+    const roomID = route.params.roomID
+    connect(`ws://localhost:3000/room/${roomID}/ws`, () => {
+      send(JSON.stringify("Connecting to Server"))
+    })
 
     return {
       canvasHeight,
