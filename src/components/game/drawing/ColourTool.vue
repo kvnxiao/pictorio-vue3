@@ -1,11 +1,17 @@
 <template>
-  <div class="tool" :class="{ selected: isSelected }" @click="setColour()" />
+  <div
+    class="tool"
+    :class="{ selected: isSelected }"
+    :style="{ background: colour }"
+    @click="setColour()"
+  />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
 import { COLOURS } from "@/models/drawing"
-import { useGlobalDrawingState } from "@/game/drawingState"
+import { MutationTypes } from "@/store/gameStore/mutations"
+import { useGameState } from "@/store/gameStore"
 
 export default defineComponent({
   name: "ColourTool",
@@ -16,15 +22,15 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { colourIdx } = useGlobalDrawingState()
+    const gameState = useGameState()
 
     const colour = computed(() => COLOURS[props.colourIdx])
 
     const setColour = () => {
-      colourIdx.value = props.colourIdx
+      gameState.commit(MutationTypes.SET_COLOUR_IDX, props.colourIdx)
     }
 
-    const isSelected = computed(() => colourIdx.value === props.colourIdx)
+    const isSelected = computed(() => gameState.state.colourIdx === props.colourIdx)
 
     return {
       colour,
@@ -37,6 +43,5 @@ export default defineComponent({
 
 <style lang="sass" scoped>
 .tool
-  background: v-bind("colour")
   border: 3px solid #FFFFFF
 </style>

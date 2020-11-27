@@ -1,13 +1,14 @@
 <template>
   <div class="tool" :class="{ selected: isSelected }" @click="setThickness()">
-    <div class="inner" />
+    <div class="inner" :style="{ width: thickness, height: thickness }" />
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
+import { MutationTypes } from "@/store/gameStore/mutations"
 import { THICKNESSES } from "@/models/drawing"
-import { useGlobalDrawingState } from "@/game/drawingState"
+import { useGameState } from "@/store/gameStore"
 
 export default defineComponent({
   name: "ThicknessTool",
@@ -18,15 +19,17 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { thicknessIdx } = useGlobalDrawingState()
+    const gameState = useGameState()
 
     const thickness = computed(() => `${THICKNESSES[props.thicknessIdx]}px`)
 
     const setThickness = () => {
-      thicknessIdx.value = props.thicknessIdx
+      gameState.commit(MutationTypes.SET_THICKNESS_IDX, props.thicknessIdx)
     }
 
-    const isSelected = computed(() => thicknessIdx.value === props.thicknessIdx)
+    const isSelected = computed(
+      () => gameState.state.thicknessIdx === props.thicknessIdx,
+    )
 
     return {
       thickness,
@@ -43,7 +46,5 @@ export default defineComponent({
 
 .inner
   border-radius: 50%
-  width: v-bind("thickness")
-  height: v-bind("thickness")
   background: #000000
 </style>

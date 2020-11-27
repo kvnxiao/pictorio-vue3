@@ -12,11 +12,12 @@
 
 <script lang="ts">
 import { InputEvent, useInputCoordinates } from "@/composables/useInputCoordinates"
-import { Ref, defineComponent, ref, toRef, watch, watchEffect } from "vue"
+import { Ref, computed, defineComponent, ref, toRef, watch, watchEffect } from "vue"
+import { MutationTypes } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { scaledPoint } from "@/models/drawing"
 import { useDualLayerCanvasContext } from "@/game/canvas"
-import { useGlobalDrawingState } from "@/game/drawingState"
+import { useGameState } from "@/store/gameStore"
 
 export default defineComponent({
   name: "Drawing",
@@ -45,17 +46,7 @@ export default defineComponent({
       eventType,
       isTargetted: isTargetCanvas,
     } = useInputCoordinates(topCanvasRef, canvasRef)
-    const {
-      isDrawing,
-      points,
-      lines,
-      scale,
-      colourIdx,
-      thicknessIdx,
-      redoStack,
-      getLatestTwoPoints,
-      getLatestLine,
-    } = useGlobalDrawingState()
+
     const {
       drawTemp,
       drawMain,
@@ -63,6 +54,13 @@ export default defineComponent({
       clearMain,
       resize,
     } = useDualLayerCanvasContext(canvasRef, topCanvasRef)
+
+    const gameState = useGameState()
+    const lines = computed(() => gameState.state.lines)
+    const scale = computed(() => gameState.state.scale)
+    const isDrawing = computed(() => gameState.state.isDrawing)
+    const colourIdx = computed(() => gameState.state.colourIdx)
+    const thicknessIdx = computed(() => gameState.state.thicknessIdx)
 
     const drawMainCanvas = () => {
       for (const line of lines.value) {
@@ -78,40 +76,38 @@ export default defineComponent({
         resize(width, height)
         clearTemp()
         clearMain()
-        scale.value = newScale
+        gameState.commit(MutationTypes.SET_SCALE, newScale)
         drawMainCanvas()
       },
     )
 
-    const onPencilDown = (x: number, y: number) => {
-      isDrawing.value = true
+    const onDrawStart = (x: number, y: number) => {
+      gameState.commit(MutationTypes.SET_IS_DRAWING, true)
       const point = scaledPoint(x, y, scale.value)
-      points.value.push(point)
+      gameState.commit(MutationTypes.ADD_POINT, point)
     }
 
-    const onPencilMove = (x: number, y: number) => {
+    const onDrawMove = (x: number, y: number) => {
       if (isDrawing.value) {
         const point = scaledPoint(x, y, scale.value)
-        points.value.push(point)
+        gameState.commit(MutationTypes.ADD_POINT, point)
 
-        const [p1, p2] = getLatestTwoPoints()
+        const [p1, p2] = gameState.getters.getLatestTwoPoints()
         drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)
       }
     }
 
-    const onPencilUp = (x: number, y: number) => {
+    const onDrawStop = (x: number, y: number) => {
       if (isDrawing.value) {
-        isDrawing.value = false
-        redoStack.value.splice(0, redoStack.value.length)
+        gameState.commit(MutationTypes.SET_IS_DRAWING, false)
 
         const point = scaledPoint(x, y, scale.value)
-        points.value.push(point)
+        gameState.commit(MutationTypes.ADD_POINT, point)
 
         // Draw line on main layer canvas, then add line to history
-        const line = getLatestLine()
+        const line = gameState.getters.getLatestLine()
         drawMain(line, scale.value)
-        lines.value.push(line)
-        points.value = []
+        gameState.commit(MutationTypes.ADD_LINE, line)
         clearTemp()
       }
     }
@@ -119,45 +115,38 @@ export default defineComponent({
     watchEffect(() => {
       switch (eventType.value) {
         case InputEvent.MOVE: {
-          onPencilMove(x.value, y.value)
+          onDrawMove(x.value, y.value)
           break
         }
         case InputEvent.CLICK: {
           if (isTargetCanvas.value && button.value === 0) {
-            onPencilDown(x.value, y.value)
+            onDrawStart(x.value, y.value)
           }
           break
         }
         case InputEvent.RELEASE: {
-          onPencilUp(x.value, y.value)
+          onDrawStop(x.value, y.value)
           break
         }
       }
     })
 
     const clearDrawing = () => {
-      lines.value.splice(0, lines.value.length)
-      redoStack.value.splice(0, redoStack.value.length)
+      gameState.commit(MutationTypes.CLEAR_DRAWING)
       clearTemp()
       clearMain()
     }
 
     const undoDrawing = () => {
-      const line = lines.value.pop()
-      if (line) {
-        redoStack.value.push(line)
-        clearMain()
-        drawMainCanvas()
-      }
+      gameState.commit(MutationTypes.UNDO)
+      clearMain()
+      drawMainCanvas()
     }
 
     const redoDrawing = () => {
-      const line = redoStack.value.pop()
-      if (line) {
-        lines.value.push(line)
-        clearMain()
-        drawMainCanvas()
-      }
+      gameState.commit(MutationTypes.REDO)
+      clearMain()
+      drawMainCanvas()
     }
 
     return {
