@@ -7,7 +7,7 @@ export enum WebSocketState {
   CLOSED = 3,
 }
 
-const READY_STATE_MAPPING = [
+const READY_STATE_MAPPING: WebSocketState[] = [
   WebSocketState.CONNECTING,
   WebSocketState.OPEN,
   WebSocketState.CLOSING,
@@ -62,6 +62,10 @@ export function useGlobalWebSocket(): GlobalWebSocket {
 
     ws.onerror = (event: Event) => {
       error.value = event
+    }
+
+    ws.onmessage = (event: MessageEvent) => {
+      data.value = event.data
     }
   }
 
