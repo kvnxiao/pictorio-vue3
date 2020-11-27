@@ -37,13 +37,13 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass" scoped vars="{ thickness }">
+<style lang="sass" scoped>
 .tool
   background: #FFFFFF
 
 .inner
   border-radius: 50%
-  width: var(--thickness)
-  height: var(--thickness)
+  width: v-bind("thickness")
+  height: v-bind("thickness")
   background: #000000
 </style>

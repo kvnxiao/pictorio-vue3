@@ -35,8 +35,8 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass" scoped vars="{ colour }">
+<style lang="sass" scoped>
 .tool
-  background: var(--colour)
+  background: v-bind("colour")
   border: 3px solid #FFFFFF
 </style>

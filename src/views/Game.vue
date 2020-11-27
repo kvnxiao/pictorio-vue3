@@ -1,12 +1,17 @@
 <template>
   <div class="game">
-    <div id="player-info" class="game-panel">
+    <div id="player-info" class="game-panel" :style="{ height: canvasHeight }">
       <div class="wrapper">
         <PlayerInfo />
       </div>
     </div>
 
-    <div id="center" ref="center" class="game-panel">
+    <div
+      id="center"
+      ref="center"
+      class="game-panel"
+      :style="{ maxWidth: maxWidthPixels }"
+    >
       <div class="wrapper">
         <div class="aspect-ratio">
           <template v-if="isGameStarted">
@@ -23,7 +28,7 @@
       </div>
     </div>
 
-    <div id="chat" class="game-panel">
+    <div id="chat" class="game-panel" :style="{ height: canvasHeight }">
       <div class="wrapper">
         <Chat />
       </div>
@@ -69,7 +74,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass" scoped vars="{ canvasHeight, maxWidthPixels }">
+<style lang="sass" scoped>
 .game
   display: flex
   width: 100%
@@ -88,14 +93,12 @@ export default defineComponent({
 
 #center
   width: 70%
-  max-width: var(--maxWidthPixels)
 
 .aspect-ratio
   padding-top: (10 / 16) * 100%
 
 #chat, #player-info
   width: 15%
-  height: var(--canvasHeight)
 
 .game-panel
   margin: 0.5rem
