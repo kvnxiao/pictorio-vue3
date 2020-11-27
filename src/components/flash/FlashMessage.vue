@@ -28,12 +28,20 @@ export default defineComponent({
       }
     })
 
+    const clearMessage = () => {
+      message.value = null
+      messageType.value = null
+    }
+
     onMounted(async () => {
       const errormsg = Cookies.get("errormsg")
       if (errormsg) {
         const resp = await axios.get<FlashMessage>(FLASH_MESSAGE)
         messageType.value = resp.data.type
         message.value = resp.data.message
+        setTimeout(() => {
+          clearMessage()
+        }, 5000)
       }
     })
 
