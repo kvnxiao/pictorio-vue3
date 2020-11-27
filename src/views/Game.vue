@@ -37,12 +37,15 @@
 </template>
 
 <script lang="ts">
-import { Ref, computed, defineComponent, ref } from "vue"
+import { Ref, computed, defineComponent, ref, watchEffect } from "vue"
+import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import Waiting from "@/components/game/Waiting.vue"
+import { useGlobalWebSocket } from "@/composables/useGlobalWebSocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
+import { useRoute } from "vue-router"
 
 export default defineComponent({
   name: "Game",
@@ -53,6 +56,11 @@ export default defineComponent({
     Waiting,
   },
   setup() {
+    const {
+      params: { roomID },
+    } = useRoute()
+    const { connect, error } = useGlobalWebSocket()
+
     const isGameStarted: Ref<boolean> = ref(true)
     const center: Ref<HTMLDivElement | null> = ref(null)
     const maxWidth: Ref<number> = ref(1500)
@@ -60,6 +68,22 @@ export default defineComponent({
 
     const canvasHeight = computed(() => `${height.value}px`)
     const maxWidthPixels = computed(() => `${maxWidth.value}px`)
+
+    const onConnected = () => {
+      console.log("Connected to game server!")
+    }
+
+    const onDisconnected = () => {
+      console.log("Disconnected from game server!")
+    }
+
+    connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
+
+    watchEffect(() => {
+      if (error.value) {
+        console.log(error.value)
+      }
+    })
 
     return {
       canvasHeight,

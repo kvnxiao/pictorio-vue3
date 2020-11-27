@@ -18,6 +18,7 @@ let ws: WebSocket | null = null
 
 export interface GlobalWebSocket {
   data: Ref<unknown>
+  error: Ref<Event | null>
   state: ComputedRef<WebSocketState>
   close(code?: number, reason?: string): void
   send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void
@@ -66,6 +67,7 @@ export function useGlobalWebSocket(): GlobalWebSocket {
 
   return {
     data,
+    error,
     state,
     close,
     send,

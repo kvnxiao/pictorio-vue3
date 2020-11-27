@@ -27,22 +27,18 @@ export default defineComponent({
         "is-danger": messageType.value === "error",
       }
     })
-    const isErrorMessage: Ref<boolean> = ref(false)
 
     onMounted(async () => {
       const errormsg = Cookies.get("errormsg")
       if (errormsg) {
         const resp = await axios.get<FlashMessage>(FLASH_MESSAGE)
-        if (resp.data.type === "error") {
-          message.value = resp.data.message
-          isErrorMessage.value = true
-        }
+        messageType.value = resp.data.type
+        message.value = resp.data.message
       }
     })
 
     return {
       message,
-      isErrorMessage,
       classObject,
     }
   },
