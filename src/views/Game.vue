@@ -37,12 +37,14 @@
 </template>
 
 <script lang="ts">
+import { EventType, SelfJoinEvent } from "@/models/events"
 import { Ref, computed, defineComponent, ref, watchEffect } from "vue"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import Waiting from "@/components/game/Waiting.vue"
+import { useEventListener } from "@/game/events"
 import { useGlobalWebSocket } from "@/composables/useGlobalWebSocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
@@ -59,7 +61,8 @@ export default defineComponent({
     const {
       params: { roomID },
     } = useRoute()
-    const { connect, error } = useGlobalWebSocket()
+    const { data, connect, error } = useGlobalWebSocket()
+    const { listen } = useEventListener(data)
 
     const isGameStarted: Ref<boolean> = ref(true)
     const center: Ref<HTMLDivElement | null> = ref(null)
@@ -68,6 +71,10 @@ export default defineComponent({
 
     const canvasHeight = computed(() => `${height.value}px`)
     const maxWidthPixels = computed(() => `${maxWidth.value}px`)
+
+    listen(EventType.PlayerActionEvent, (event: SelfJoinEvent) => {
+      console.log(event.player)
+    })
 
     const onConnected = () => {
       console.log("Connected to game server!")

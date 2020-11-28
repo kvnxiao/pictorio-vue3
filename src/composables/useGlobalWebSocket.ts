@@ -65,7 +65,11 @@ export function useGlobalWebSocket(): GlobalWebSocket {
     }
 
     ws.onmessage = (event: MessageEvent) => {
-      data.value = event.data
+      try {
+        data.value = JSON.parse(event.data)
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 
