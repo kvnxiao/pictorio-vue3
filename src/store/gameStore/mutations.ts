@@ -1,8 +1,12 @@
 import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
+import { Player } from "@/models/player"
 
 export enum MutationTypes {
+  // Event mutations
+  SET_SELF_PLAYER = "SET_SELF_PLAYER",
+  // Game drawing mutations
   SET_THICKNESS_IDX = "SET_THICKNESS_IDX",
   SET_COLOUR_IDX = "SET_COLOUR_IDX",
   SET_SCALE = "SET_SCALE",
@@ -16,6 +20,9 @@ export enum MutationTypes {
 }
 
 export interface Mutations<S = GameState> {
+  // Event mutations
+  [MutationTypes.SET_SELF_PLAYER](state: S, payload: Player): void
+  // Game drawing mutations
   [MutationTypes.SET_THICKNESS_IDX](state: S, payload: number): void
   [MutationTypes.SET_COLOUR_IDX](state: S, payload: number): void
   [MutationTypes.SET_SCALE](state: S, payload: number): void
@@ -29,6 +36,9 @@ export interface Mutations<S = GameState> {
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
+  [MutationTypes.SET_SELF_PLAYER](state: GameState, player: Player) {
+    state.selfPlayer = player
+  },
   [MutationTypes.SET_THICKNESS_IDX](state: GameState, index: number) {
     state.thicknessIdx = index
   },

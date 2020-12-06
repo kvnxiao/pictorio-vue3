@@ -1,6 +1,11 @@
 import { Line, Point } from "@/models/drawing"
+import { Player } from "@/models/player"
 
 export interface GameState {
+  // Players
+  selfPlayer: Player
+
+  // Drawing state
   isDrawing: boolean
   colourIdx: number
   thicknessIdx: number
@@ -11,6 +16,7 @@ export interface GameState {
 }
 
 export const state: GameState = {
+  selfPlayer: { id: "", name: "" },
   isDrawing: false,
   colourIdx: 0,
   thicknessIdx: 0,

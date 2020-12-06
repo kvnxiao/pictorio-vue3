@@ -1,6 +1,6 @@
 import { ComputedRef, Ref, computed, reactive, toRefs } from "vue"
+import { EventType, GameEvent, GameEventTypeMap } from "@/models/events"
 import { READY_STATE_MAPPING, WebSocketState } from "./websocket"
-import { GameEvent } from "@/models/events"
 import { emitEvent } from "./events"
 
 interface GlobalWebSocketState {
@@ -14,6 +14,7 @@ export interface GlobalWebSocket {
   state: ComputedRef<WebSocketState>
   close(code?: number, reason?: string): void
   send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void
+  sendEvent(eventType: EventType, eventData: GameEventTypeMap[EventType]): void
   connect(
     url: string,
     onOpen?: (event: Event) => void,
@@ -38,6 +39,17 @@ function close(code?: number, reason?: string): void {
 
 function send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void {
   ws?.send(data)
+}
+
+function sendEvent<T extends keyof GameEventTypeMap>(
+  eventType: T,
+  eventData: GameEventTypeMap[T],
+): void {
+  const gameEvent: GameEvent = {
+    type: eventType,
+    data: eventData,
+  }
+  ws?.send(JSON.stringify(gameEvent))
 }
 
 function isGameEvent(data: unknown): data is GameEvent {
@@ -82,6 +94,7 @@ export function useGlobalWebSocket(): GlobalWebSocket {
     state,
     close,
     send,
+    sendEvent,
     connect,
   }
 }

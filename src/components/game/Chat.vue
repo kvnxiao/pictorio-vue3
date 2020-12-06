@@ -2,21 +2,24 @@
   <div class="chatbox">
     <div class="conversation">
       <ul>
-        <li>test</li>
-        <li>test</li>
-        <li>test</li>
-        <li>test</li>
-        <li>test</li>
-        <li>test</li>
+        <li v-for="(msg, index) in chatHistory" :key="index">
+          {{ msg.player.name }}: {{ msg.message }}
+        </li>
       </ul>
     </div>
 
     <div class="chatbox-text field has-addons">
       <div id="chat-input" class="control">
-        <input type="text" class="input" placeholder="Enter your guess" />
+        <input
+          v-model="input"
+          type="text"
+          class="input"
+          placeholder="Enter your guess"
+          @keydown.enter="sendMessage"
+        />
       </div>
       <div class="control">
-        <button class="button">
+        <button class="button" @click="sendMessage">
           <span class="icon">
             <fa icon="caret-right" type="fas" />
           </span>
@@ -27,10 +30,41 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { ChatEvent, EventType } from "@/models/events"
+import { Ref, defineComponent, ref } from "vue"
+import { onEvent } from "@/game/events"
+import { useGameState } from "@/store/gameStore"
+import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
 
 export default defineComponent({
   name: "Chat",
+  setup() {
+    const gameState = useGameState()
+    const { sendEvent } = useGlobalWebSocket()
+    const input: Ref<string> = ref("")
+
+    const chatHistory: Ref<ChatEvent[]> = ref([])
+
+    onEvent(EventType.ChatEvent, (event: ChatEvent) => {
+      chatHistory.value.push(event)
+    })
+
+    const sendMessage = () => {
+      const chatEvent: ChatEvent = {
+        player: gameState.state.selfPlayer,
+        message: input.value,
+      }
+      sendEvent(EventType.ChatEvent, chatEvent)
+      // clear input
+      input.value = ""
+    }
+
+    return {
+      input,
+      chatHistory,
+      sendMessage,
+    }
+  },
 })
 </script>
 

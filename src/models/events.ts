@@ -1,4 +1,3 @@
-import { ChatMessage } from "./message"
 import { Line } from "./drawing"
 import { Player } from "./player"
 
@@ -38,7 +37,7 @@ export interface RehydrateEvent {
 
 export interface ChatEvent {
   player: Player
-  message: ChatMessage
+  message: string
 }
 
 export interface DrawEvent {

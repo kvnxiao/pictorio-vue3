@@ -10,6 +10,6 @@ export function onEvent<T extends keyof GameEventTypeMap>(
   globalEmitter.on(eventType, listener)
 }
 
-export function emitEvent(eventType: EventType, eventData: unknown) {
+export function emitEvent(eventType: EventType, eventData: unknown): void {
   globalEmitter.emit(eventType, eventData)
 }

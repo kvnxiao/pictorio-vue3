@@ -42,9 +42,11 @@ import { Ref, computed, defineComponent, ref, watchEffect } from "vue"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
+import { MutationTypes } from "@/store/gameStore/mutations"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import Waiting from "@/components/game/Waiting.vue"
 import { onEvent } from "@/game/events"
+import { useGameState } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
@@ -61,6 +63,7 @@ export default defineComponent({
     const {
       params: { roomID },
     } = useRoute()
+    const gameState = useGameState()
     const { connect, error } = useGlobalWebSocket()
 
     const isGameStarted: Ref<boolean> = ref(true)
@@ -80,7 +83,7 @@ export default defineComponent({
     }
 
     onEvent(EventType.SelfJoinEvent, (event: SelfJoinEvent) => {
-      console.log(event.player)
+      gameState.commit(MutationTypes.SET_SELF_PLAYER, event.player)
     })
 
     connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
