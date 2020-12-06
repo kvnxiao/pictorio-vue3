@@ -95,12 +95,11 @@ export default defineComponent({
       }
     })
 
-    function sendMessage(): void {
+    const sendMessage = () => {
       const chatEvent: ChatEvent = {
         player: playerStore.state.selfPlayer,
         message: input.value,
       }
-      console.log(playerStore.state.selfPlayer.name)
       sendEvent(EventType.ChatEvent, chatEvent)
       // clear input
       input.value = ""

@@ -46,7 +46,7 @@ export default defineComponent({
     const navBurger: Ref<HTMLElement | null> = ref(null)
     const navMenu: Ref<HTMLElement | null> = ref(null)
 
-    function hideListener(event: MouseEvent) {
+    const hideListener = (event: MouseEvent) => {
       const target: Node = event.target as Node
       if (!navMenu.value?.contains(target) && !navBurger.value?.contains(target)) {
         enabledMobile.value = false
@@ -54,7 +54,7 @@ export default defineComponent({
       }
     }
 
-    function hamburger(event: MouseEvent) {
+    const hamburger = (event: MouseEvent) => {
       event.preventDefault()
       enabledMobile.value = !enabledMobile.value
       if (enabledMobile.value) {

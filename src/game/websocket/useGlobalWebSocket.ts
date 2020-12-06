@@ -33,18 +33,18 @@ const state: ComputedRef<WebSocketState> = computed(
   () => READY_STATE_MAPPING[ws?.readyState ?? 0],
 )
 
-function close(code?: number, reason?: string): void {
+const close = (code?: number, reason?: string) => {
   ws?.close(code, reason)
 }
 
-function send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void {
+const send = (data: string | ArrayBufferLike | Blob | ArrayBufferView) => {
   ws?.send(data)
 }
 
-function sendEvent<T extends keyof GameEventTypeMap>(
+const sendEvent = <T extends keyof GameEventTypeMap>(
   eventType: T,
   eventData: GameEventTypeMap[T],
-): void {
+) => {
   const gameEvent: GameEvent = {
     type: eventType,
     data: eventData,
