@@ -44,8 +44,8 @@ import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import Waiting from "@/components/game/Waiting.vue"
-import { useEventListener } from "@/game/events"
-import { useGlobalWebSocket } from "@/composables/useGlobalWebSocket"
+import { onEvent } from "@/game/events"
+import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
 
@@ -61,8 +61,7 @@ export default defineComponent({
     const {
       params: { roomID },
     } = useRoute()
-    const { data, connect, error } = useGlobalWebSocket()
-    const { listen } = useEventListener(data)
+    const { connect, error } = useGlobalWebSocket()
 
     const isGameStarted: Ref<boolean> = ref(true)
     const center: Ref<HTMLDivElement | null> = ref(null)
@@ -72,10 +71,6 @@ export default defineComponent({
     const canvasHeight = computed(() => `${height.value}px`)
     const maxWidthPixels = computed(() => `${maxWidth.value}px`)
 
-    listen(EventType.PlayerActionEvent, (event: SelfJoinEvent) => {
-      console.log(event.player)
-    })
-
     const onConnected = () => {
       console.log("Connected to game server!")
     }
@@ -83,6 +78,10 @@ export default defineComponent({
     const onDisconnected = () => {
       console.log("Disconnected from game server!")
     }
+
+    onEvent(EventType.SelfJoinEvent, (event: SelfJoinEvent) => {
+      console.log(event.player)
+    })
 
     connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
 
