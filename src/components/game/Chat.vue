@@ -3,7 +3,16 @@
     <div class="conversation">
       <ul>
         <li v-for="(msg, index) in chatHistory" :key="index">
-          {{ msg.player.name }}: {{ msg.message }}
+          <template v-if="msg.type === MessageType.PlayerJoin">
+            {{ msg.player.name }} has joined the room
+          </template>
+          <template v-else-if="msg.type === MessageType.PlayerLeave">
+            {{ msg.player.name }} has joined the room
+          </template>
+          <template v-else-if="msg.type === MessageType.PlayerText">
+            {{ msg.player.name }}: {{ msg.message }}
+          </template>
+          <template v-else>{{ msg.message }}</template>
         </li>
       </ul>
     </div>
@@ -30,30 +39,68 @@
 </template>
 
 <script lang="ts">
-import { ChatEvent, EventType } from "@/models/events"
-import { Ref, defineComponent, ref } from "vue"
+import {
+  ChatEvent,
+  EventType,
+  PlayerJoinLeaveAction,
+  PlayerJoinLeaveEvent,
+} from "@/models/events"
+import { ChatMessage, MessageType } from "@/store/chatStore/state"
+import { ComputedRef, Ref, computed, defineComponent, ref } from "vue"
+import { ChatMutations } from "@/store/chatStore/mutations"
+import { PlayerMutations } from "@/store/playerStore/mutations"
 import { onEvent } from "@/game/events"
-import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
+import { useChatStore } from "@/store/chatStore"
+import { useGlobalWebSocket } from "@/game/websocket"
 import { usePlayerStore } from "@/store/playerStore"
 
 export default defineComponent({
   name: "Chat",
   setup() {
+    const chatStore = useChatStore()
     const playerStore = usePlayerStore()
     const { sendEvent } = useGlobalWebSocket()
     const input: Ref<string> = ref("")
 
-    const chatHistory: Ref<ChatEvent[]> = ref([])
+    const chatHistory: ComputedRef<ChatMessage[]> = computed(
+      () => chatStore.state.messages,
+    )
 
     onEvent(EventType.ChatEvent, (event: ChatEvent) => {
-      chatHistory.value.push(event)
+      chatStore.commit(ChatMutations.ADD_MESSAGE, {
+        message: event.message,
+        player: event.player,
+        isSystem: false,
+        type: MessageType.PlayerText,
+      })
     })
 
-    const sendMessage = () => {
+    onEvent(EventType.PlayerJoinLeaveEvent, (event: PlayerJoinLeaveEvent) => {
+      if (event.action === PlayerJoinLeaveAction.JOIN) {
+        playerStore.commit(PlayerMutations.PLAYER_JOINED, event.player)
+        chatStore.commit(ChatMutations.ADD_MESSAGE, {
+          message: "",
+          player: event.player,
+          isSystem: true,
+          type: MessageType.PlayerJoin,
+        })
+      } else {
+        playerStore.commit(PlayerMutations.PLAYER_LEFT, event.player)
+        chatStore.commit(ChatMutations.ADD_MESSAGE, {
+          message: "",
+          player: event.player,
+          isSystem: true,
+          type: MessageType.PlayerLeave,
+        })
+      }
+    })
+
+    function sendMessage(): void {
       const chatEvent: ChatEvent = {
         player: playerStore.state.selfPlayer,
         message: input.value,
       }
+      console.log(playerStore.state.selfPlayer.name)
       sendEvent(EventType.ChatEvent, chatEvent)
       // clear input
       input.value = ""
@@ -63,6 +110,7 @@ export default defineComponent({
       input,
       chatHistory,
       sendMessage,
+      MessageType,
     }
   },
 })
@@ -85,6 +133,9 @@ export default defineComponent({
 .conversation
   overflow-y: auto
   flex-grow: 1
+
+  ul
+    overflow-wrap: break-word
 
   li
     text-align: left

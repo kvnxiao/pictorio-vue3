@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
-import { MutationTypes } from "@/store/gameStore/mutations"
+import { GameMutations } from "@/store/gameStore/mutations"
 import { THICKNESSES } from "@/models/drawing"
 import { useGameState } from "@/store/gameStore"
 
@@ -24,7 +24,7 @@ export default defineComponent({
     const thickness = computed(() => `${THICKNESSES[props.thicknessIdx]}px`)
 
     const setThickness = () => {
-      gameState.commit(MutationTypes.SET_THICKNESS_IDX, props.thicknessIdx)
+      gameState.commit(GameMutations.SET_THICKNESS_IDX, props.thicknessIdx)
     }
 
     const isSelected = computed(

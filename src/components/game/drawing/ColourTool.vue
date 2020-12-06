@@ -10,7 +10,7 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue"
 import { COLOURS } from "@/models/drawing"
-import { MutationTypes } from "@/store/gameStore/mutations"
+import { GameMutations } from "@/store/gameStore/mutations"
 import { useGameState } from "@/store/gameStore"
 
 export default defineComponent({
@@ -27,7 +27,7 @@ export default defineComponent({
     const colour = computed(() => COLOURS[props.colourIdx])
 
     const setColour = () => {
-      gameState.commit(MutationTypes.SET_COLOUR_IDX, props.colourIdx)
+      gameState.commit(GameMutations.SET_COLOUR_IDX, props.colourIdx)
     }
 
     const isSelected = computed(() => gameState.state.colourIdx === props.colourIdx)

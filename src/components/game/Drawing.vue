@@ -13,7 +13,7 @@
 <script lang="ts">
 import { InputEvent, useInputCoordinates } from "@/composables/useInputCoordinates"
 import { Ref, computed, defineComponent, ref, toRef, watch, watchEffect } from "vue"
-import { MutationTypes } from "@/store/gameStore/mutations"
+import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { scaledPoint } from "@/models/drawing"
 import { useDualLayerCanvasContext } from "@/game/canvas"
@@ -76,21 +76,21 @@ export default defineComponent({
         resize(width, height)
         clearTemp()
         clearMain()
-        gameState.commit(MutationTypes.SET_SCALE, newScale)
+        gameState.commit(GameMutations.SET_SCALE, newScale)
         drawMainCanvas()
       },
     )
 
     const onDrawStart = (x: number, y: number) => {
-      gameState.commit(MutationTypes.SET_IS_DRAWING, true)
+      gameState.commit(GameMutations.SET_IS_DRAWING, true)
       const point = scaledPoint(x, y, scale.value)
-      gameState.commit(MutationTypes.ADD_POINT, point)
+      gameState.commit(GameMutations.ADD_POINT, point)
     }
 
     const onDrawMove = (x: number, y: number) => {
       if (isDrawing.value) {
         const point = scaledPoint(x, y, scale.value)
-        gameState.commit(MutationTypes.ADD_POINT, point)
+        gameState.commit(GameMutations.ADD_POINT, point)
 
         const [p1, p2] = gameState.getters.getLatestTwoPoints()
         drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)
@@ -99,15 +99,15 @@ export default defineComponent({
 
     const onDrawStop = (x: number, y: number) => {
       if (isDrawing.value) {
-        gameState.commit(MutationTypes.SET_IS_DRAWING, false)
+        gameState.commit(GameMutations.SET_IS_DRAWING, false)
 
         const point = scaledPoint(x, y, scale.value)
-        gameState.commit(MutationTypes.ADD_POINT, point)
+        gameState.commit(GameMutations.ADD_POINT, point)
 
         // Draw line on main layer canvas, then add line to history
         const line = gameState.getters.getLatestLine()
         drawMain(line, scale.value)
-        gameState.commit(MutationTypes.ADD_LINE, line)
+        gameState.commit(GameMutations.ADD_LINE, line)
         clearTemp()
       }
     }
@@ -132,19 +132,19 @@ export default defineComponent({
     })
 
     const clearDrawing = () => {
-      gameState.commit(MutationTypes.CLEAR_DRAWING)
+      gameState.commit(GameMutations.CLEAR_DRAWING)
       clearTemp()
       clearMain()
     }
 
     const undoDrawing = () => {
-      gameState.commit(MutationTypes.UNDO)
+      gameState.commit(GameMutations.UNDO)
       clearMain()
       drawMainCanvas()
     }
 
     const redoDrawing = () => {
-      gameState.commit(MutationTypes.REDO)
+      gameState.commit(GameMutations.REDO)
       clearMain()
       drawMainCanvas()
     }

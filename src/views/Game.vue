@@ -46,7 +46,7 @@ import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import { PlayerMutations } from "@/store/playerStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import { onEvent } from "@/game/events"
-import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
+import { useGlobalWebSocket } from "@/game/websocket"
 import { usePlayerStore } from "@/store/playerStore"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
@@ -86,14 +86,14 @@ export default defineComponent({
       playerStore.commit(PlayerMutations.SET_SELF_PLAYER, event.player)
     })
 
-    onMounted(() => {
-      connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
-    })
-
     watchEffect(() => {
       if (error.value) {
         console.log(error.value)
       }
+    })
+
+    onMounted(() => {
+      connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
     })
 
     return {

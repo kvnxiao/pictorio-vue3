@@ -1,7 +1,7 @@
 import { ComputedRef, Ref, computed, reactive, toRefs } from "vue"
 import { EventType, GameEvent, GameEventTypeMap } from "@/models/events"
 import { READY_STATE_MAPPING, WebSocketState } from "./websocket"
-import { emitEvent } from "./events"
+import { emitEvent } from "../events"
 
 interface GlobalWebSocketState {
   data: unknown
@@ -83,6 +83,7 @@ const connect = (
         emitEvent(wsData.type, wsData.data)
       }
     } catch (err) {
+      /* eslint-disable no-console */
       console.error(err)
     }
   }

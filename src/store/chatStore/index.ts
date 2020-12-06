@@ -1,20 +1,20 @@
 import { Actions, actions } from "./actions"
+import { ChatState, state } from "./state"
 import { Getters, getters } from "./getters"
 import { Mutations, mutations } from "./mutations"
-import { PlayerState, state } from "./state"
 import { Store as VuexStore, createStore, useStore } from "vuex"
 import { InjectionKey } from "vue"
 import { Store } from "../types"
 
-export const playerStoreKey: InjectionKey<VuexStore<PlayerState>> = Symbol()
+export const chatStoreKey: InjectionKey<VuexStore<ChatState>> = Symbol()
 
-export const playerStore = createStore<PlayerState>({
+export const chatStore = createStore<ChatState>({
   state,
   getters,
   mutations,
   actions,
 })
 
-export function usePlayerStore(): Store<PlayerState, Mutations, Actions, Getters> {
-  return useStore(playerStoreKey)
+export function useChatStore(): Store<ChatState, Mutations, Actions, Getters> {
+  return useStore(chatStoreKey)
 }
