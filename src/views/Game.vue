@@ -38,16 +38,16 @@
 
 <script lang="ts">
 import { EventType, SelfJoinEvent } from "@/models/events"
-import { Ref, computed, defineComponent, ref, watchEffect } from "vue"
+import { Ref, computed, defineComponent, onMounted, ref, watchEffect } from "vue"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
-import { MutationTypes } from "@/store/gameStore/mutations"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
+import { PlayerMutations } from "@/store/playerStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import { onEvent } from "@/game/events"
-import { useGameState } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
+import { usePlayerStore } from "@/store/playerStore"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
 
@@ -63,7 +63,7 @@ export default defineComponent({
     const {
       params: { roomID },
     } = useRoute()
-    const gameState = useGameState()
+    const playerStore = usePlayerStore()
     const { connect, error } = useGlobalWebSocket()
 
     const isGameStarted: Ref<boolean> = ref(true)
@@ -83,10 +83,12 @@ export default defineComponent({
     }
 
     onEvent(EventType.SelfJoinEvent, (event: SelfJoinEvent) => {
-      gameState.commit(MutationTypes.SET_SELF_PLAYER, event.player)
+      playerStore.commit(PlayerMutations.SET_SELF_PLAYER, event.player)
     })
 
-    connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
+    onMounted(() => {
+      connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
+    })
 
     watchEffect(() => {
       if (error.value) {

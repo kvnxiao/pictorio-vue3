@@ -6,22 +6,22 @@ import {
   createStore,
   useStore,
 } from "vuex"
-import { GameState, state } from "./state"
 import { Getters, getters } from "./getters"
 import { Mutations, mutations } from "./mutations"
+import { PlayerState, state } from "./state"
 import { InjectionKey } from "vue"
 
-export const gameStoreKey: InjectionKey<VuexStore<GameState>> = Symbol()
+export const playerStoreKey: InjectionKey<VuexStore<PlayerState>> = Symbol()
 
-export const gameStateStore = createStore<GameState>({
+export const playerStore = createStore<PlayerState>({
   state,
   getters,
   mutations,
   actions,
 })
 
-export type Store<GameState> = Omit<
-  VuexStore<GameState>,
+export type Store<PlayerState> = Omit<
+  VuexStore<PlayerState>,
   "getters" | "commit" | "dispatch"
 > & {
   commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
@@ -41,6 +41,6 @@ export type Store<GameState> = Omit<
   }
 }
 
-export function useGameState(): Store<GameState> {
-  return useStore(gameStoreKey)
+export function usePlayerStore(): Store<PlayerState> {
+  return useStore(playerStoreKey)
 }

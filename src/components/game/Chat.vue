@@ -33,13 +33,13 @@
 import { ChatEvent, EventType } from "@/models/events"
 import { Ref, defineComponent, ref } from "vue"
 import { onEvent } from "@/game/events"
-import { useGameState } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/useGlobalWebSocket"
+import { usePlayerStore } from "@/store/playerStore"
 
 export default defineComponent({
   name: "Chat",
   setup() {
-    const gameState = useGameState()
+    const playerStore = usePlayerStore()
     const { sendEvent } = useGlobalWebSocket()
     const input: Ref<string> = ref("")
 
@@ -51,7 +51,7 @@ export default defineComponent({
 
     const sendMessage = () => {
       const chatEvent: ChatEvent = {
-        player: gameState.state.selfPlayer,
+        player: playerStore.state.selfPlayer,
         message: input.value,
       }
       sendEvent(EventType.ChatEvent, chatEvent)
