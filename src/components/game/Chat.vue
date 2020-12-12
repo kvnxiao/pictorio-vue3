@@ -3,16 +3,10 @@
     <div class="conversation">
       <ul>
         <li v-for="(msg, index) in chatHistory" :key="index">
-          <template v-if="msg.type === MessageType.UserJoin">
-            {{ msg.user.name }} has joined the room
+          <template v-if="msg.isSystem">
+            {{ msg.message }}
           </template>
-          <template v-else-if="msg.type === MessageType.UserLeave">
-            {{ msg.user.name }} has joined the room
-          </template>
-          <template v-else-if="msg.type === MessageType.Text">
-            {{ msg.user.name }}: {{ msg.message }}
-          </template>
-          <template v-else>{{ msg.message }}</template>
+          <template v-else> {{ msg.user.name }}: {{ msg.message }} </template>
         </li>
       </ul>
     </div>
@@ -45,9 +39,9 @@ import {
   UserJoinLeaveAction,
   UserJoinLeaveEvent,
 } from "@/models/events"
-import { ChatMessage, MessageType } from "@/store/chatStore/state"
 import { ComputedRef, Ref, computed, defineComponent, ref } from "vue"
 import { ChatMutations } from "@/store/chatStore/mutations"
+import { User } from "@/models/user"
 import { UserMutations } from "@/store/userStore/mutations"
 import { onEvent } from "@/game/events"
 import { useChatStore } from "@/store/chatStore"
@@ -62,16 +56,27 @@ export default defineComponent({
     const { sendEvent } = useGlobalWebSocket()
     const input: Ref<string> = ref("")
 
-    const chatHistory: ComputedRef<ChatMessage[]> = computed(
+    const chatHistory: ComputedRef<ChatEvent[]> = computed(
       () => chatStore.state.messages,
     )
 
+    function userJoinLeaveMessage(user: User, joined: boolean): ChatEvent {
+      return {
+        user: {
+          id: "",
+          name: "",
+        },
+        message: `${user.name} has ${joined ? "joined" : "left"} the room.`,
+        isSystem: true,
+      }
+    }
+
     onEvent(EventType.ChatEvent, (event: ChatEvent) => {
+      console.log("Received ChatEvent from server!")
       chatStore.commit(ChatMutations.ADD_MESSAGE, {
         message: event.message,
         user: event.user,
         isSystem: false,
-        type: MessageType.Text,
       })
     })
 
@@ -79,21 +84,17 @@ export default defineComponent({
       if (event.action === UserJoinLeaveAction.JOIN) {
         console.log("Received UserJoinLeaveEvent[Join] from server!")
         userStore.commit(UserMutations.USER_JOINED, event.user)
-        chatStore.commit(ChatMutations.ADD_MESSAGE, {
-          message: "",
-          user: event.user,
-          isSystem: true,
-          type: MessageType.UserJoin,
-        })
+        chatStore.commit(
+          ChatMutations.ADD_MESSAGE,
+          userJoinLeaveMessage(event.user, true),
+        )
       } else {
         console.log("Received UserJoinLeaveEvent[Leave] from server!")
         userStore.commit(UserMutations.USER_LEFT, event.user)
-        chatStore.commit(ChatMutations.ADD_MESSAGE, {
-          message: "",
-          user: event.user,
-          isSystem: true,
-          type: MessageType.UserLeave,
-        })
+        chatStore.commit(
+          ChatMutations.ADD_MESSAGE,
+          userJoinLeaveMessage(event.user, false),
+        )
       }
     })
 
@@ -111,7 +112,6 @@ export default defineComponent({
       input,
       chatHistory,
       sendMessage,
-      MessageType,
     }
   },
 })

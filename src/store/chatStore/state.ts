@@ -1,21 +1,7 @@
-import { User } from "@/models/user"
-
-export enum MessageType {
-  Text,
-  SystemText,
-  UserJoin,
-  UserLeave,
-}
-
-export interface ChatMessage {
-  user?: User
-  message: string
-  isSystem: boolean
-  type: MessageType
-}
+import { ChatEvent } from "@/models/events"
 
 export interface ChatState {
-  messages: ChatMessage[]
+  messages: ChatEvent[]
 }
 
 export const state: ChatState = {

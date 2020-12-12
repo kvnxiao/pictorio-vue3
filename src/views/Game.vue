@@ -84,7 +84,7 @@ export default defineComponent({
 
     onEvent(EventType.RehydrateEvent, (event: RehydrateEvent) => {
       console.log("Received RehydrateEvent from server!")
-      userStore.commit(UserMutations.SET_SELF_USER, event.user)
+      userStore.commit(UserMutations.SET_SELF_USER, event.selfUser)
     })
 
     watchEffect(() => {

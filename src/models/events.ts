@@ -20,8 +20,22 @@ export enum UserJoinLeaveAction {
   LEAVE = 1,
 }
 
+export enum GameStatus {
+  WaitingReadyUp = 0,
+  Started = 1,
+  GameOver = 2,
+}
+
+/**
+ * RehydrateEvent should be a server-sided event that allows the connected client to
+ * restore the current state of the game. Clients should not be sending a RehydrateEvent
+ * to the server.
+ */
 export interface RehydrateEvent {
-  user: User
+  selfUser: User
+  gameStatus: GameStatus
+  currentUserTurn?: User
+  lines: Line[]
 }
 
 export interface UserJoinLeaveEvent {
@@ -32,6 +46,7 @@ export interface UserJoinLeaveEvent {
 export interface ChatEvent {
   user: User
   message: string
+  isSystem?: boolean
 }
 
 export interface DrawEvent {
