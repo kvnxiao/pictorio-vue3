@@ -1,14 +1,14 @@
-import { Player } from "@/models/player"
+import { User } from "@/models/user"
 
 export enum MessageType {
-  PlayerText,
+  Text,
   SystemText,
-  PlayerJoin,
-  PlayerLeave,
+  UserJoin,
+  UserLeave,
 }
 
 export interface ChatMessage {
-  player?: Player
+  user?: User
   message: string
   isSystem: boolean
   type: MessageType

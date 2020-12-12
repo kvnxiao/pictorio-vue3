@@ -1,47 +1,41 @@
 import { Line } from "./drawing"
-import { Player } from "./player"
+import { User } from "./user"
 
 export enum EventType {
-  PlayerJoinLeaveEvent = 0,
-  SelfJoinEvent = 1,
-  RehydrateEvent = 2,
-  ChatEvent = 3,
-  DrawEvent = 4,
+  UserJoinLeaveEvent = 0,
+  RehydrateEvent = 1,
+  ChatEvent = 2,
+  DrawEvent = 3,
 }
 
 export interface GameEventTypeMap {
-  [EventType.PlayerJoinLeaveEvent]: PlayerJoinLeaveEvent
-  [EventType.SelfJoinEvent]: SelfJoinEvent
+  [EventType.UserJoinLeaveEvent]: UserJoinLeaveEvent
   [EventType.RehydrateEvent]: RehydrateEvent
   [EventType.ChatEvent]: ChatEvent
   [EventType.DrawEvent]: DrawEvent
 }
 
-export enum PlayerJoinLeaveAction {
+export enum UserJoinLeaveAction {
   JOIN = 0,
   LEAVE = 1,
 }
 
-export interface SelfJoinEvent {
-  player: Player
-}
-
-export interface PlayerJoinLeaveEvent {
-  player: Player
-  action: PlayerJoinLeaveAction
-}
-
 export interface RehydrateEvent {
-  players: Player[]
+  user: User
+}
+
+export interface UserJoinLeaveEvent {
+  user: User
+  action: UserJoinLeaveAction
 }
 
 export interface ChatEvent {
-  player: Player
+  user: User
   message: string
 }
 
 export interface DrawEvent {
-  player: Player
+  user: User
   line: Line
 }
 

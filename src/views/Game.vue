@@ -37,19 +37,19 @@
 </template>
 
 <script lang="ts">
-import { EventType, SelfJoinEvent } from "@/models/events"
+import { EventType, RehydrateEvent } from "@/models/events"
 import { Ref, computed, defineComponent, onMounted, ref, watchEffect } from "vue"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
-import { PlayerMutations } from "@/store/playerStore/mutations"
+import { UserMutations } from "@/store/userStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import { onEvent } from "@/game/events"
 import { useGlobalWebSocket } from "@/game/websocket"
-import { usePlayerStore } from "@/store/playerStore"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
+import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Game",
@@ -63,7 +63,7 @@ export default defineComponent({
     const {
       params: { roomID },
     } = useRoute()
-    const playerStore = usePlayerStore()
+    const userStore = useUserStore()
     const { connect, error } = useGlobalWebSocket()
 
     const isGameStarted: Ref<boolean> = ref(true)
@@ -82,8 +82,9 @@ export default defineComponent({
       console.log("Disconnected from game server!")
     }
 
-    onEvent(EventType.SelfJoinEvent, (event: SelfJoinEvent) => {
-      playerStore.commit(PlayerMutations.SET_SELF_PLAYER, event.player)
+    onEvent(EventType.RehydrateEvent, (event: RehydrateEvent) => {
+      console.log("Received RehydrateEvent from server!")
+      userStore.commit(UserMutations.SET_SELF_USER, event.user)
     })
 
     watchEffect(() => {
