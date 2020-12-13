@@ -24,7 +24,7 @@
 import { CREATE_ROOM, ROOM } from "@/api/endpoints"
 import { Ref, computed, defineComponent, ref } from "vue"
 import { RoomResponse } from "@/models/room"
-import axios from "axios"
+import service from "@/service"
 import { useRouter } from "vue-router"
 
 export default defineComponent({
@@ -34,7 +34,7 @@ export default defineComponent({
     const router = useRouter()
 
     const createRoom = async () => {
-      const resp = await axios.post<RoomResponse>(CREATE_ROOM)
+      const resp = await service.post<RoomResponse>(CREATE_ROOM)
       if (resp.data.exists) {
         router.push(ROOM(resp.data.roomID))
       }

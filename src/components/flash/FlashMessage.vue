@@ -13,7 +13,7 @@ import { FlashMessage, FlashMessageType } from "@/models/flashMessage"
 import { Ref, computed, defineComponent, onMounted, ref } from "vue"
 import Cookies from "js-cookie"
 import { FLASH_MESSAGE } from "@/api/endpoints"
-import axios from "axios"
+import service from "@/service"
 
 export default defineComponent({
   name: "FlashMessage",
@@ -36,7 +36,7 @@ export default defineComponent({
     onMounted(async () => {
       const errormsg = Cookies.get("errormsg")
       if (errormsg) {
-        const resp = await axios.get<FlashMessage>(FLASH_MESSAGE)
+        const resp = await service.get<FlashMessage>(FLASH_MESSAGE)
         messageType.value = resp.data.type
         message.value = resp.data.message
         setTimeout(() => {
