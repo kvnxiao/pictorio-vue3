@@ -1,6 +1,6 @@
 import { ReadyEvent, UserRehydrateEvent } from "@/models/events"
 import { MutationTree } from "vuex"
-import { User } from "@/models/user"
+import { PlayerState } from "@/models/playerState"
 import { UserState } from "./state"
 
 export enum UserMutations {
@@ -12,8 +12,8 @@ export enum UserMutations {
 
 export interface Mutations<S = UserState> {
   [UserMutations.REHYDRATE](state: S, event: UserRehydrateEvent): void
-  [UserMutations.USER_JOINED](state: S, user: User): void
-  [UserMutations.USER_LEFT](state: S, user: User): void
+  [UserMutations.USER_JOINED](state: S, player: PlayerState): void
+  [UserMutations.USER_LEFT](state: S, player: PlayerState): void
   [UserMutations.USER_READY](state: S, event: ReadyEvent): void
 }
 
@@ -24,16 +24,19 @@ export const mutations: MutationTree<UserState> & Mutations = {
       state.playerStates[playerState.user.id] = playerState
     }
   },
-  [UserMutations.USER_JOINED](state: UserState, user: User) {
-    if (user.id in state.playerStates) {
-      state.playerStates[user.id].isConnected = true
-      state.playerStates[user.id].isReady = false
+  [UserMutations.USER_JOINED](state: UserState, player: PlayerState) {
+    if (player.user.id in state.playerStates) {
+      state.playerStates[player.user.id].isConnected = true
+      state.playerStates[player.user.id].isReady = false
+    } else {
+      // New user joined
+      state.playerStates[player.user.id] = player
     }
   },
-  [UserMutations.USER_LEFT](state: UserState, user: User) {
-    if (user.id in state.playerStates) {
-      state.playerStates[user.id].isConnected = false
-      state.playerStates[user.id].isReady = false
+  [UserMutations.USER_LEFT](state: UserState, player: PlayerState) {
+    if (player.user.id in state.playerStates) {
+      state.playerStates[player.user.id].isConnected = false
+      state.playerStates[player.user.id].isReady = false
     }
   },
   [UserMutations.USER_READY](state: UserState, event: ReadyEvent) {

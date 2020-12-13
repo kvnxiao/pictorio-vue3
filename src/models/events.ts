@@ -59,7 +59,7 @@ export type RehydrateEvent = UserRehydrateEvent &
   GameRehydrateEvent
 
 export interface UserJoinLeaveEvent {
-  user: User
+  playerState: PlayerState
   action: UserJoinLeaveAction
 }
 

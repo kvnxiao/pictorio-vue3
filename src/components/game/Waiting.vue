@@ -6,13 +6,20 @@
       </div>
       <div class="card-content">
         <div class="content">Waiting for all players to be ready</div>
-        <div class="subtitle">{{ readyPlayers }} / {{ maxPlayers }}</div>
+        <div class="subtitle">
+          <p>{{ readyPlayerCount }} / {{ currPlayerCount }}</p>
+          <p>(max {{ maxPlayers }} players)</p>
+        </div>
         <button
-          class="button is-medium"
+          class="button"
           :class="{ 'is-info': !ready, 'is-warning': ready }"
           @click="readyToggle"
         >
           {{ readyText }}
+        </button>
+        <br />
+        <button v-if="isRoomLeader" class="button is-primary" :disabled="startDisabled">
+          Start
         </button>
       </div>
     </div>
@@ -36,37 +43,70 @@ export default defineComponent({
 
     const maxPlayers: ComputedRef<number> = computed(() => gameStore.state.maxPlayers)
 
+    const currPlayerCount: ComputedRef<number> = computed(
+      () =>
+        Object.values(userStore.state.playerStates).filter(
+          (playerState: PlayerState) => playerState.isConnected,
+        ).length,
+    )
+
     const ready: ComputedRef<boolean> = computed(
       () => userStore.state.playerStates[userStore.state.selfUser.id]?.isReady ?? false,
     )
 
-    const readyPlayers: ComputedRef<number> = computed(() => {
+    const readyPlayerCount: ComputedRef<number> = computed(() => {
       return Object.values(userStore.state.playerStates).filter(
         (playerState: PlayerState) => playerState.isConnected && playerState.isReady,
       ).length
     })
 
-    const readyText = computed(() => (ready.value ? "Unready" : "Ready"))
+    const readyText: ComputedRef<string> = computed(() =>
+      ready.value ? "Unready" : "Ready",
+    )
 
-    const readyToggle = () => {
+    const startDisabled: ComputedRef<boolean> = computed(
+      () =>
+        readyPlayerCount.value < currPlayerCount.value || readyPlayerCount.value <= 1,
+    )
+
+    const isRoomLeader: ComputedRef<boolean> = computed(
+      () =>
+        userStore.state.playerStates[userStore.state.selfUser.id]?.isRoomLeader ??
+        false,
+    )
+
+    function readyToggle() {
       sendEvent(EventType.ReadyEvent, {
         user: userStore.state.selfUser,
         ready: !ready.value,
       })
     }
 
+    function startGame() {
+      sendEvent(EventType.StartGameIssuedEvent, {
+        issuer: userStore.state.selfUser,
+      })
+    }
+
     return {
+      currPlayerCount,
       maxPlayers,
       ready,
-      readyPlayers,
+      readyPlayerCount,
       readyText,
       readyToggle,
+      startGame,
+      startDisabled,
+      isRoomLeader,
     }
   },
 })
 </script>
 
 <style lang="sass" scoped>
+button
+  margin-bottom: 0.5rem
+
 .waiting
   position: absolute
   top: 0

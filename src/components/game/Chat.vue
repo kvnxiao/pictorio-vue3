@@ -71,10 +71,10 @@ export default defineComponent({
     onEvent(EventType.UserJoinLeaveEvent, (event: UserJoinLeaveEvent) => {
       if (event.action === UserJoinLeaveAction.JOIN) {
         console.log("Received UserJoinLeaveEvent[Join] from server!")
-        userStore.commit(UserMutations.USER_JOINED, event.user)
+        userStore.commit(UserMutations.USER_JOINED, event.playerState)
       } else {
         console.log("Received UserJoinLeaveEvent[Leave] from server!")
-        userStore.commit(UserMutations.USER_LEFT, event.user)
+        userStore.commit(UserMutations.USER_LEFT, event.playerState)
       }
     })
 
