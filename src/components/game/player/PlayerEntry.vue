@@ -4,29 +4,39 @@
       <div class="char">{{ character }}</div>
     </div>
     <div class="info">
-      <p class="name">{{ name }}</p>
-      <p class="points">{{ points }} PTS</p>
+      <p class="name">
+        {{ state.isRoomLeader ? `${state.user.name}*` : state.user.name }}
+      </p>
+      <p class="points">{{ state.points }} PTS</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ComputedRef, computed, defineComponent } from "vue"
+import { ComputedRef, PropType, computed, defineComponent } from "vue"
+import { PlayerState } from "@/models/playerState"
 
 export default defineComponent({
   name: "PlayerEntry",
   props: {
-    name: {
-      type: String,
-      default: "",
-    },
-    points: {
-      type: Number,
-      default: 0,
+    state: {
+      type: Object as PropType<PlayerState>,
+      default: {
+        user: {
+          name: "",
+          id: "",
+        },
+        points: 0,
+        wins: 0,
+        isSpectator: false,
+        isConnected: false,
+        isReady: false,
+        isRoomLeader: false,
+      },
     },
   },
   setup(props) {
-    const character: ComputedRef<string> = computed(() => props.name[0])
+    const character: ComputedRef<string> = computed(() => props.state.user.name[0])
     return {
       character,
     }

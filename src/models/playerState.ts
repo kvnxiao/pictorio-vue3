@@ -7,4 +7,5 @@ export interface PlayerState {
   isSpectator: boolean
   isConnected: boolean
   isReady: boolean
+  isRoomLeader: boolean
 }

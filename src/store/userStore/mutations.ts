@@ -17,7 +17,6 @@ export interface Mutations<S = UserState> {
 
 export const mutations: MutationTree<UserState> & Mutations = {
   [UserMutations.REHYDRATE](state: UserState, event: UserRehydrateEvent) {
-    console.log(event)
     state.selfUser = event.selfUser
     for (const playerState of event.playerStates) {
       state.playerStates[playerState.user.id] = playerState

@@ -1,7 +1,7 @@
 import { Line, Point } from "@/models/drawing"
+import { GameRehydrateEvent } from "@/models/events"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
-import { GameRehydrateEvent } from "@/models/events"
 
 export enum GameMutations {
   REHYDRATE = "REHYDRATE",
@@ -32,6 +32,7 @@ export interface Mutations<S = GameState> {
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
     // TODO
   },
