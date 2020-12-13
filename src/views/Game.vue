@@ -38,6 +38,16 @@
 
 <script lang="ts">
 import {
+  ChatEvent,
+  EventType,
+  GameStatus,
+  ReadyEvent,
+  RehydrateEvent,
+  StartGameEvent,
+  UserJoinLeaveAction,
+  UserJoinLeaveEvent,
+} from "@/models/events"
+import {
   ComputedRef,
   Ref,
   computed,
@@ -46,7 +56,6 @@ import {
   ref,
   watchEffect,
 } from "vue"
-import { EventType, GameStatus, ReadyEvent, RehydrateEvent } from "@/models/events"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import { ChatMutations } from "@/store/chatStore/mutations"
@@ -100,15 +109,33 @@ export default defineComponent({
     }
 
     onEvent(EventType.RehydrateEvent, (event: RehydrateEvent) => {
-      console.log("Received RehydrateEvent from server!")
       userStore.commit(UserMutations.REHYDRATE, event)
       chatStore.commit(ChatMutations.REHYDRATE, event)
       gameStore.commit(GameMutations.REHYDRATE, event)
     })
 
     onEvent(EventType.ReadyEvent, (event: ReadyEvent) => {
-      console.log("Received ReadyEvent from server!", event.ready)
       userStore.commit(UserMutations.USER_READY, event)
+    })
+
+    onEvent(EventType.StartGameEvent, (event: StartGameEvent) => {
+      gameStore.commit(GameMutations.START_GAME, event)
+    })
+
+    onEvent(EventType.ChatEvent, (event: ChatEvent) => {
+      chatStore.commit(ChatMutations.ADD_MESSAGE, {
+        message: event.message,
+        user: event.user,
+        isSystem: event.isSystem,
+      })
+    })
+
+    onEvent(EventType.UserJoinLeaveEvent, (event: UserJoinLeaveEvent) => {
+      if (event.action === UserJoinLeaveAction.JOIN) {
+        userStore.commit(UserMutations.USER_JOINED, event.playerState)
+      } else {
+        userStore.commit(UserMutations.USER_LEFT, event.playerState)
+      }
     })
 
     watchEffect(() => {

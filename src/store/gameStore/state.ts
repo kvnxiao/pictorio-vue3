@@ -5,7 +5,8 @@ import { User } from "@/models/user"
 export interface GameState {
   maxPlayers: number
   gameStatus: GameStatus
-  currentUserTurn?: User
+  playerOrderIds: string[]
+  currentUserTurn: User | null
   isDrawing: boolean
   colourIdx: number
   thicknessIdx: number
@@ -18,6 +19,8 @@ export interface GameState {
 export const state: GameState = {
   maxPlayers: 0,
   gameStatus: GameStatus.WaitingReadyUp,
+  playerOrderIds: [],
+  currentUserTurn: null,
   isDrawing: false,
   colourIdx: 0,
   thicknessIdx: 0,

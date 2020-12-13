@@ -45,7 +45,8 @@ export interface ChatRehydrateEvent {
 export interface GameRehydrateEvent {
   maxPlayers: number
   gameStatus: GameStatus
-  currentUserTurn?: User
+  playerOrderIds: string[]
+  currentUserTurn: User | null
   lines: Line[]
 }
 
@@ -80,7 +81,8 @@ export interface ReadyEvent {
 }
 
 export interface StartGameEvent {
-  gameStarted: boolean
+  playerOrderIds: string[]
+  currentUserTurn: User | null
 }
 
 export interface StartGameIssuedEvent {

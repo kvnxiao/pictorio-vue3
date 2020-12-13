@@ -1,10 +1,11 @@
+import { GameRehydrateEvent, StartGameEvent } from "@/models/events"
 import { Line, Point } from "@/models/drawing"
-import { GameRehydrateEvent } from "@/models/events"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
 
 export enum GameMutations {
   REHYDRATE = "REHYDRATE",
+  START_GAME = "START_GAME",
   SET_THICKNESS_IDX = "SET_THICKNESS_IDX",
   SET_COLOUR_IDX = "SET_COLOUR_IDX",
   SET_SCALE = "SET_SCALE",
@@ -19,6 +20,7 @@ export enum GameMutations {
 
 export interface Mutations<S = GameState> {
   [GameMutations.REHYDRATE](state: S, payload: GameRehydrateEvent): void
+  [GameMutations.START_GAME](state: S, payload: StartGameEvent): void
   [GameMutations.SET_THICKNESS_IDX](state: S, payload: number): void
   [GameMutations.SET_COLOUR_IDX](state: S, payload: number): void
   [GameMutations.SET_SCALE](state: S, payload: number): void
@@ -32,14 +34,23 @@ export interface Mutations<S = GameState> {
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
     state.maxPlayers = event.maxPlayers
     state.gameStatus = event.gameStatus
+    state.playerOrderIds = event.playerOrderIds
     if (event.currentUserTurn) {
       state.currentUserTurn = event.currentUserTurn
     }
     state.lines = event.lines
+  },
+  [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
+    state.playerOrderIds = event.playerOrderIds
+    console.log(event.currentUserTurn)
+    state.currentUserTurn = event.currentUserTurn
+
+    // reset drawing
+    state.lines.splice(0, state.lines.length)
+    state.redoStack.splice(0, state.redoStack.length)
   },
   [GameMutations.SET_THICKNESS_IDX](state: GameState, index: number) {
     state.thicknessIdx = index

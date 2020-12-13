@@ -59,25 +59,6 @@ export default defineComponent({
       () => chatStore.state.messages,
     )
 
-    onEvent(EventType.ChatEvent, (event: ChatEvent) => {
-      console.log("Received ChatEvent from server!")
-      chatStore.commit(ChatMutations.ADD_MESSAGE, {
-        message: event.message,
-        user: event.user,
-        isSystem: event.isSystem,
-      })
-    })
-
-    onEvent(EventType.UserJoinLeaveEvent, (event: UserJoinLeaveEvent) => {
-      if (event.action === UserJoinLeaveAction.JOIN) {
-        console.log("Received UserJoinLeaveEvent[Join] from server!")
-        userStore.commit(UserMutations.USER_JOINED, event.playerState)
-      } else {
-        console.log("Received UserJoinLeaveEvent[Leave] from server!")
-        userStore.commit(UserMutations.USER_LEFT, event.playerState)
-      }
-    })
-
     const sendMessage = () => {
       const chatEvent: ChatEvent = {
         user: userStore.state.selfUser,

@@ -18,7 +18,12 @@
           {{ readyText }}
         </button>
         <br />
-        <button v-if="isRoomLeader" class="button is-primary" :disabled="startDisabled">
+        <button
+          v-if="isRoomLeader"
+          class="button is-primary"
+          :disabled="startDisabled"
+          @click="startGame"
+        >
           Start
         </button>
       </div>
