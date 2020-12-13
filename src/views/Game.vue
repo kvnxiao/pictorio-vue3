@@ -37,8 +37,16 @@
 </template>
 
 <script lang="ts">
-import { EventType, RehydrateEvent } from "@/models/events"
-import { Ref, computed, defineComponent, onMounted, ref, watchEffect } from "vue"
+import {
+  ComputedRef,
+  Ref,
+  computed,
+  defineComponent,
+  onMounted,
+  ref,
+  watchEffect,
+} from "vue"
+import { EventType, GameStatus, RehydrateEvent } from "@/models/events"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import { ChatMutations } from "@/store/chatStore/mutations"
@@ -73,7 +81,9 @@ export default defineComponent({
 
     const { connect, error } = useGlobalWebSocket()
 
-    const isGameStarted: Ref<boolean> = ref(true)
+    const isGameStarted: ComputedRef<boolean> = computed(
+      () => gameStore.state.gameStatus === GameStatus.Started,
+    )
     const center: Ref<HTMLDivElement | null> = ref(null)
     const maxWidth: Ref<number> = ref(1500)
     const { width, height } = useResizeObserver(center)

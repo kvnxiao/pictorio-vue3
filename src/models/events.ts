@@ -7,6 +7,9 @@ export enum EventType {
   RehydrateEvent = 1,
   ChatEvent = 2,
   DrawEvent = 3,
+  ReadyEvent = 4,
+  StartGameEvent = 5,
+  StartGameIssuedEvent = 6,
 }
 
 export interface GameEventTypeMap {
@@ -14,6 +17,9 @@ export interface GameEventTypeMap {
   [EventType.RehydrateEvent]: RehydrateEvent
   [EventType.ChatEvent]: ChatEvent
   [EventType.DrawEvent]: DrawEvent
+  [EventType.ReadyEvent]: ReadyEvent
+  [EventType.StartGameEvent]: StartGameEvent
+  [EventType.StartGameIssuedEvent]: StartGameIssuedEvent
 }
 
 export enum UserJoinLeaveAction {
@@ -65,6 +71,19 @@ export interface ChatEvent {
 export interface DrawEvent {
   user: User
   line: Line
+}
+
+export interface ReadyEvent {
+  user: User
+  ready: boolean
+}
+
+export interface StartGameEvent {
+  gameStarted: boolean
+}
+
+export interface StartGameIssuedEvent {
+  issuer: User
 }
 
 export interface GameEvent {
