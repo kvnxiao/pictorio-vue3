@@ -8,7 +8,7 @@
 import { computed, defineComponent } from "vue"
 import { GameMutations } from "@/store/gameStore/mutations"
 import { THICKNESSES } from "@/models/drawing"
-import { useGameState } from "@/store/gameStore"
+import { useGameStore } from "@/store/gameStore"
 
 export default defineComponent({
   name: "ThicknessTool",
@@ -19,7 +19,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const gameState = useGameState()
+    const gameState = useGameStore()
 
     const thickness = computed(() => `${THICKNESSES[props.thicknessIdx]}px`)
 

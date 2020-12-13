@@ -41,7 +41,6 @@ import {
 } from "@/models/events"
 import { ComputedRef, Ref, computed, defineComponent, ref } from "vue"
 import { ChatMutations } from "@/store/chatStore/mutations"
-import { User } from "@/models/user"
 import { UserMutations } from "@/store/userStore/mutations"
 import { onEvent } from "@/game/events"
 import { useChatStore } from "@/store/chatStore"
@@ -60,23 +59,12 @@ export default defineComponent({
       () => chatStore.state.messages,
     )
 
-    function userJoinLeaveMessage(user: User, joined: boolean): ChatEvent {
-      return {
-        user: {
-          id: "",
-          name: "",
-        },
-        message: `${user.name} has ${joined ? "joined" : "left"} the room.`,
-        isSystem: true,
-      }
-    }
-
     onEvent(EventType.ChatEvent, (event: ChatEvent) => {
       console.log("Received ChatEvent from server!")
       chatStore.commit(ChatMutations.ADD_MESSAGE, {
         message: event.message,
         user: event.user,
-        isSystem: false,
+        isSystem: event.isSystem,
       })
     })
 
@@ -84,17 +72,9 @@ export default defineComponent({
       if (event.action === UserJoinLeaveAction.JOIN) {
         console.log("Received UserJoinLeaveEvent[Join] from server!")
         userStore.commit(UserMutations.USER_JOINED, event.user)
-        chatStore.commit(
-          ChatMutations.ADD_MESSAGE,
-          userJoinLeaveMessage(event.user, true),
-        )
       } else {
         console.log("Received UserJoinLeaveEvent[Leave] from server!")
         userStore.commit(UserMutations.USER_LEFT, event.user)
-        chatStore.commit(
-          ChatMutations.ADD_MESSAGE,
-          userJoinLeaveMessage(event.user, false),
-        )
       }
     })
 

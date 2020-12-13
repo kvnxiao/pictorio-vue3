@@ -15,6 +15,6 @@ export const gameStateStore = createStore<GameState>({
   actions,
 })
 
-export function useGameState(): Store<GameState, Mutations, Actions, Getters> {
+export function useGameStore(): Store<GameState, Mutations, Actions, Getters> {
   return useStore(gameStoreKey)
 }

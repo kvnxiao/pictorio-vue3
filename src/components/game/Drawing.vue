@@ -17,7 +17,7 @@ import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { scaledPoint } from "@/models/drawing"
 import { useDualLayerCanvasContext } from "@/game/canvas"
-import { useGameState } from "@/store/gameStore"
+import { useGameStore } from "@/store/gameStore"
 
 export default defineComponent({
   name: "Drawing",
@@ -55,7 +55,7 @@ export default defineComponent({
       resize,
     } = useDualLayerCanvasContext(canvasRef, topCanvasRef)
 
-    const gameState = useGameState()
+    const gameState = useGameStore()
     const lines = computed(() => gameState.state.lines)
     const scale = computed(() => gameState.state.scale)
     const isDrawing = computed(() => gameState.state.isDrawing)

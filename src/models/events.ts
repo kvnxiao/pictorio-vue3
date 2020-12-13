@@ -1,4 +1,5 @@
 import { Line } from "./drawing"
+import { PlayerState } from "./playerState"
 import { User } from "./user"
 
 export enum EventType {
@@ -26,17 +27,29 @@ export enum GameStatus {
   GameOver = 2,
 }
 
+export interface UserRehydrateEvent {
+  selfUser: User
+  playerStates: PlayerState[]
+}
+
+export interface ChatRehydrateEvent {
+  chatMessages: ChatEvent[]
+}
+
+export interface GameRehydrateEvent {
+  gameStatus: GameStatus
+  currentUserTurn?: User
+  lines: Line[]
+}
+
 /**
  * RehydrateEvent should be a server-sided event that allows the connected client to
  * restore the current state of the game. Clients should not be sending a RehydrateEvent
  * to the server.
  */
-export interface RehydrateEvent {
-  selfUser: User
-  gameStatus: GameStatus
-  currentUserTurn?: User
-  lines: Line[]
-}
+export type RehydrateEvent = UserRehydrateEvent &
+  ChatRehydrateEvent &
+  GameRehydrateEvent
 
 export interface UserJoinLeaveEvent {
   user: User

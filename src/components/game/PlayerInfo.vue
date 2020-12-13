@@ -1,8 +1,8 @@
 <template>
   <div class="info">
     <ul>
-      <li v-for="u of users" :key="u.id">
-        <PlayerEntry :name="u.name" :points="0" />
+      <li v-for="p of players" :key="p.id">
+        <PlayerEntry :name="p.user.name" :points="p.points" />
       </li>
     </ul>
   </div>
@@ -10,9 +10,8 @@
 
 <script lang="ts">
 import { ComputedRef, computed, defineComponent } from "vue"
-import { Status, UserStatus } from "@/store/userStore/state"
 import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
-import { User } from "@/models/user"
+import { PlayerState } from "@/models/playerState"
 import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
@@ -21,14 +20,14 @@ export default defineComponent({
   setup() {
     const userStore = useUserStore()
 
-    const users: ComputedRef<User[]> = computed(() =>
-      Object.values(userStore.state.userIds)
-        .filter((status: UserStatus) => status.status === Status.JOINED)
-        .map((status: UserStatus) => status.user),
+    const players: ComputedRef<PlayerState[]> = computed(() =>
+      Object.values(userStore.state.playerStates).filter(
+        (state: PlayerState) => state.isConnected,
+      ),
     )
 
     return {
-      users,
+      players,
     }
   },
 })

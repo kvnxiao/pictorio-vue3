@@ -11,7 +11,7 @@
 import { computed, defineComponent } from "vue"
 import { COLOURS } from "@/models/drawing"
 import { GameMutations } from "@/store/gameStore/mutations"
-import { useGameState } from "@/store/gameStore"
+import { useGameStore } from "@/store/gameStore"
 
 export default defineComponent({
   name: "ColourTool",
@@ -22,7 +22,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const gameState = useGameState()
+    const gameState = useGameStore()
 
     const colour = computed(() => COLOURS[props.colourIdx])
 

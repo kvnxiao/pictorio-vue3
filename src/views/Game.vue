@@ -41,11 +41,15 @@ import { EventType, RehydrateEvent } from "@/models/events"
 import { Ref, computed, defineComponent, onMounted, ref, watchEffect } from "vue"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
+import { ChatMutations } from "@/store/chatStore/mutations"
 import Drawing from "@/components/game/Drawing.vue"
+import { GameMutations } from "@/store/gameStore/mutations"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import { UserMutations } from "@/store/userStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import { onEvent } from "@/game/events"
+import { useChatStore } from "@/store/chatStore"
+import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
@@ -64,6 +68,9 @@ export default defineComponent({
       params: { roomID },
     } = useRoute()
     const userStore = useUserStore()
+    const chatStore = useChatStore()
+    const gameStore = useGameStore()
+
     const { connect, error } = useGlobalWebSocket()
 
     const isGameStarted: Ref<boolean> = ref(true)
@@ -84,7 +91,9 @@ export default defineComponent({
 
     onEvent(EventType.RehydrateEvent, (event: RehydrateEvent) => {
       console.log("Received RehydrateEvent from server!")
-      userStore.commit(UserMutations.SET_SELF_USER, event.selfUser)
+      userStore.commit(UserMutations.REHYDRATE, event)
+      chatStore.commit(ChatMutations.REHYDRATE, event)
+      gameStore.commit(GameMutations.REHYDRATE, event)
     })
 
     watchEffect(() => {

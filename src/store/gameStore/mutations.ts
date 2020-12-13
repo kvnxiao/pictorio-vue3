@@ -1,8 +1,10 @@
 import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
+import { GameRehydrateEvent } from "@/models/events"
 
 export enum GameMutations {
+  REHYDRATE = "REHYDRATE",
   SET_THICKNESS_IDX = "SET_THICKNESS_IDX",
   SET_COLOUR_IDX = "SET_COLOUR_IDX",
   SET_SCALE = "SET_SCALE",
@@ -16,6 +18,7 @@ export enum GameMutations {
 }
 
 export interface Mutations<S = GameState> {
+  [GameMutations.REHYDRATE](state: S, payload: GameRehydrateEvent): void
   [GameMutations.SET_THICKNESS_IDX](state: S, payload: number): void
   [GameMutations.SET_COLOUR_IDX](state: S, payload: number): void
   [GameMutations.SET_SCALE](state: S, payload: number): void
@@ -29,6 +32,9 @@ export interface Mutations<S = GameState> {
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
+  [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
+    // TODO
+  },
   [GameMutations.SET_THICKNESS_IDX](state: GameState, index: number) {
     state.thicknessIdx = index
   },
