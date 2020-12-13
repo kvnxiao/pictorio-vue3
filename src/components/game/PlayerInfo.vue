@@ -1,30 +1,34 @@
 <template>
   <div class="info">
     <ul>
-      <li v-for="p of players" :key="p.name">
-        <PlayerEntry :name="p.name" :points="p.points" />
+      <li v-for="u of users" :key="u.id">
+        <PlayerEntry :name="u.name" :points="0" />
       </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue"
+import { ComputedRef, computed, defineComponent } from "vue"
+import { Status, UserStatus } from "@/store/userStore/state"
 import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
-
-interface Player {
-  name: string
-  points: number
-}
+import { User } from "@/models/user"
+import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "PlayerInfo",
   components: { PlayerEntry },
   setup() {
-    const players: Player[] = reactive([{ name: "Kevin", points: 0 }])
+    const userStore = useUserStore()
+
+    const users: ComputedRef<User[]> = computed(() =>
+      Object.values(userStore.state.userIds)
+        .filter((status: UserStatus) => status.status === Status.JOINED)
+        .map((status: UserStatus) => status.user),
+    )
 
     return {
-      players,
+      users,
     }
   },
 })
