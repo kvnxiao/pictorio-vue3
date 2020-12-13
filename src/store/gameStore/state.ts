@@ -3,6 +3,7 @@ import { GameStatus } from "@/models/events"
 import { User } from "@/models/user"
 
 export interface GameState {
+  maxPlayers: number
   gameStatus: GameStatus
   currentUserTurn?: User
   isDrawing: boolean
@@ -15,6 +16,7 @@ export interface GameState {
 }
 
 export const state: GameState = {
+  maxPlayers: 0,
   gameStatus: GameStatus.WaitingReadyUp,
   isDrawing: false,
   colourIdx: 0,

@@ -46,7 +46,7 @@ import {
   ref,
   watchEffect,
 } from "vue"
-import { EventType, GameStatus, RehydrateEvent } from "@/models/events"
+import { EventType, GameStatus, ReadyEvent, RehydrateEvent } from "@/models/events"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import { ChatMutations } from "@/store/chatStore/mutations"
@@ -104,6 +104,11 @@ export default defineComponent({
       userStore.commit(UserMutations.REHYDRATE, event)
       chatStore.commit(ChatMutations.REHYDRATE, event)
       gameStore.commit(GameMutations.REHYDRATE, event)
+    })
+
+    onEvent(EventType.ReadyEvent, (event: ReadyEvent) => {
+      console.log("Received ReadyEvent from server!", event.ready)
+      userStore.commit(UserMutations.USER_READY, event)
     })
 
     watchEffect(() => {

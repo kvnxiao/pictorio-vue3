@@ -8,8 +8,8 @@ export enum ChatMutations {
 }
 
 export interface Mutations<S = ChatState> {
-  [ChatMutations.REHYDRATE]: (state: S, payload: ChatRehydrateEvent) => void
-  [ChatMutations.ADD_MESSAGE]: (state: S, payload: ChatEvent) => void
+  [ChatMutations.REHYDRATE](state: S, payload: ChatRehydrateEvent): void
+  [ChatMutations.ADD_MESSAGE](state: S, payload: ChatEvent): void
 }
 
 export const mutations: MutationTree<ChatState> & Mutations = {

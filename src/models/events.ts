@@ -43,6 +43,7 @@ export interface ChatRehydrateEvent {
 }
 
 export interface GameRehydrateEvent {
+  maxPlayers: number
   gameStatus: GameStatus
   currentUserTurn?: User
   lines: Line[]

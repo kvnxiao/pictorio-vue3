@@ -34,6 +34,7 @@ export interface Mutations<S = GameState> {
 export const mutations: MutationTree<GameState> & Mutations = {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
+    state.maxPlayers = event.maxPlayers
     state.gameStatus = event.gameStatus
     if (event.currentUserTurn) {
       state.currentUserTurn = event.currentUserTurn

@@ -20,19 +20,39 @@
 </template>
 
 <script lang="ts">
-import { Ref, computed, defineComponent, ref } from "vue"
+import { ComputedRef, computed, defineComponent } from "vue"
+import { EventType } from "@/models/events"
+import { PlayerState } from "@/models/playerState"
+import { useGameStore } from "@/store/gameStore"
+import { useGlobalWebSocket } from "@/game/websocket"
+import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Waiting",
   setup() {
-    const ready: Ref<boolean> = ref(false)
-    const readyPlayers: Ref<number> = ref(1)
-    const maxPlayers = 8
+    const gameStore = useGameStore()
+    const userStore = useUserStore()
+    const { sendEvent } = useGlobalWebSocket()
+
+    const maxPlayers: ComputedRef<number> = computed(() => gameStore.state.maxPlayers)
+
+    const ready: ComputedRef<boolean> = computed(
+      () => userStore.state.playerStates[userStore.state.selfUser.id]?.isReady ?? false,
+    )
+
+    const readyPlayers: ComputedRef<number> = computed(() => {
+      return Object.values(userStore.state.playerStates).filter(
+        (playerState: PlayerState) => playerState.isConnected && playerState.isReady,
+      ).length
+    })
 
     const readyText = computed(() => (ready.value ? "Unready" : "Ready"))
 
     const readyToggle = () => {
-      ready.value = !ready.value
+      sendEvent(EventType.ReadyEvent, {
+        user: userStore.state.selfUser,
+        ready: !ready.value,
+      })
     }
 
     return {
