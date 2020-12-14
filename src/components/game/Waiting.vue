@@ -35,6 +35,7 @@
 import { ComputedRef, computed, defineComponent } from "vue"
 import { EventType } from "@/models/events"
 import { PlayerState } from "@/models/playerState"
+import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useUserStore } from "@/store/userStore"
@@ -44,7 +45,8 @@ export default defineComponent({
   setup() {
     const gameStore = useGameStore()
     const userStore = useUserStore()
-    const { sendEvent } = useGlobalWebSocket()
+    const { send } = useGlobalWebSocket()
+    const { sendEvent } = useGameEvents(send)
 
     const maxPlayers: ComputedRef<number> = computed(() => gameStore.state.maxPlayers)
 

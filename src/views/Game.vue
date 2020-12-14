@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts">
+import { GameEvent, GameStatus } from "@/models/events"
 import {
   computed,
   defineComponent,
@@ -51,14 +52,18 @@ import {
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
-import { GameStatus } from "@/models/events"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
 import Waiting from "@/components/game/Waiting.vue"
-import { registerEventListeners } from "@/game/listener"
+import { registerEventListeners } from "@/game/events"
+import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
+
+function isGameEvent(data: unknown): data is GameEvent {
+  return typeof data === "object" && (data as GameEvent).type !== undefined
+}
 
 export default defineComponent({
   name: "Game",
@@ -74,7 +79,8 @@ export default defineComponent({
     } = useRoute()
     const gameStore = useGameStore()
 
-    const { connect, disconnect, error } = useGlobalWebSocket()
+    const { connect, disconnect, error, send } = useGlobalWebSocket()
+    const { emitEvent } = useGameEvents(send)
 
     const gameMounted = ref<boolean>(false)
     const gameStatus = computed<GameStatus>(() => gameStore.state.gameStatus)
@@ -85,12 +91,26 @@ export default defineComponent({
     const canvasHeight = computed<string>(() => `${height.value}px`)
     const maxWidthPixels = computed<string>(() => `${maxWidth.value}px`)
 
-    const onConnected = () => {
+    const onWsConnected = () => {
+      /* eslint-disable no-console */
       console.log("Connected to game server!")
     }
 
-    const onDisconnected = () => {
+    const onWsDisconnected = () => {
+      /* eslint-disable no-console */
       console.log("Disconnected from game server!")
+    }
+
+    const onWsMessage = (event: MessageEvent) => {
+      try {
+        const wsData = JSON.parse(event.data)
+        if (isGameEvent(wsData)) {
+          emitEvent(wsData.type, wsData.data)
+        }
+      } catch (err) {
+        /* eslint-disable no-console */
+        console.error(err)
+      }
     }
 
     registerEventListeners()
@@ -103,7 +123,12 @@ export default defineComponent({
 
     onMounted(() => {
       gameMounted.value = true
-      connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
+      connect(
+        `${BASE_WS_URL}/room/${roomID}/ws`,
+        onWsConnected,
+        onWsDisconnected,
+        onWsMessage,
+      )
     })
 
     onUnmounted(() => {

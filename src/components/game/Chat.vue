@@ -33,17 +33,10 @@
 </template>
 
 <script lang="ts">
-import {
-  ChatEvent,
-  EventType,
-  UserJoinLeaveAction,
-  UserJoinLeaveEvent,
-} from "@/models/events"
+import { ChatEvent, EventType } from "@/models/events"
 import { ComputedRef, Ref, computed, defineComponent, ref } from "vue"
-import { ChatMutations } from "@/store/chatStore/mutations"
-import { UserMutations } from "@/store/userStore/mutations"
-import { onEvent } from "@/game/events"
 import { useChatStore } from "@/store/chatStore"
+import { useGameEvents } from "@/game/events"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useUserStore } from "@/store/userStore"
 
@@ -52,7 +45,8 @@ export default defineComponent({
   setup() {
     const chatStore = useChatStore()
     const userStore = useUserStore()
-    const { sendEvent } = useGlobalWebSocket()
+    const { send } = useGlobalWebSocket()
+    const { sendEvent } = useGameEvents(send)
     const input: Ref<string> = ref("")
 
     const chatHistory: ComputedRef<ChatEvent[]> = computed(
