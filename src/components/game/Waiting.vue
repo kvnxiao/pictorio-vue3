@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { ComputedRef, computed, defineComponent } from "vue"
+import { computed, defineComponent } from "vue"
 import { EventType } from "@/models/events"
 import { PlayerState } from "@/models/playerState"
 import { useGameEvents } from "@/game/events"
@@ -48,48 +48,46 @@ export default defineComponent({
     const { send } = useGlobalWebSocket()
     const { sendEvent } = useGameEvents(send)
 
-    const maxPlayers: ComputedRef<number> = computed(() => gameStore.state.maxPlayers)
+    const maxPlayers = computed<number>(() => gameStore.state.maxPlayers)
 
-    const currPlayerCount: ComputedRef<number> = computed(
+    const currPlayerCount = computed<number>(
       () =>
         Object.values(userStore.state.playerStates).filter(
           (playerState: PlayerState) => playerState.isConnected,
         ).length,
     )
 
-    const ready: ComputedRef<boolean> = computed(
+    const ready = computed<boolean>(
       () => userStore.state.playerStates[userStore.state.selfUser.id]?.isReady ?? false,
     )
 
-    const readyPlayerCount: ComputedRef<number> = computed(() => {
+    const readyPlayerCount = computed<number>(() => {
       return Object.values(userStore.state.playerStates).filter(
         (playerState: PlayerState) => playerState.isConnected && playerState.isReady,
       ).length
     })
 
-    const readyText: ComputedRef<string> = computed(() =>
-      ready.value ? "Unready" : "Ready",
-    )
+    const readyText = computed<string>(() => (ready.value ? "Unready" : "Ready"))
 
-    const startDisabled: ComputedRef<boolean> = computed(
+    const startDisabled = computed<boolean>(
       () =>
         readyPlayerCount.value < currPlayerCount.value || readyPlayerCount.value <= 1,
     )
 
-    const isRoomLeader: ComputedRef<boolean> = computed(
+    const isRoomLeader = computed<boolean>(
       () =>
         userStore.state.playerStates[userStore.state.selfUser.id]?.isRoomLeader ??
         false,
     )
 
-    function readyToggle() {
+    const readyToggle = () => {
       sendEvent(EventType.ReadyEvent, {
         user: userStore.state.selfUser,
         ready: !ready.value,
       })
     }
 
-    function startGame() {
+    const startGame = () => {
       sendEvent(EventType.StartGameIssuedEvent, {
         issuer: userStore.state.selfUser,
       })

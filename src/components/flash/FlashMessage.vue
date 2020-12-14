@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { FlashMessage, FlashMessageType } from "@/models/flashMessage"
-import { Ref, computed, defineComponent, onMounted, ref } from "vue"
+import { computed, defineComponent, onMounted, ref } from "vue"
 import Cookies from "js-cookie"
 import { FLASH_MESSAGE } from "@/api/endpoints"
 import service from "@/service"
@@ -18,8 +18,8 @@ import service from "@/service"
 export default defineComponent({
   name: "FlashMessage",
   setup() {
-    const message: Ref<string | null> = ref(null)
-    const messageType: Ref<FlashMessageType | null> = ref(null)
+    const message = ref<string | null>(null)
+    const messageType = ref<FlashMessageType | null>(null)
     const classObject = computed(() => {
       return {
         "is-info": messageType.value === "info",

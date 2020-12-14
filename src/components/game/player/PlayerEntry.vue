@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { ComputedRef, PropType, computed, defineComponent } from "vue"
+import { PropType, computed, defineComponent } from "vue"
 import { PlayerState } from "@/models/playerState"
 
 export default defineComponent({
@@ -36,7 +36,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const character: ComputedRef<string> = computed(() => props.state.user.name[0])
+    const character = computed<string>(() => props.state.user.name[0])
     return {
       character,
     }

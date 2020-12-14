@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { InputEvent, useInputCoordinates } from "@/composables/useInputCoordinates"
+import { Line, scaledPoint } from "@/models/drawing"
 import {
-  Ref,
   computed,
   defineComponent,
   onMounted,
@@ -26,7 +26,6 @@ import {
 import { GameActions } from "@/store/gameStore/actions"
 import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
-import { scaledPoint } from "@/models/drawing"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { useGameStore } from "@/store/gameStore"
 import { useUserStore } from "@/store/userStore"
@@ -49,8 +48,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const canvasRef: Ref<HTMLCanvasElement | null> = ref(null)
-    const topCanvasRef: Ref<HTMLCanvasElement | null> = ref(null)
+    const canvasRef = ref<HTMLCanvasElement | null>(null)
+    const topCanvasRef = ref<HTMLCanvasElement | null>(null)
     const {
       x,
       y,
@@ -69,11 +68,11 @@ export default defineComponent({
 
     const gameStore = useGameStore()
     const userStore = useUserStore()
-    const lines = computed(() => gameStore.state.lines)
-    const scale = computed(() => gameStore.state.scale)
-    const isDrawing = computed(() => gameStore.state.isDrawing)
-    const colourIdx = computed(() => gameStore.state.colourIdx)
-    const thicknessIdx = computed(() => gameStore.state.thicknessIdx)
+    const lines = computed<Line[]>(() => gameStore.state.lines)
+    const scale = computed<number>(() => gameStore.state.scale)
+    const isDrawing = computed<boolean>(() => gameStore.state.isDrawing)
+    const colourIdx = computed<number>(() => gameStore.state.colourIdx)
+    const thicknessIdx = computed<number>(() => gameStore.state.thicknessIdx)
     const isMyTurn = computed<boolean>(
       () =>
         gameStore.state.currentUserTurn?.id === userStore.state.selfUser.id ?? false,

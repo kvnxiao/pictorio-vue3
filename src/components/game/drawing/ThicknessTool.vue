@@ -21,15 +21,15 @@ export default defineComponent({
   setup(props) {
     const gameState = useGameStore()
 
-    const thickness = computed(() => `${THICKNESSES[props.thicknessIdx]}px`)
+    const thickness = computed<string>(() => `${THICKNESSES[props.thicknessIdx]}px`)
+
+    const isSelected = computed<boolean>(
+      () => gameState.state.thicknessIdx === props.thicknessIdx,
+    )
 
     const setThickness = () => {
       gameState.commit(GameMutations.SET_THICKNESS_IDX, props.thicknessIdx)
     }
-
-    const isSelected = computed(
-      () => gameState.state.thicknessIdx === props.thicknessIdx,
-    )
 
     return {
       thickness,

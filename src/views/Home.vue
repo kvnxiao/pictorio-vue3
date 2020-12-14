@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { CREATE_ROOM, ROOM } from "@/api/endpoints"
-import { Ref, computed, defineComponent, ref } from "vue"
+import { computed, defineComponent, ref } from "vue"
 import { RoomResponse } from "@/models/room"
 import service from "@/service"
 import { useRouter } from "vue-router"
@@ -30,7 +30,7 @@ import { useRouter } from "vue-router"
 export default defineComponent({
   name: "Home",
   setup() {
-    const roomID: Ref<string> = ref("")
+    const roomID = ref<string>("")
     const router = useRouter()
 
     const createRoom = async () => {
@@ -40,7 +40,7 @@ export default defineComponent({
       }
     }
 
-    const joinRoom = computed(() => ROOM(roomID.value))
+    const joinRoom = computed<string>(() => ROOM(roomID.value))
 
     return {
       createRoom,

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { ComputedRef, computed, defineComponent } from "vue"
+import { computed, defineComponent } from "vue"
 import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
 import { PlayerState } from "@/models/playerState"
 import { useUserStore } from "@/store/userStore"
@@ -20,7 +20,7 @@ export default defineComponent({
   setup() {
     const userStore = useUserStore()
 
-    const players: ComputedRef<PlayerState[]> = computed(() =>
+    const players = computed<PlayerState[]>(() =>
       Object.values(userStore.state.playerStates).filter(
         (state: PlayerState) => state.isConnected,
       ),

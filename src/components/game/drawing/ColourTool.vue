@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
+import { COLOURS, Colours } from "@/models/drawing"
 import { computed, defineComponent } from "vue"
-import { COLOURS } from "@/models/drawing"
 import { GameMutations } from "@/store/gameStore/mutations"
 import { useGameStore } from "@/store/gameStore"
 
@@ -24,13 +24,15 @@ export default defineComponent({
   setup(props) {
     const gameState = useGameStore()
 
-    const colour = computed(() => COLOURS[props.colourIdx])
+    const colour = computed<Colours>(() => COLOURS[props.colourIdx])
+
+    const isSelected = computed<boolean>(
+      () => gameState.state.colourIdx === props.colourIdx,
+    )
 
     const setColour = () => {
       gameState.commit(GameMutations.SET_COLOUR_IDX, props.colourIdx)
     }
-
-    const isSelected = computed(() => gameState.state.colourIdx === props.colourIdx)
 
     return {
       colour,

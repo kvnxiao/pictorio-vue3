@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { ChatEvent, EventType } from "@/models/events"
-import { ComputedRef, Ref, computed, defineComponent, ref } from "vue"
+import { computed, defineComponent, ref } from "vue"
 import { useChatStore } from "@/store/chatStore"
 import { useGameEvents } from "@/game/events"
 import { useGlobalWebSocket } from "@/game/websocket"
@@ -47,11 +47,9 @@ export default defineComponent({
     const userStore = useUserStore()
     const { send } = useGlobalWebSocket()
     const { sendEvent } = useGameEvents(send)
-    const input: Ref<string> = ref("")
+    const input = ref<string>("")
 
-    const chatHistory: ComputedRef<ChatEvent[]> = computed(
-      () => chatStore.state.messages,
-    )
+    const chatHistory = computed<ChatEvent[]>(() => chatStore.state.messages)
 
     const sendMessage = () => {
       const chatEvent: ChatEvent = {

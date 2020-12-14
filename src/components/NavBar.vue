@@ -37,14 +37,14 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, ref } from "vue"
+import { defineComponent, ref } from "vue"
 
 export default defineComponent({
   name: "NavBar",
   setup() {
-    const enabledMobile: Ref<boolean> = ref(false)
-    const navBurger: Ref<HTMLElement | null> = ref(null)
-    const navMenu: Ref<HTMLElement | null> = ref(null)
+    const enabledMobile = ref<boolean>(false)
+    const navBurger = ref<HTMLElement | null>(null)
+    const navMenu = ref<HTMLElement | null>(null)
 
     const hideListener = (event: MouseEvent) => {
       const target: Node = event.target as Node
