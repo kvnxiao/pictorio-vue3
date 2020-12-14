@@ -109,13 +109,15 @@ export default defineComponent({
     })
 
     const onDrawStart = (x: number, y: number) => {
-      gameStore.commit(GameMutations.SET_IS_DRAWING, true)
-      const point = scaledPoint(x, y, scale.value)
-      gameStore.commit(GameMutations.ADD_POINT, point)
+      if (isMyTurn.value) {
+        gameStore.commit(GameMutations.SET_IS_DRAWING, true)
+        const point = scaledPoint(x, y, scale.value)
+        gameStore.commit(GameMutations.ADD_POINT, point)
+      }
     }
 
     const onDrawMove = (x: number, y: number) => {
-      if (isDrawing.value) {
+      if (isMyTurn.value && isDrawing.value) {
         const point = scaledPoint(x, y, scale.value)
         gameStore.commit(GameMutations.ADD_POINT, point)
 
@@ -125,7 +127,7 @@ export default defineComponent({
     }
 
     const onDrawStop = (x: number, y: number) => {
-      if (isDrawing.value) {
+      if (isMyTurn.value && isDrawing.value) {
         gameStore.commit(GameMutations.SET_IS_DRAWING, false)
 
         const point = scaledPoint(x, y, scale.value)
