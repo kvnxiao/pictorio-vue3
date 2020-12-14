@@ -12,7 +12,7 @@ export interface GlobalWebSocket {
   data: Ref<unknown>
   error: Ref<Event | null>
   state: ComputedRef<WebSocketState>
-  close(code?: number, reason?: string): void
+  disconnect(code?: number, reason?: string): void
   send(data: string | ArrayBufferLike | Blob | ArrayBufferView): void
   sendEvent(eventType: EventType, eventData: GameEventTypeMap[EventType]): void
   connect(
@@ -33,7 +33,7 @@ const state: ComputedRef<WebSocketState> = computed(
   () => READY_STATE_MAPPING[ws?.readyState ?? 0],
 )
 
-const close = (code?: number, reason?: string) => {
+const disconnect = (code?: number, reason?: string) => {
   ws?.close(code, reason)
 }
 
@@ -93,9 +93,9 @@ export function useGlobalWebSocket(): GlobalWebSocket {
   return {
     ...toRefs(globalWebSocketState),
     state,
-    close,
+    connect,
     send,
     sendEvent,
-    connect,
+    disconnect,
   }
 }

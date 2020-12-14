@@ -14,15 +14,18 @@
     >
       <div class="wrapper">
         <div class="aspect-ratio">
-          <template v-if="isGameStarted">
+          <template v-if="gameMounted && gameStatus === 1">
             <Drawing
               :canvas-width="width"
               :canvas-height="height"
               :max-canvas-width="maxWidth"
             />
           </template>
-          <template v-else>
+          <template v-else-if="gameMounted && gameStatus === 0">
             <Waiting />
+          </template>
+          <template v-else>
+            <div />
           </template>
         </div>
       </div>
@@ -48,11 +51,10 @@ import {
   UserJoinLeaveEvent,
 } from "@/models/events"
 import {
-  ComputedRef,
-  Ref,
   computed,
   defineComponent,
   onMounted,
+  onUnmounted,
   ref,
   watchEffect,
 } from "vue"
@@ -88,17 +90,16 @@ export default defineComponent({
     const chatStore = useChatStore()
     const gameStore = useGameStore()
 
-    const { connect, error } = useGlobalWebSocket()
+    const { connect, disconnect, error } = useGlobalWebSocket()
 
-    const isGameStarted: ComputedRef<boolean> = computed(
-      () => gameStore.state.gameStatus === GameStatus.Started,
-    )
-    const center: Ref<HTMLDivElement | null> = ref(null)
-    const maxWidth: Ref<number> = ref(1500)
+    const gameMounted = ref<boolean>(false)
+    const gameStatus = computed<GameStatus>(() => gameStore.state.gameStatus)
+    const center = ref<HTMLDivElement | null>(null)
+    const maxWidth = ref<number>(1500)
     const { width, height } = useResizeObserver(center)
 
-    const canvasHeight = computed(() => `${height.value}px`)
-    const maxWidthPixels = computed(() => `${maxWidth.value}px`)
+    const canvasHeight = computed<string>(() => `${height.value}px`)
+    const maxWidthPixels = computed<string>(() => `${maxWidth.value}px`)
 
     const onConnected = () => {
       console.log("Connected to game server!")
@@ -145,14 +146,21 @@ export default defineComponent({
     })
 
     onMounted(() => {
+      gameMounted.value = true
       connect(`${BASE_WS_URL}/room/${roomID}/ws`, onConnected, onDisconnected)
+    })
+
+    onUnmounted(() => {
+      gameMounted.value = false
+      disconnect()
     })
 
     return {
       canvasHeight,
       center,
       height,
-      isGameStarted,
+      gameStatus,
+      gameMounted,
       maxWidth,
       maxWidthPixels,
       width,

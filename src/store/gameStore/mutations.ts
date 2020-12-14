@@ -1,4 +1,4 @@
-import { GameRehydrateEvent, StartGameEvent } from "@/models/events"
+import { GameRehydrateEvent, GameStatus, StartGameEvent } from "@/models/events"
 import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
@@ -44,8 +44,8 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.lines = event.lines
   },
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
+    state.gameStatus = GameStatus.Started
     state.playerOrderIds = event.playerOrderIds
-    console.log(event.currentUserTurn)
     state.currentUserTurn = event.currentUserTurn
 
     // reset drawing

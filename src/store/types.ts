@@ -1,6 +1,18 @@
-import { CommitOptions, DispatchOptions, Store as VuexStore } from "vuex"
+import {
+  ActionContext as VuexActionContext,
+  CommitOptions,
+  DispatchOptions,
+  Store as VuexStore,
+} from "vuex"
 
 type IndexableTypeMapping = { [key: string]: any }
+
+export type ActionContext<S extends object, Mutations extends IndexableTypeMapping> = {
+  commit<K extends keyof Mutations>(
+    key: K,
+    payload?: Parameters<Mutations[K]>[1],
+  ): ReturnType<Mutations[K]>
+} & Omit<VuexActionContext<S, S>, "commit">
 
 export type Store<
   S extends object,

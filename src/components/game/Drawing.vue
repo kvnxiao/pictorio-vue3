@@ -3,6 +3,7 @@
     <canvas id="canvas" ref="canvasRef" />
     <canvas id="top-canvas" ref="topCanvasRef" />
     <Toolbelt
+      v-if="isMyTurn"
       @tool-clear="clearDrawing()"
       @tool-undo="undoDrawing()"
       @tool-redo="redoDrawing()"
@@ -12,12 +13,23 @@
 
 <script lang="ts">
 import { InputEvent, useInputCoordinates } from "@/composables/useInputCoordinates"
-import { Ref, computed, defineComponent, ref, toRef, watch, watchEffect } from "vue"
+import {
+  Ref,
+  computed,
+  defineComponent,
+  onMounted,
+  ref,
+  toRef,
+  watch,
+  watchEffect,
+} from "vue"
+import { GameActions } from "@/store/gameStore/actions"
 import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { scaledPoint } from "@/models/drawing"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { useGameStore } from "@/store/gameStore"
+import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Drawing",
@@ -55,12 +67,17 @@ export default defineComponent({
       resize,
     } = useDualLayerCanvasContext(canvasRef, topCanvasRef)
 
-    const gameState = useGameStore()
-    const lines = computed(() => gameState.state.lines)
-    const scale = computed(() => gameState.state.scale)
-    const isDrawing = computed(() => gameState.state.isDrawing)
-    const colourIdx = computed(() => gameState.state.colourIdx)
-    const thicknessIdx = computed(() => gameState.state.thicknessIdx)
+    const gameStore = useGameStore()
+    const userStore = useUserStore()
+    const lines = computed(() => gameStore.state.lines)
+    const scale = computed(() => gameStore.state.scale)
+    const isDrawing = computed(() => gameStore.state.isDrawing)
+    const colourIdx = computed(() => gameStore.state.colourIdx)
+    const thicknessIdx = computed(() => gameStore.state.thicknessIdx)
+    const isMyTurn = computed<boolean>(
+      () =>
+        gameStore.state.currentUserTurn?.id === userStore.state.selfUser.id ?? false,
+    )
 
     const drawMainCanvas = () => {
       for (const line of lines.value) {
@@ -68,46 +85,56 @@ export default defineComponent({
       }
     }
 
+    const resetBoard = (newScale: number, width: number, height: number) => {
+      resize(width, height)
+      clearTemp()
+      clearMain()
+      gameStore.commit(GameMutations.SET_SCALE, newScale)
+      drawMainCanvas()
+    }
+
     // Resize watcher to redraw contents onto screen
     watch(
       [toRef(props, "canvasWidth"), toRef(props, "canvasHeight")],
       ([width, height]) => {
         const newScale = width / props.maxCanvasWidth
-        resize(width, height)
-        clearTemp()
-        clearMain()
-        gameState.commit(GameMutations.SET_SCALE, newScale)
-        drawMainCanvas()
+        resetBoard(newScale, width, height)
       },
     )
 
+    onMounted(() => {
+      // Reset drawing on component mount
+      const newScale = props.canvasWidth / props.maxCanvasWidth
+      resetBoard(newScale, props.canvasWidth, props.canvasHeight)
+    })
+
     const onDrawStart = (x: number, y: number) => {
-      gameState.commit(GameMutations.SET_IS_DRAWING, true)
+      gameStore.commit(GameMutations.SET_IS_DRAWING, true)
       const point = scaledPoint(x, y, scale.value)
-      gameState.commit(GameMutations.ADD_POINT, point)
+      gameStore.commit(GameMutations.ADD_POINT, point)
     }
 
     const onDrawMove = (x: number, y: number) => {
       if (isDrawing.value) {
         const point = scaledPoint(x, y, scale.value)
-        gameState.commit(GameMutations.ADD_POINT, point)
+        gameStore.commit(GameMutations.ADD_POINT, point)
 
-        const [p1, p2] = gameState.getters.getLatestTwoPoints()
+        const [p1, p2] = gameStore.getters.getLatestTwoPoints()
         drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)
       }
     }
 
     const onDrawStop = (x: number, y: number) => {
       if (isDrawing.value) {
-        gameState.commit(GameMutations.SET_IS_DRAWING, false)
+        gameStore.commit(GameMutations.SET_IS_DRAWING, false)
 
         const point = scaledPoint(x, y, scale.value)
-        gameState.commit(GameMutations.ADD_POINT, point)
+        gameStore.commit(GameMutations.ADD_POINT, point)
 
         // Draw line on main layer canvas, then add line to history
-        const line = gameState.getters.getLatestLine()
+        const line = gameStore.getters.getLatestLine()
         drawMain(line, scale.value)
-        gameState.commit(GameMutations.ADD_LINE, line)
+        gameStore.commit(GameMutations.ADD_LINE, line)
         clearTemp()
       }
     }
@@ -131,20 +158,20 @@ export default defineComponent({
       }
     })
 
-    const clearDrawing = () => {
-      gameState.commit(GameMutations.CLEAR_DRAWING)
+    const clearDrawing = async () => {
+      await gameStore.dispatch(GameActions.CLEAR_DRAWING)
       clearTemp()
       clearMain()
     }
 
-    const undoDrawing = () => {
-      gameState.commit(GameMutations.UNDO)
+    const undoDrawing = async () => {
+      await gameStore.dispatch(GameActions.UNDO)
       clearMain()
       drawMainCanvas()
     }
 
-    const redoDrawing = () => {
-      gameState.commit(GameMutations.REDO)
+    const redoDrawing = async () => {
+      await gameStore.dispatch(GameActions.REDO)
       clearMain()
       drawMainCanvas()
     }
@@ -155,6 +182,7 @@ export default defineComponent({
       clearDrawing,
       undoDrawing,
       redoDrawing,
+      isMyTurn,
     }
   },
 })
