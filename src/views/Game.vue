@@ -41,16 +41,6 @@
 
 <script lang="ts">
 import {
-  ChatEvent,
-  EventType,
-  GameStatus,
-  ReadyEvent,
-  RehydrateEvent,
-  StartGameEvent,
-  UserJoinLeaveAction,
-  UserJoinLeaveEvent,
-} from "@/models/events"
-import {
   computed,
   defineComponent,
   onMounted,
@@ -60,19 +50,15 @@ import {
 } from "vue"
 import { BASE_WS_URL } from "@/api/endpoints"
 import Chat from "@/components/game/Chat.vue"
-import { ChatMutations } from "@/store/chatStore/mutations"
 import Drawing from "@/components/game/Drawing.vue"
-import { GameMutations } from "@/store/gameStore/mutations"
+import { GameStatus } from "@/models/events"
 import PlayerInfo from "@/components/game/PlayerInfo.vue"
-import { UserMutations } from "@/store/userStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
-import { onEvent } from "@/game/events"
-import { useChatStore } from "@/store/chatStore"
+import { registerEventListeners } from "@/game/listener"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useRoute } from "vue-router"
-import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Game",
@@ -86,8 +72,6 @@ export default defineComponent({
     const {
       params: { roomID },
     } = useRoute()
-    const userStore = useUserStore()
-    const chatStore = useChatStore()
     const gameStore = useGameStore()
 
     const { connect, disconnect, error } = useGlobalWebSocket()
@@ -109,35 +93,7 @@ export default defineComponent({
       console.log("Disconnected from game server!")
     }
 
-    onEvent(EventType.RehydrateEvent, (event: RehydrateEvent) => {
-      userStore.commit(UserMutations.REHYDRATE, event)
-      chatStore.commit(ChatMutations.REHYDRATE, event)
-      gameStore.commit(GameMutations.REHYDRATE, event)
-    })
-
-    onEvent(EventType.ReadyEvent, (event: ReadyEvent) => {
-      userStore.commit(UserMutations.USER_READY, event)
-    })
-
-    onEvent(EventType.StartGameEvent, (event: StartGameEvent) => {
-      gameStore.commit(GameMutations.START_GAME, event)
-    })
-
-    onEvent(EventType.ChatEvent, (event: ChatEvent) => {
-      chatStore.commit(ChatMutations.ADD_MESSAGE, {
-        message: event.message,
-        user: event.user,
-        isSystem: event.isSystem,
-      })
-    })
-
-    onEvent(EventType.UserJoinLeaveEvent, (event: UserJoinLeaveEvent) => {
-      if (event.action === UserJoinLeaveAction.JOIN) {
-        userStore.commit(UserMutations.USER_JOINED, event.playerState)
-      } else {
-        userStore.commit(UserMutations.USER_LEFT, event.playerState)
-      }
-    })
+    registerEventListeners()
 
     watchEffect(() => {
       if (error.value) {
