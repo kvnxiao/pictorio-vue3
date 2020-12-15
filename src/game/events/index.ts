@@ -60,7 +60,7 @@ export function useGameEvents(
   }
 }
 
-export function registerEventListeners() {
+export function registerEventListeners(): void {
   const userStore = useUserStore()
   const chatStore = useChatStore()
   const gameStore = useGameStore()

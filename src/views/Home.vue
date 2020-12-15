@@ -58,7 +58,7 @@ export default defineComponent({
 .home
   display: flex
   width: 100%
-  height: calc(100% - 52px)
+  height: 100%
   align-items: center
   justify-content: center
   padding: 2rem

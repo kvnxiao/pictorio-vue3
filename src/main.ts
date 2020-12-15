@@ -1,3 +1,4 @@
+import "@/styles/index.css"
 import { chatStore, chatStoreKey } from "./store/chatStore"
 import { gameStateStore, gameStoreKey } from "@/store/gameStore"
 import { userStore, userStoreKey } from "@/store/userStore"
