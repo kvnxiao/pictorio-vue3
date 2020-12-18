@@ -6,8 +6,9 @@
       <div class="w-5/6 p-8 border-b">
         <img class="w-48 mx-auto h-auto" src="@/assets/logo.svg" alt="Pictorio Logo" />
       </div>
-      <div class="w-full p-8 grid grid-cols-2">
-        <div class="flex flex-col items-center justify-center space-y-4">
+      <div class="w-full p-8 grid grid-cols-1 space-y-8 md:grid-cols-2 md:space-y-0">
+        <div class="flex flex-col items-center justify-start space-y-4">
+          <p class="text-gray-800">Create your own room</p>
           <button
             class="flex-shrink-0 bg-blue-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
             type="button"
@@ -16,11 +17,12 @@
             Create Room
           </button>
         </div>
-        <div class="flex flex-col items-center justify-center space-y-4">
+        <div class="flex flex-col items-center justify-start space-y-4">
+          <p class="text-gray-800">Or join an existing room</p>
           <input
             id="price"
             v-model="roomID"
-            class="focus:ring-yellow-500 focus:border-yellow-400 block mx-auto px-4 border-gray-300 shadow-sm rounded-md"
+            class="focus:ring-yellow-500 focus:border-yellow-400 block mx-auto px-4 border-gray-300 shadow-sm rounded-md max-w-full"
             type="text"
             name="roomID"
             placeholder="Room ID"
@@ -76,20 +78,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-.logo
-  padding: 2rem
-
-.home
-  display: flex
-  width: 100%
-  height: 100%
-  align-items: center
-  justify-content: center
-  padding: 2rem
-
-.card
-  border-radius: 5px
-  padding: 1.5rem
-</style>
