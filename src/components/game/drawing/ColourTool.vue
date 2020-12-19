@@ -24,16 +24,16 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const gameState = useGameStore()
+    const gameStore = useGameStore()
 
     const colour = computed<Colours>(() => COLOURS[props.colourIdx])
 
     const isSelected = computed<boolean>(
-      () => gameState.state.colourIdx === props.colourIdx,
+      () => gameStore.state.colourIdx === props.colourIdx,
     )
 
     const setColour = () => {
-      gameState.commit(GameMutations.SET_COLOUR_IDX, props.colourIdx)
+      gameStore.commit(GameMutations.SET_COLOUR_IDX, props.colourIdx)
     }
 
     return {

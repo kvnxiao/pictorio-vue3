@@ -1,5 +1,13 @@
 <template>
-  <div class="flex rounded-lg shadow-sm border border-gray-200 p-2">
+  <div
+    class="flex rounded-lg shadow-sm p-2"
+    :class="{
+      'border-yellow-400': isCurrentTurn,
+      'border-2': isCurrentTurn,
+      border: !isCurrentTurn,
+      'border-gray-200': !isCurrentTurn,
+    }"
+  >
     <div class="pointer-events-none mr-4 w-12 h-12 flex justify-center items-center">
       <div class="text-4xl">{{ character }}</div>
     </div>
@@ -27,6 +35,7 @@
 <script lang="ts">
 import { PropType, computed, defineComponent } from "vue"
 import { PlayerState } from "@/models/playerState"
+import { useGameStore } from "@/store/gameStore"
 
 export default defineComponent({
   name: "PlayerEntry",
@@ -48,9 +57,16 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const gameStore = useGameStore()
+
+    const isCurrentTurn = computed<boolean>(
+      () => gameStore.state.currentUserTurn?.id === props.state.user.id,
+    )
+
     const character = computed<string>(() => props.state.user.name[0])
     return {
       character,
+      isCurrentTurn,
     }
   },
 })
