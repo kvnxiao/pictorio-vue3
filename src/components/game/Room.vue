@@ -128,7 +128,7 @@ export default defineComponent({
     onMounted(() => {
       if (!validRoom.value) {
         toastMsgStore.commit(ToastMessageMutations.SET, {
-          message: "This room does not exist.",
+          message: "This room does not exist",
           type: "error",
         })
         router.push("/")

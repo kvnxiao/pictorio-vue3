@@ -1,19 +1,21 @@
 <template>
-  <div v-if="msg !== null" class="absolute right-0 bottom-0 m-8">
-    <div
-      class="flex items-center border-l-4 p-4 rounded-md text-yellow-50"
-      :class="{
-        'bg-green-500': msg.type === 'info',
-        'border-green-700': msg.type === 'info',
-        'bg-yellow-500': msg.type === 'warning',
-        'border-yellow-700': msg.type === 'warning',
-        'bg-red-500': msg.type === 'error',
-        'border-red-700': msg.type === 'error',
-      }"
-    >
-      {{ msg.message }}
+  <transition name="slide-fade">
+    <div v-if="msg !== null" class="absolute right-0 bottom-0 m-8">
+      <div
+        class="flex items-center border-l-4 p-4 rounded-md text-white"
+        :class="{
+          'bg-green-500': msg.type === 'info',
+          'border-green-700': msg.type === 'info',
+          'bg-yellow-500': msg.type === 'warning',
+          'border-yellow-700': msg.type === 'warning',
+          'bg-red-500': msg.type === 'error',
+          'border-red-700': msg.type === 'error',
+        }"
+      >
+        {{ msg.message }}
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script lang="ts">
@@ -43,3 +45,19 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.75s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>
