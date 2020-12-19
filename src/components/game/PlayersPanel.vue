@@ -1,6 +1,6 @@
 <template>
-  <div class="info">
-    <ul>
+  <div class="select-none p-4">
+    <ul class="space-y-4">
       <li v-for="p of players" :key="p.id">
         <PlayerEntry :state="p" />
       </li>
@@ -15,7 +15,7 @@ import { PlayerState } from "@/models/playerState"
 import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
-  name: "PlayerInfo",
+  name: "PlayersPanel",
   components: { PlayerEntry },
   setup() {
     const userStore = useUserStore()
@@ -32,10 +32,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-.info
-  user-select: none
-  li
-    padding: 1rem
-</style>

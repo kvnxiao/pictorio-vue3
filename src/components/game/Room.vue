@@ -2,7 +2,7 @@
   <div class="flex w-full h-full items-center justify-center space-x-4 p-4">
     <div id="players" :style="{ height: canvasHeight }">
       <div class="bg-white rounded-lg w-full h-full shadow-lg block relative">
-        <PlayerInfo />
+        <PlayersPanel />
       </div>
     </div>
 
@@ -51,7 +51,7 @@ import { deregisterEventListeners, registerEventListeners } from "@/game/events"
 import { useRoute, useRouter } from "vue-router"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
-import PlayerInfo from "@/components/game/PlayerInfo.vue"
+import PlayersPanel from "@/components/game/PlayersPanel.vue"
 import Waiting from "@/components/game/Waiting.vue"
 import service from "@/service"
 import { useGameEvents } from "@/game/events"
@@ -68,7 +68,7 @@ export default defineComponent({
   components: {
     Chat,
     Drawing,
-    PlayerInfo,
+    PlayersPanel,
     Waiting,
   },
   async setup() {
