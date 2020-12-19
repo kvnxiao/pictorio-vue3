@@ -1,19 +1,19 @@
 <template>
   <div class="flex flex-col h-full">
     <NavBar />
-    <FlashMessage />
+    <ToastMessage />
     <router-view />
   </div>
 </template>
 
 <script lang="ts">
-import FlashMessage from "@/components/flash/FlashMessage.vue"
 import NavBar from "@/components/NavBar.vue"
+import ToastMessage from "@/components/toast/ToastMessage.vue"
 import { defineComponent } from "vue"
 
 export default defineComponent({
   name: "App",
-  components: { NavBar, FlashMessage },
+  components: { NavBar, ToastMessage },
 })
 </script>
 

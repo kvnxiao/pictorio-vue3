@@ -52,12 +52,14 @@ import { useRoute, useRouter } from "vue-router"
 import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayersPanel from "@/components/game/PlayersPanel.vue"
+import { ToastMessageMutations } from "@/store/toastMsgStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import service from "@/service"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
+import { useToastMsgStore } from "@/store/toastMsgStore"
 
 function isGameEvent(data: unknown): data is GameEvent {
   return typeof data === "object" && (data as GameEvent).type !== undefined
@@ -76,6 +78,7 @@ export default defineComponent({
       params: { roomID },
     } = useRoute()
     const router = useRouter()
+    const toastMsgStore = useToastMsgStore()
     const validRoom = ref<boolean>(false)
 
     const gameStore = useGameStore()
@@ -124,6 +127,10 @@ export default defineComponent({
 
     onMounted(() => {
       if (!validRoom.value) {
+        toastMsgStore.commit(ToastMessageMutations.SET, {
+          message: "This room does not exist.",
+          type: "error",
+        })
         router.push("/")
         return
       }
