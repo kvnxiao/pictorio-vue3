@@ -2,3 +2,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.scrollbar {
+  scrollbar-width: thin;
+}
+
+.scrollbar::-webkit-scrollbar {
+  @apply w-2.5;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-3xl;
+}

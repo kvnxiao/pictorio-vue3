@@ -1,7 +1,15 @@
 <template>
-  <div id="drawing">
-    <canvas id="canvas" ref="canvasRef" />
-    <canvas id="top-canvas" ref="topCanvasRef" />
+  <div id="drawing" class="h-0">
+    <canvas
+      id="canvas"
+      ref="canvasRef"
+      class="bg-white w-full h-full absolute top-0 left-0 rounded-md"
+    />
+    <canvas
+      id="top-canvas"
+      ref="topCanvasRef"
+      class="pointer-events-none w-full h-full absolute top-0 left-0 rounded-md"
+    />
     <Toolbelt
       v-if="isMyTurn"
       @tool-clear="clearDrawing()"
@@ -188,22 +196,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-#drawing
-  height: 0
-
-#canvas, #top-canvas
-  border-radius: 10px
-  width: 100%
-  height: 100%
-  position: absolute
-  top: 0
-  left: 0
-
-#canvas
-  background: #FFFFFF
-
-#top-canvas
-  pointer-events: none
-</style>
