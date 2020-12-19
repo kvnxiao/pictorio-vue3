@@ -5,4 +5,6 @@ export const FLASH_MESSAGE = `/api/flash`
 
 export const ROOM_CREATE = `/api/room/create`
 export const ROOM_EXISTS = `/api/room/exists`
+export const ROOM_WS = (roomID: string): string =>
+  `${BASE_WS_URL}/api/room/${roomID}/ws`
 export const ROOM_REDIRECT = (roomID: string): string => `/room/${roomID}`

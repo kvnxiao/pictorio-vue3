@@ -1,4 +1,4 @@
-export interface RoomExistPayload {
+export interface RoomRequest {
   roomID: string
 }
 

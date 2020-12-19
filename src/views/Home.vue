@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { ROOM_CREATE, ROOM_EXISTS, ROOM_REDIRECT } from "@/api/endpoints"
-import { RoomExistPayload, RoomResponse } from "@/service/room"
+import { RoomRequest, RoomResponse } from "@/service/room"
 import { defineComponent, ref } from "vue"
 import service from "@/service"
 import { useRouter } from "vue-router"
@@ -61,10 +61,10 @@ export default defineComponent({
     }
 
     const joinRoom = async () => {
-      const roomExistPayload: RoomExistPayload = {
+      const roomRequest: RoomRequest = {
         roomID: roomID.value,
       }
-      const resp = await service.post<RoomResponse>(ROOM_EXISTS, roomExistPayload)
+      const resp = await service.post<RoomResponse>(ROOM_EXISTS, roomRequest)
       if (resp.data.exists) {
         router.push(ROOM_REDIRECT(resp.data.roomID))
       }

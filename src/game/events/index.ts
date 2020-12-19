@@ -26,6 +26,10 @@ const onEvent = <T extends keyof GameEventTypeMap>(
   globalEmitter.on(eventType, listener)
 }
 
+const removeListeners = () => {
+  globalEmitter.removeAllListeners()
+}
+
 const emitEvent = (eventType: EventType, eventData: unknown) => {
   globalEmitter.emit(eventType, eventData)
 }
@@ -37,6 +41,7 @@ interface GameEvents {
   ): void
   sendEvent(eventType: EventType, eventData: GameEventTypeMap[EventType]): void
   emitEvent(eventType: EventType, eventData: unknown): void
+  removeListeners(): void
 }
 
 export function useGameEvents(
@@ -57,6 +62,7 @@ export function useGameEvents(
     onEvent,
     sendEvent,
     emitEvent,
+    removeListeners,
   }
 }
 
@@ -94,4 +100,8 @@ export function registerEventListeners(): void {
       userStore.commit(UserMutations.USER_LEFT, event.playerState)
     }
   })
+}
+
+export function deregisterEventListeners(): void {
+  removeListeners()
 }
