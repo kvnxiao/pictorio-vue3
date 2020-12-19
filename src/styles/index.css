@@ -18,3 +18,9 @@
 .scrollbar::-webkit-scrollbar-thumb {
   @apply bg-gray-300 rounded-3xl;
 }
+
+.tool-spacer::before {
+  @apply text-gray-400;
+  content: "|";
+  line-height: 40px;
+}

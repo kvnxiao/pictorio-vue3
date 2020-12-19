@@ -1,7 +1,16 @@
 <template>
-  <div class="tool" :class="{ selected: isSelected }" @click="setThickness()">
-    <div class="inner" :style="{ width: thickness, height: thickness }" />
-  </div>
+  <button
+    class="flex justify-center items-center w-tool h-tool bg-white rounded-full focus:outline-none ring ring-white transform active:ring-blue-200"
+    :class="{
+      'ring-blue-300': isSelected,
+    }"
+    @click="setThickness()"
+  >
+    <div
+      class="rounded-full bg-black"
+      :style="{ width: thickness, height: thickness }"
+    />
+  </button>
 </template>
 
 <script lang="ts">
@@ -39,12 +48,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-.tool
-  background: #FFFFFF
-
-.inner
-  border-radius: 50%
-  background: #000000
-</style>

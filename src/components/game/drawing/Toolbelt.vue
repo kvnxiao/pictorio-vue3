@@ -1,18 +1,18 @@
 <template>
-  <div class="toolbelt">
-    <div class="tools">
+  <div class="max-w-screen-md flex justify-center mx-auto relative bottom-14">
+    <div class="rounded-l-full flex bg-gray-200 p-2 pl-3 space-x-2">
       <template v-for="(colour, index) of COLOURS" :key="colour">
         <ColourTool :colour-idx="index" />
       </template>
     </div>
-    <div class="spacer" />
-    <div class="tools">
+    <div class="tool-spacer w-2 bg-gray-200" />
+    <div class="flex bg-gray-200 p-2 space-x-2">
       <template v-for="(thickness, index) of THICKNESSES" :key="thickness">
         <ThicknessTool :thickness-idx="index" />
       </template>
     </div>
-    <div class="spacer" />
-    <div class="tools">
+    <div class="tool-spacer w-2 bg-gray-200" />
+    <div class="rounded-r-full flex bg-gray-200 p-2 pr-3 space-x-2">
       <ClearTool @tool-clear="$emit('tool-clear')" />
       <UndoTool @tool-undo="$emit('tool-undo')" />
       <RedoTool @tool-redo="$emit('tool-redo')" />
@@ -47,51 +47,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-.toolbelt
-  max-width: 880px
-  display: flex
-  justify-content: center
-  margin: 0 auto
-  position: relative
-  bottom: 3.5rem
-
-.tools
-  display: flex
-  background-color: #ECF0F0
-  padding: 5px
-
-.tools:first-of-type
-  border-radius: 2rem 0 0 2rem
-
-.tools:last-of-type
-  border-radius: 0 2rem 2rem 0
-
-.tool
-  display: flex
-  justify-content: center
-  align-items: center
-  width: 30px
-  height: 30px
-  border-radius: 50%
-  margin: 0 3px
-  transition: all 0.15s ease
-  &:hover
-    transform: translate(0, -2px)
-
-.tool.icon
-  background: #FFFFFF
-
-.selected
-  transform: translate(0, -2px)
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)
-
-.spacer
-  width: 0.5rem
-  background-color: #ECF0F0
-  &::before
-    color: darken(#ECF0F0, 25%)
-    content: "|"
-    line-height: 40px
-</style>

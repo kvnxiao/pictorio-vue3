@@ -1,7 +1,9 @@
 <template>
-  <div
-    class="tool"
-    :class="{ selected: isSelected }"
+  <button
+    class="flex justify-center items-center w-tool h-tool bg-white rounded-full focus:outline-none ring ring-white transform active:ring-blue-200"
+    :class="{
+      'ring-blue-300': isSelected,
+    }"
     :style="{ background: colour }"
     @click="setColour()"
   />
@@ -42,8 +44,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-.tool
-  border: 3px solid #FFFFFF
-</style>
