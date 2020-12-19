@@ -32,7 +32,11 @@
         <br />
         <button
           v-if="isRoomLeader"
-          class="w-24 flex-shrink-0 bg-green-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-green-200 disabled:opacity-50"
+          class="w-24 flex-shrink-0 bg-green-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-green-200 disabled:opacity-30"
+          :class="{
+            'hover:bg-green-600': !startDisabled,
+            'active:bg-green-700': !startDisabled,
+          }"
           :disabled="startDisabled"
           @click="startGame"
         >
