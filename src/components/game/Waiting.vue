@@ -1,18 +1,30 @@
 <template>
-  <div class="waiting">
-    <div class="card">
-      <div class="card-image">
-        <img src="@/assets/logo.svg" alt="Pictorio Logo" />
-      </div>
-      <div class="card-content">
-        <div class="content">Waiting for all players to be ready</div>
-        <div class="subtitle">
-          <p>{{ readyPlayerCount }} / {{ currPlayerCount }}</p>
-          <p>(max {{ maxPlayers }} players)</p>
+  <!-- Overlay (absolute, full width and height) -->
+  <div class="absolute top-0 left-0 w-full h-full">
+    <div class="flex flex-col h-full items-center justify-center">
+      <img class="block w-36 h-auto" src="@/assets/logo.svg" alt="Pictorio Logo" />
+      <div class="mt-8 space-y-4">
+        <div class="text-2xl">Waiting for all players to be ready</div>
+        <div class="text-base">
+          <p>
+            {{ readyPlayerCount }} / {{ currPlayerCount }} (max
+            {{ maxPlayers }} players)
+          </p>
         </div>
         <button
-          class="button"
-          :class="{ 'is-info': !ready, 'is-warning': ready }"
+          class="w-24 flex-shrink-0 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
+          :class="{
+            'bg-blue-500': !ready,
+            'hover:bg-blue-600': !ready,
+            'active:bg-blue-700': !ready,
+            'focus:ring-blue-500': !ready,
+            'focus:ring-offset-blue-200': !ready,
+            'bg-indigo-500': ready,
+            'hover:bg-indigo-600': ready,
+            'active:bg-indigo-700': ready,
+            'focus:ring-indigo-500': ready,
+            'focus:ring-offset-indigo-200': ready,
+          }"
           @click="readyToggle"
         >
           {{ readyText }}
@@ -20,7 +32,7 @@
         <br />
         <button
           v-if="isRoomLeader"
-          class="button is-primary"
+          class="w-24 flex-shrink-0 bg-green-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-green-200 disabled:opacity-50"
           :disabled="startDisabled"
           @click="startGame"
         >
@@ -107,33 +119,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style lang="sass" scoped>
-button
-  margin-bottom: 0.5rem
-
-.waiting
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
-  display: flex
-  justify-content: center
-  align-items: center
-
-.box
-  position: absolute
-  top: 0
-  left: 0
-  right: 0
-  bottom: 0
-
-.card
-  border-radius: 5px
-  border: 1px solid #ECF0F0
-
-.card-image
-img
-  padding: 2rem 2rem
-</style>

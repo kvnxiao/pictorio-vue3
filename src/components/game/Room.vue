@@ -1,13 +1,13 @@
 <template>
-  <div class="flex w-full h-full items-center justify-center">
-    <div id="player-info" :style="{ height: canvasHeight }">
+  <div class="flex w-full h-full items-center justify-center space-x-4 p-4">
+    <div id="players" :style="{ height: canvasHeight }">
       <div class="bg-white rounded-lg w-full h-full shadow-lg block relative">
         <PlayerInfo />
       </div>
     </div>
 
     <div id="center" ref="center" :style="{ maxWidth: maxWidthPixels }">
-      <div class="wrapper">
+      <div class="bg-white rounded-lg w-full h-full shadow-lg block relative">
         <div class="aspect-ratio">
           <template v-if="gameStatus === 1">
             <Drawing
@@ -27,7 +27,7 @@
     </div>
 
     <div id="chat" :style="{ height: canvasHeight }">
-      <div class="wrapper">
+      <div class="bg-white rounded-lg w-full h-full shadow-lg block relative">
         <Chat />
       </div>
     </div>
@@ -158,28 +158,12 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.wrapper
-  border-radius: 10px
-  background: white
-  display: block
-  position: relative
-  width: 100%
-  height: 100%
-  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02)
-
 #center
   width: 70%
 
 .aspect-ratio
   padding-top: (10 / 16) * 100%
 
-#chat, #player-info
+#chat, #players
   width: 15%
-
-.game-panel
-  margin: 0.5rem
-  &:first-of-type
-    margin-left: 1rem
-  &:last-of-type
-    margin-right: 1rem
 </style>
