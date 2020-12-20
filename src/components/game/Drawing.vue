@@ -136,60 +136,51 @@ export default defineComponent({
       resetBoard(newScale, props.canvasWidth, props.canvasHeight)
     })
 
-    const onDrawStart = (x: number, y: number) => {
+    const onDrawStart = async (x: number, y: number) => {
       if (isMyTurn.value) {
-        gameStore.commit(GameMutations.SET_IS_DRAWING, true)
-        const point = scaledPoint(x, y, scale.value)
-        gameStore.commit(GameMutations.ADD_POINT, point)
+        await gameStore.dispatch(
+          GameActions.START_DRAW_POINT,
+          scaledPoint(x, y, scale.value),
+        )
       }
     }
 
-    const onDrawMove = (x: number, y: number) => {
+    const onDrawMove = async (x: number, y: number) => {
       if (isMyTurn.value && isDrawing.value) {
-        const point = scaledPoint(x, y, scale.value)
-        gameStore.commit(GameMutations.ADD_POINT, point)
+        gameStore.commit(GameMutations.ADD_POINT, scaledPoint(x, y, scale.value))
 
         const [p1, p2] = gameStore.getters.getLatestTwoPoints()
         drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)
       }
     }
 
-    const onDrawStop = (x: number, y: number) => {
+    const onDrawStop = async (x: number, y: number) => {
       if (isMyTurn.value && isDrawing.value) {
-        gameStore.commit(GameMutations.SET_IS_DRAWING, false)
-
-        const point = scaledPoint(x, y, scale.value)
-        gameStore.commit(GameMutations.ADD_POINT, point)
-
-        // Draw line on main layer canvas, then add line to history
-        const line = gameStore.getters.getLatestLine()
-
-        drawMain(line, scale.value)
-
-        clearTemp()
-
-        gameStore.dispatch(GameActions.ADD_LINE, {
-          line,
+        const line = await gameStore.dispatch(GameActions.STOP_DRAW_POINT, {
+          point: scaledPoint(x, y, scale.value),
           sendEvent,
           user: userStore.state.selfUser,
         })
+
+        drawMain(line, scale.value)
+        clearTemp()
       }
     }
 
-    watchEffect(() => {
+    watchEffect(async () => {
       switch (eventType.value) {
         case InputEvent.MOVE: {
-          onDrawMove(x.value, y.value)
+          await onDrawMove(x.value, y.value)
           break
         }
         case InputEvent.CLICK: {
           if (isTargetCanvas.value && button.value === 0) {
-            onDrawStart(x.value, y.value)
+            await onDrawStart(x.value, y.value)
           }
           break
         }
         case InputEvent.RELEASE: {
-          onDrawStop(x.value, y.value)
+          await onDrawStop(x.value, y.value)
           break
         }
       }

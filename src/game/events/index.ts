@@ -104,7 +104,6 @@ export function registerEventListeners(): void {
   })
 
   onEvent(EventType.DrawEvent, (event: DrawEvent) => {
-    console.log("Received drawing event!")
     switch (event.type) {
       case DrawEventType.LINE:
         if (event.line) {
