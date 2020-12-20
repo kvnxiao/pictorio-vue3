@@ -18,7 +18,7 @@ export interface GameState {
 
 export const state: GameState = {
   maxPlayers: 0,
-  gameStatus: GameStatus.WaitingReadyUp,
+  gameStatus: GameStatus.NOT_LOADED,
   playerOrderIds: [],
   currentUserTurn: null,
   isDrawing: false,
