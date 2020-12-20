@@ -91,7 +91,7 @@ export interface ReadyEvent {
 
 export interface StartGameEvent {
   playerOrderIds: string[]
-  currentUserTurn: User | null
+  currentUserTurn: User
 }
 
 export interface StartGameIssuedEvent {
