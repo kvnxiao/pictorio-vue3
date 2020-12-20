@@ -84,11 +84,11 @@ export default defineComponent({
     const lines = computed<Line[]>(() => gameStore.state.lines)
     const scale = computed<number>(() => gameStore.state.scale)
     const isDrawing = computed<boolean>(() => gameStore.state.isDrawing)
-    const colourIdx = computed<number>(() => gameStore.state.colourIdx)
-    const thicknessIdx = computed<number>(() => gameStore.state.thicknessIdx)
+    const colourIdx = computed<number>(() => gameStore.state.colourIndex)
+    const thicknessIdx = computed<number>(() => gameStore.state.thicknessIndex)
     const isMyTurn = computed<boolean>(
       () =>
-        gameStore.state.currentUserTurn?.id === userStore.state.selfUser.id ?? false,
+        gameStore.state.currentTurnUser?.id === userStore.state.selfUser.id ?? false,
     )
 
     const drawMainCanvas = () => {

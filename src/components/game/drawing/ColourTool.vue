@@ -29,7 +29,7 @@ export default defineComponent({
     const colour = computed<Colours>(() => COLOURS[props.colourIdx])
 
     const isSelected = computed<boolean>(
-      () => gameStore.state.colourIdx === props.colourIdx,
+      () => gameStore.state.colourIndex === props.colourIdx,
     )
 
     const setColour = () => {

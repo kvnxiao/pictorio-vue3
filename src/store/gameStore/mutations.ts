@@ -1,7 +1,7 @@
 import { GameRehydrateEvent, StartGameEvent } from "@/models/events"
+import { GameStatus, TurnStatus } from "@/models/status"
 import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
-import { GameStatus } from "@/models/status"
 import { MutationTree } from "vuex"
 
 export enum GameMutations {
@@ -38,41 +38,50 @@ export interface Mutations<S = GameState> {
 
 export const mutations: MutationTree<GameState> & Mutations = {
   [GameMutations.RESET](state: GameState) {
+    // Reset game status state
     state.maxPlayers = 0
+    state.playerCount = 0
+    state.maxRounds = 0
+    state.round = 0
     state.gameStatus = GameStatus.NOT_LOADED
+    state.turnStatus = TurnStatus.SELECTION
     state.playerOrderIds.splice(0, state.playerOrderIds.length)
-    state.currentUserTurn = null
+    state.currentWord = null
+    state.currentWordLength = null
+    state.currentTurnUser = null
+
+    // Reset drawing state
     state.isDrawing = false
-    state.colourIdx = 0
-    state.thicknessIdx = 0
+    state.colourIndex = 0
+    state.thicknessIndex = 0
     state.points.splice(0, state.points.length)
     state.lines.splice(0, state.lines.length)
-    state.scale = 1
     state.redoStack.splice(0, state.redoStack.length)
+    state.scale = 1
   },
   [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
     state.maxPlayers = event.maxPlayers
     state.gameStatus = event.gameStatus
     state.playerOrderIds = event.playerOrderIds
-    if (event.currentUserTurn) {
-      state.currentUserTurn = event.currentUserTurn
+    if (event.currentTurnUser) {
+      state.currentTurnUser = event.currentTurnUser
     }
     state.lines = event.lines ? event.lines : []
   },
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
     state.gameStatus = GameStatus.Started
     state.playerOrderIds = event.playerOrderIds
-    state.currentUserTurn = event.currentUserTurn
+    state.currentTurnUser = event.currentTurnUser
 
     // reset drawing
     state.lines.splice(0, state.lines.length)
     state.redoStack.splice(0, state.redoStack.length)
   },
   [GameMutations.SET_THICKNESS_IDX](state: GameState, index: number) {
-    state.thicknessIdx = index
+    state.thicknessIndex = index
   },
   [GameMutations.SET_COLOUR_IDX](state: GameState, index: number) {
-    state.colourIdx = index
+    state.thicknessIndex = index
   },
   [GameMutations.SET_SCALE](state: GameState, scale: number) {
     state.scale = scale

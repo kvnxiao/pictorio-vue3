@@ -60,7 +60,7 @@ export default defineComponent({
     const gameStore = useGameStore()
 
     const isCurrentTurn = computed<boolean>(
-      () => gameStore.state.currentUserTurn?.id === props.state.user.id,
+      () => gameStore.state.currentTurnUser?.id === props.state.user.id,
     )
 
     const character = computed<string>(() => props.state.user.name[0])

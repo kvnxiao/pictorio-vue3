@@ -33,7 +33,7 @@ export default defineComponent({
     const thickness = computed<string>(() => `${THICKNESSES[props.thicknessIdx]}px`)
 
     const isSelected = computed<boolean>(
-      () => gameStore.state.thicknessIdx === props.thicknessIdx,
+      () => gameStore.state.thicknessIndex === props.thicknessIdx,
     )
 
     const setThickness = () => {

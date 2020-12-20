@@ -41,7 +41,7 @@ export interface GameRehydrateEvent {
   maxPlayers: number
   gameStatus: GameStatus
   playerOrderIds: string[]
-  currentUserTurn: User | null
+  currentTurnUser: User | null
   lines?: Line[]
 }
 
@@ -85,7 +85,7 @@ export interface ReadyEvent {
 
 export interface StartGameEvent {
   playerOrderIds: string[]
-  currentUserTurn: User
+  currentTurnUser: User
 }
 
 export interface StartGameIssuedEvent {

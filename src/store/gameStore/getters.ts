@@ -16,8 +16,8 @@ export const getters: GetterTree<GameState, GameState> & Getters = {
   getLatestLine: (state: GameState) => (): Line => {
     const line = {
       points: [...state.points],
-      colourIdx: state.colourIdx,
-      thicknessIdx: state.thicknessIdx,
+      colourIdx: state.colourIndex,
+      thicknessIdx: state.thicknessIndex,
     }
     return line
   },
