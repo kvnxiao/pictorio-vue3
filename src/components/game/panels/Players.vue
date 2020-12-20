@@ -17,7 +17,7 @@ import { useGameStore } from "@/store/gameStore"
 import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
-  name: "PlayersPanel",
+  name: "Players",
   components: { PlayerEntry },
   setup() {
     const userStore = useUserStore()
