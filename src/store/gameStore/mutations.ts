@@ -41,7 +41,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     if (event.currentUserTurn) {
       state.currentUserTurn = event.currentUserTurn
     }
-    state.lines = event.lines
+    state.lines = event.lines ? event.lines : []
   },
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
     state.gameStatus = GameStatus.Started

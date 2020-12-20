@@ -48,7 +48,7 @@ export interface GameRehydrateEvent {
   gameStatus: GameStatus
   playerOrderIds: string[]
   currentUserTurn: User | null
-  lines: Line[]
+  lines?: Line[]
 }
 
 /**
