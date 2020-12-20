@@ -4,6 +4,7 @@ import { GameState } from "./state"
 import { MutationTree } from "vuex"
 
 export enum GameMutations {
+  RESET = "RESET",
   REHYDRATE = "REHYDRATE",
   START_GAME = "START_GAME",
   SET_THICKNESS_IDX = "SET_THICKNESS_IDX",
@@ -19,6 +20,7 @@ export enum GameMutations {
 }
 
 export interface Mutations<S = GameState> {
+  [GameMutations.RESET](state: S): void
   [GameMutations.REHYDRATE](state: S, payload: GameRehydrateEvent): void
   [GameMutations.START_GAME](state: S, payload: StartGameEvent): void
   [GameMutations.SET_THICKNESS_IDX](state: S, payload: number): void
@@ -34,6 +36,19 @@ export interface Mutations<S = GameState> {
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
+  [GameMutations.RESET](state: GameState) {
+    state.maxPlayers = 0
+    state.gameStatus = GameStatus.NOT_LOADED
+    state.playerOrderIds.splice(0, state.playerOrderIds.length)
+    state.currentUserTurn = null
+    state.isDrawing = false
+    state.colourIdx = 0
+    state.thicknessIdx = 0
+    state.points.splice(0, state.points.length)
+    state.lines.splice(0, state.lines.length)
+    state.scale = 1
+    state.redoStack.splice(0, state.redoStack.length)
+  },
   [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
     state.maxPlayers = event.maxPlayers
     state.gameStatus = event.gameStatus

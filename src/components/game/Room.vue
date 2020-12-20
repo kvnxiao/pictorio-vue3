@@ -50,12 +50,15 @@ import {
 import { deregisterEventListeners, registerEventListeners } from "@/game/events"
 import { useRoute, useRouter } from "vue-router"
 import Chat from "@/components/game/Chat.vue"
+import { ChatMutations } from "@/store/chatStore/mutations"
 import Drawing from "@/components/game/Drawing.vue"
+import { GameMutations } from "@/store/gameStore/mutations"
 import PlayersPanel from "@/components/game/PlayersPanel.vue"
 import { ToastMessageMutations } from "@/store/toastMsgStore/mutations"
 import { UserMutations } from "@/store/userStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import service from "@/service"
+import { useChatStore } from "@/store/chatStore"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
@@ -83,6 +86,7 @@ export default defineComponent({
     const toastMsgStore = useToastMsgStore()
     const validRoom = ref<boolean>(false)
 
+    const chatStore = useChatStore()
     const userStore = useUserStore()
     const gameStore = useGameStore()
     const { connect, disconnect, error, send } = useGlobalWebSocket()
@@ -127,7 +131,10 @@ export default defineComponent({
     onBeforeMount(() => {
       // Reset store states
       userStore.commit(UserMutations.RESET)
+      gameStore.commit(GameMutations.RESET)
+      chatStore.commit(ChatMutations.RESET)
 
+      // Register event listeners on websocket connection
       registerEventListeners()
     })
 
