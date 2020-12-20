@@ -4,6 +4,7 @@ import { PlayerState } from "@/models/playerState"
 import { UserState } from "./state"
 
 export enum UserMutations {
+  RESET = "RESET",
   REHYDRATE = "REHYDRATE",
   USER_JOINED = "USER_JOINED",
   USER_LEFT = "USER_LEFT",
@@ -11,6 +12,7 @@ export enum UserMutations {
 }
 
 export interface Mutations<S = UserState> {
+  [UserMutations.RESET](state: S): void
   [UserMutations.REHYDRATE](state: S, event: UserRehydrateEvent): void
   [UserMutations.USER_JOINED](state: S, player: PlayerState): void
   [UserMutations.USER_LEFT](state: S, player: PlayerState): void
@@ -18,6 +20,10 @@ export interface Mutations<S = UserState> {
 }
 
 export const mutations: MutationTree<UserState> & Mutations = {
+  [UserMutations.RESET](state: UserState) {
+    state.selfUser = { id: "", name: "" }
+    state.playerStates = {}
+  },
   [UserMutations.REHYDRATE](state: UserState, event: UserRehydrateEvent) {
     state.selfUser = event.selfUser
     for (const playerState of event.playerStates) {

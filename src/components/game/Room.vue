@@ -53,6 +53,7 @@ import Chat from "@/components/game/Chat.vue"
 import Drawing from "@/components/game/Drawing.vue"
 import PlayersPanel from "@/components/game/PlayersPanel.vue"
 import { ToastMessageMutations } from "@/store/toastMsgStore/mutations"
+import { UserMutations } from "@/store/userStore/mutations"
 import Waiting from "@/components/game/Waiting.vue"
 import service from "@/service"
 import { useGameEvents } from "@/game/events"
@@ -60,6 +61,7 @@ import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useResizeObserver } from "@/composables/useResizeObserver"
 import { useToastMsgStore } from "@/store/toastMsgStore"
+import { useUserStore } from "@/store/userStore"
 
 function isGameEvent(data: unknown): data is GameEvent {
   return typeof data === "object" && (data as GameEvent).type !== undefined
@@ -81,6 +83,7 @@ export default defineComponent({
     const toastMsgStore = useToastMsgStore()
     const validRoom = ref<boolean>(false)
 
+    const userStore = useUserStore()
     const gameStore = useGameStore()
     const { connect, disconnect, error, send } = useGlobalWebSocket()
     const { emitEvent } = useGameEvents(send)
@@ -122,6 +125,9 @@ export default defineComponent({
     })
 
     onBeforeMount(() => {
+      // Reset store states
+      userStore.commit(UserMutations.RESET)
+
       registerEventListeners()
     })
 

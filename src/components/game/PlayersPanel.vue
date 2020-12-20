@@ -10,8 +10,10 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
+import { GameStatus } from "@/models/events"
 import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
 import { PlayerState } from "@/models/playerState"
+import { useGameStore } from "@/store/gameStore"
 import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
@@ -19,12 +21,19 @@ export default defineComponent({
   components: { PlayerEntry },
   setup() {
     const userStore = useUserStore()
+    const gameStore = useGameStore()
 
-    const players = computed<PlayerState[]>(() =>
-      Object.values(userStore.state.playerStates).filter(
-        (state: PlayerState) => state.isConnected,
-      ),
-    )
+    const players = computed<PlayerState[]>(() => {
+      if (gameStore.state.gameStatus === GameStatus.Started) {
+        return gameStore.state.playerOrderIds.map(
+          (orderID: string) => userStore.state.playerStates[orderID],
+        )
+      } else {
+        return Object.values(userStore.state.playerStates).filter(
+          (state: PlayerState) => state.isConnected,
+        )
+      }
+    })
 
     return {
       players,
