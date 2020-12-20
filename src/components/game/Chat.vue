@@ -15,7 +15,7 @@
       <input
         v-model="input"
         type="text"
-        class="select-none h-full flex-grow px-4 border-gray-300 rounded-l-md focus:ring-yellow-500 focus:border-yellow-400"
+        class="select-none h-full min-w-0 flex-grow px-4 border-gray-300 rounded-l-md focus:ring-yellow-500 focus:border-yellow-400"
         placeholder="Enter your guess"
         @keydown.enter="sendMessage"
       />
