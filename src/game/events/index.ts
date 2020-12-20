@@ -1,5 +1,7 @@
 import {
   ChatEvent,
+  DrawEvent,
+  DrawEventType,
   EventType,
   GameEvent,
   GameEventTypeMap,
@@ -98,6 +100,26 @@ export function registerEventListeners(): void {
       userStore.commit(UserMutations.USER_JOINED, event.playerState)
     } else {
       userStore.commit(UserMutations.USER_LEFT, event.playerState)
+    }
+  })
+
+  onEvent(EventType.DrawEvent, (event: DrawEvent) => {
+    console.log("Received drawing event!")
+    switch (event.type) {
+      case DrawEventType.LINE:
+        if (event.line) {
+          gameStore.commit(GameMutations.ADD_LINE, event.line)
+        }
+        break
+      case DrawEventType.CLEAR:
+        gameStore.commit(GameMutations.CLEAR_DRAWING)
+        break
+      case DrawEventType.UNDO:
+        gameStore.commit(GameMutations.UNDO)
+        break
+      case DrawEventType.REDO:
+        gameStore.commit(GameMutations.REDO)
+        break
     }
   })
 }

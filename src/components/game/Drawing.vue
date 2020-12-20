@@ -35,7 +35,9 @@ import { GameActions } from "@/store/gameStore/actions"
 import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { useDualLayerCanvasContext } from "@/game/canvas"
+import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
+import { useGlobalWebSocket } from "@/game/websocket"
 import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
@@ -56,6 +58,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const { send } = useGlobalWebSocket()
+    const { sendEvent } = useGameEvents(send)
+
     const canvasRef = ref<HTMLCanvasElement | null>(null)
     const topCanvasRef = ref<HTMLCanvasElement | null>(null)
     const {
@@ -109,6 +114,22 @@ export default defineComponent({
       },
     )
 
+    // Hydration watcher for players who are not drawing (not self-user's turn)
+    watch(
+      () => gameStore.state.lines.length,
+      (len) => {
+        if (!isMyTurn.value) {
+          if (len === 0) {
+            clearTemp()
+            clearMain()
+          } else {
+            clearMain()
+            drawMainCanvas()
+          }
+        }
+      },
+    )
+
     onMounted(() => {
       // Reset drawing on component mount
       const newScale = props.canvasWidth / props.maxCanvasWidth
@@ -142,9 +163,16 @@ export default defineComponent({
 
         // Draw line on main layer canvas, then add line to history
         const line = gameStore.getters.getLatestLine()
+
         drawMain(line, scale.value)
-        gameStore.commit(GameMutations.ADD_LINE, line)
+
         clearTemp()
+
+        gameStore.dispatch(GameActions.ADD_LINE, {
+          line,
+          sendEvent,
+          user: userStore.state.selfUser,
+        })
       }
     }
 
@@ -168,19 +196,28 @@ export default defineComponent({
     })
 
     const clearDrawing = async () => {
-      await gameStore.dispatch(GameActions.CLEAR_DRAWING)
+      await gameStore.dispatch(GameActions.CLEAR_DRAWING, {
+        sendEvent,
+        user: userStore.state.selfUser,
+      })
       clearTemp()
       clearMain()
     }
 
     const undoDrawing = async () => {
-      await gameStore.dispatch(GameActions.UNDO)
+      await gameStore.dispatch(GameActions.UNDO, {
+        sendEvent,
+        user: userStore.state.selfUser,
+      })
       clearMain()
       drawMainCanvas()
     }
 
     const redoDrawing = async () => {
-      await gameStore.dispatch(GameActions.REDO)
+      await gameStore.dispatch(GameActions.REDO, {
+        sendEvent,
+        user: userStore.state.selfUser,
+      })
       clearMain()
       drawMainCanvas()
     }

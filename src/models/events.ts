@@ -70,9 +70,17 @@ export interface ChatEvent {
   isSystem?: boolean
 }
 
+export enum DrawEventType {
+  LINE = 0,
+  UNDO = 1,
+  REDO = 2,
+  CLEAR = 3,
+}
+
 export interface DrawEvent {
   user: User
-  line: Line
+  line?: Line
+  type: DrawEventType
 }
 
 export interface ReadyEvent {
