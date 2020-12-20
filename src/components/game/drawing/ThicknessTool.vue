@@ -1,6 +1,6 @@
 <template>
   <button
-    class="flex justify-center items-center w-tool h-tool bg-white rounded-full focus:outline-none ring ring-white transform active:ring-blue-200"
+    class="flex justify-center items-center w-tool h-tool bg-white shadow-md rounded-full focus:outline-none ring ring-white transform active:ring-blue-200"
     :class="{
       'ring-blue-300': isSelected,
     }"
