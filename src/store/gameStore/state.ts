@@ -1,5 +1,5 @@
 import { Line, Point } from "@/models/drawing"
-import { GameStatus } from "@/models/events"
+import { GameStatus } from "@/models/status"
 import { User } from "@/models/user"
 
 export interface GameState {

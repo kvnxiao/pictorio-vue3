@@ -1,3 +1,4 @@
+import { GameStatus } from "./status"
 import { Line } from "./drawing"
 import { PlayerState } from "./playerState"
 import { User } from "./user"
@@ -25,13 +26,6 @@ export interface GameEventTypeMap {
 export enum UserJoinLeaveAction {
   JOIN = 0,
   LEAVE = 1,
-}
-
-export enum GameStatus {
-  NOT_LOADED = -1,
-  WaitingReadyUp = 0,
-  Started = 1,
-  GameOver = 2,
 }
 
 export interface UserRehydrateEvent {

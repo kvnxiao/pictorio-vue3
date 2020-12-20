@@ -35,7 +35,6 @@
 </template>
 
 <script lang="ts">
-import { GameEvent, GameStatus } from "@/models/events"
 import { ROOM_EXISTS, ROOM_WS } from "@/api/endpoints"
 import { RoomRequest, RoomResponse } from "@/service/room"
 import {
@@ -52,7 +51,9 @@ import { useRoute, useRouter } from "vue-router"
 import Chat from "@/components/game/panels/Chat.vue"
 import { ChatMutations } from "@/store/chatStore/mutations"
 import Drawing from "@/components/game/panels/Drawing.vue"
+import { GameEvent } from "@/models/events"
 import { GameMutations } from "@/store/gameStore/mutations"
+import { GameStatus } from "@/models/status"
 import Players from "@/components/game/panels/Players.vue"
 import { ToastMessageMutations } from "@/store/toastMsgStore/mutations"
 import { UserMutations } from "@/store/userStore/mutations"

@@ -1,6 +1,7 @@
-import { GameRehydrateEvent, GameStatus, StartGameEvent } from "@/models/events"
+import { GameRehydrateEvent, StartGameEvent } from "@/models/events"
 import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
+import { GameStatus } from "@/models/status"
 import { MutationTree } from "vuex"
 
 export enum GameMutations {

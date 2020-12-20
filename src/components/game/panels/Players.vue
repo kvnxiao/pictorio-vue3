@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue"
-import { GameStatus } from "@/models/events"
+import { GameStatus } from "@/models/status"
 import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
 import { PlayerState } from "@/models/playerState"
 import { useGameStore } from "@/store/gameStore"
