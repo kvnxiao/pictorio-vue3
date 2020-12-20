@@ -84,18 +84,20 @@
           </div>
           <!-- TODO: Profile icons -->
           <div class="ml-3 relative">
-            <div>
+            <!--
+              <div>
               <button
-                id="profile-menu"
-                class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-yellow-400"
-                aria-haspopup="true"
+              id="profile-menu"
+              class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-yellow-400"
+              aria-haspopup="true"
               >
-                <span class="sr-only">Open profile menu</span>
-                <div class="h-8 w-8 rounded-full flex justify-center items-center">
-                  <div class="text-white text-xl">?</div>
-                </div>
+              <span class="sr-only">Open profile menu</span>
+              <div class="h-8 w-8 rounded-full flex justify-center items-center">
+              <div class="text-white text-xl">?</div>
+              </div>
               </button>
-            </div>
+              </div>
+            -->
             <div
               class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5"
               role="menu"
