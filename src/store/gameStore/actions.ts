@@ -16,7 +16,10 @@ export enum GameActions {
 
 export interface DrawingPayload {
   user: User
-  sendEvent(eventType: EventType, eventData: GameEventTypeMap[EventType]): void
+  sendEvent<T extends keyof GameEventTypeMap>(
+    eventType: T,
+    eventData: GameEventTypeMap[T],
+  ): void
 }
 
 export interface StopDrawingPayload extends DrawingPayload {

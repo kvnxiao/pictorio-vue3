@@ -10,10 +10,10 @@
     <!-- Background -->
     <div class="w-full h-full flex justify-center items-center">
       <div
-        class="rounded-full bg-white flex justify-center items-center text-4xl text-gray-800 font-semibold"
+        class="rounded-full bg-gray-100 flex justify-center items-center text-4xl text-gray-800 font-semibold shadow-lg"
         :style="{
-          width: `${2 * outerRadius + stroke / 2}px`,
-          height: `${2 * outerRadius + stroke / 2}px`,
+          width: `${2 * outerRadius + stroke * 1.5}px`,
+          height: `${2 * outerRadius + stroke * 1.5}px`,
         }"
       >
         {{ normalizedSeconds }}

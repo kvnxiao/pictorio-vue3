@@ -13,7 +13,10 @@ export interface GameStatusState {
   gameStatus: GameStatus
   turnStatus: TurnStatus
   // Turn specific data
+  maxSelectionTime: number
+  maxTurnTime: number
   playerOrderIds: string[]
+  wordSelections: string[] | null
   currentWord: string | null
   currentWordLength: number[] | null
   currentTurnUser: User | null
@@ -40,7 +43,10 @@ export const state: GameState = {
   round: 0,
   gameStatus: GameStatus.NOT_LOADED,
   turnStatus: TurnStatus.SELECTION,
+  maxSelectionTime: 0,
+  maxTurnTime: 0,
   playerOrderIds: [],
+  wordSelections: null,
   currentWord: null,
   currentWordLength: null,
   currentTurnUser: null,

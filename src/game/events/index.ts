@@ -8,6 +8,9 @@ import {
   ReadyEvent,
   RehydrateEvent,
   StartGameEvent,
+  TurnBeginDrawingEvent,
+  TurnBeginSelectionEvent,
+  TurnCountdownEvent,
   UserJoinLeaveAction,
   UserJoinLeaveEvent,
 } from "@/models/events"
@@ -41,7 +44,10 @@ interface GameEvents {
     eventType: T,
     listener: (event: GameEventTypeMap[T]) => void,
   ): void
-  sendEvent(eventType: EventType, eventData: GameEventTypeMap[EventType]): void
+  sendEvent<T extends keyof GameEventTypeMap>(
+    eventType: T,
+    eventData: GameEventTypeMap[T],
+  ): void
   emitEvent(eventType: EventType, eventData: unknown): void
   removeListeners(): void
 }
@@ -120,6 +126,18 @@ export function registerEventListeners(): void {
         gameStore.commit(GameMutations.REDO)
         break
     }
+  })
+
+  onEvent(EventType.TurnBeginSelection, (event: TurnBeginSelectionEvent) => {
+    gameStore.commit(GameMutations.BEGIN_TURN_SELECTION, event)
+  })
+
+  onEvent(EventType.TurnBeginDrawing, (event: TurnBeginDrawingEvent) => {
+    gameStore.commit(GameMutations.BEGIN_TURN_DRAWING, event)
+  })
+
+  onEvent(EventType.TurnCountdown, (event: TurnCountdownEvent) => {
+    gameStore.commit(GameMutations.TURN_COUNTDOWN, event)
   })
 }
 
