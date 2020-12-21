@@ -1,7 +1,7 @@
 <template>
   <div class="absolute -top-8 w-full flex justify-center items-center">
     <div
-      class="bg-yellow-200 p-4 space-y-1 shadow-md text-gray-800 font-semibold select-none transform -rotate-2"
+      class="guess p-4 space-y-1 shadow-md text-gray-800 font-semibold select-none transform -rotate-2"
     >
       <template v-if="isMyTurn">
         <p class="text-xl">You are drawing:</p>
@@ -65,3 +65,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.guess {
+  background-color: #fef89a;
+}
+</style>
