@@ -97,14 +97,14 @@ export default defineComponent({
     )
 
     const readyToggle = () => {
-      sendEvent(EventType.ReadyEvent, {
+      sendEvent(EventType.Ready, {
         user: userStore.state.selfUser,
         ready: !ready.value,
       })
     }
 
     const startGame = () => {
-      sendEvent(EventType.StartGameIssuedEvent, {
+      sendEvent(EventType.StartGameIssued, {
         issuer: userStore.state.selfUser,
       })
     }

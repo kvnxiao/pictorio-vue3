@@ -4,23 +4,33 @@ import { PlayerState } from "./playerState"
 import { User } from "./user"
 
 export enum EventType {
-  UserJoinLeaveEvent = 0,
-  RehydrateEvent = 1,
-  ChatEvent = 2,
-  DrawEvent = 3,
-  ReadyEvent = 4,
-  StartGameEvent = 5,
-  StartGameIssuedEvent = 6,
+  UserJoinLeave = 0,
+  Rehydrate = 1,
+  Chat = 2,
+  Draw = 3,
+  Ready = 4,
+  StartGame = 5,
+  StartGameIssued = 6,
+  TurnBeginSelection,
+  TurnWordSelected,
+  TurnBeginDrawing,
+  TurnCountdown,
+  TurnEnd,
 }
 
 export interface GameEventTypeMap {
-  [EventType.UserJoinLeaveEvent]: UserJoinLeaveEvent
-  [EventType.RehydrateEvent]: RehydrateEvent
-  [EventType.ChatEvent]: ChatEvent
-  [EventType.DrawEvent]: DrawEvent
-  [EventType.ReadyEvent]: ReadyEvent
-  [EventType.StartGameEvent]: StartGameEvent
-  [EventType.StartGameIssuedEvent]: StartGameIssuedEvent
+  [EventType.UserJoinLeave]: UserJoinLeaveEvent
+  [EventType.Rehydrate]: RehydrateEvent
+  [EventType.Chat]: ChatEvent
+  [EventType.Draw]: DrawEvent
+  [EventType.Ready]: ReadyEvent
+  [EventType.StartGame]: StartGameEvent
+  [EventType.StartGameIssued]: StartGameIssuedEvent
+  [EventType.TurnBeginSelection]: TurnBeginSelectionEvent
+  [EventType.TurnWordSelected]: TurnWordSelectedEvent
+  [EventType.TurnBeginDrawing]: TurnBeginDrawingEvent
+  [EventType.TurnCountdown]: TurnCountdownEvent
+  [EventType.TurnEnd]: TurnEndEvent
 }
 
 export enum UserJoinLeaveAction {
@@ -90,6 +100,33 @@ export interface StartGameEvent {
 
 export interface StartGameIssuedEvent {
   issuer: User
+}
+
+export interface TurnBeginSelectionEvent {
+  user: User
+  maxTime: number
+  words?: string[]
+}
+
+export interface TurnWordSelectedEvent {
+  user: User
+  index: number
+}
+
+export interface TurnBeginDrawingEvent {
+  user: User
+  maxTime: number
+  wordLength: number[]
+  word?: string
+}
+
+export interface TurnCountdownEvent {
+  user: User
+  timeLeft: number
+}
+
+export interface TurnEndEvent {
+  user: User
 }
 
 export interface GameEvent {

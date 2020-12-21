@@ -66,7 +66,7 @@ export default defineComponent({
           user: userStore.state.selfUser,
           message: input.value,
         }
-        sendEvent(EventType.ChatEvent, chatEvent)
+        sendEvent(EventType.Chat, chatEvent)
         // clear input
         input.value = ""
       }

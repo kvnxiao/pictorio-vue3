@@ -73,21 +73,21 @@ export function registerEventListeners(): void {
   const chatStore = useChatStore()
   const gameStore = useGameStore()
 
-  onEvent(EventType.RehydrateEvent, (event: RehydrateEvent) => {
+  onEvent(EventType.Rehydrate, (event: RehydrateEvent) => {
     userStore.commit(UserMutations.REHYDRATE, event)
     chatStore.commit(ChatMutations.REHYDRATE, event)
     gameStore.commit(GameMutations.REHYDRATE, event)
   })
 
-  onEvent(EventType.ReadyEvent, (event: ReadyEvent) => {
+  onEvent(EventType.Ready, (event: ReadyEvent) => {
     userStore.commit(UserMutations.USER_READY, event)
   })
 
-  onEvent(EventType.StartGameEvent, (event: StartGameEvent) => {
+  onEvent(EventType.StartGame, (event: StartGameEvent) => {
     gameStore.commit(GameMutations.START_GAME, event)
   })
 
-  onEvent(EventType.ChatEvent, (event: ChatEvent) => {
+  onEvent(EventType.Chat, (event: ChatEvent) => {
     chatStore.commit(ChatMutations.ADD_MESSAGE, {
       message: event.message,
       user: event.user,
@@ -95,7 +95,7 @@ export function registerEventListeners(): void {
     })
   })
 
-  onEvent(EventType.UserJoinLeaveEvent, (event: UserJoinLeaveEvent) => {
+  onEvent(EventType.UserJoinLeave, (event: UserJoinLeaveEvent) => {
     if (event.action === UserJoinLeaveAction.JOIN) {
       userStore.commit(UserMutations.USER_JOINED, event.playerState)
     } else {
@@ -103,7 +103,7 @@ export function registerEventListeners(): void {
     }
   })
 
-  onEvent(EventType.DrawEvent, (event: DrawEvent) => {
+  onEvent(EventType.Draw, (event: DrawEvent) => {
     switch (event.type) {
       case DrawEventType.LINE:
         if (event.line) {

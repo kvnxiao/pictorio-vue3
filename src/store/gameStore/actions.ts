@@ -41,7 +41,7 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
   ): Promise<void> => {
     const { sendEvent, user } = payload
     commit(GameMutations.CLEAR_DRAWING)
-    sendEvent(EventType.DrawEvent, {
+    sendEvent(EventType.Draw, {
       user,
       type: DrawEventType.CLEAR,
     })
@@ -49,7 +49,7 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
   [GameActions.UNDO]: async ({ commit }, payload: DrawingPayload): Promise<void> => {
     const { sendEvent, user } = payload
     commit(GameMutations.UNDO)
-    sendEvent(EventType.DrawEvent, {
+    sendEvent(EventType.Draw, {
       user,
       type: DrawEventType.UNDO,
     })
@@ -57,7 +57,7 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
   [GameActions.REDO]: async ({ commit }, payload: DrawingPayload): Promise<void> => {
     const { sendEvent, user } = payload
     commit(GameMutations.REDO)
-    sendEvent(EventType.DrawEvent, {
+    sendEvent(EventType.Draw, {
       user,
       type: DrawEventType.REDO,
     })
@@ -77,7 +77,7 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
     const line: Line = getters.getLatestLine()
 
     commit(GameMutations.ADD_LINE, line)
-    sendEvent(EventType.DrawEvent, {
+    sendEvent(EventType.Draw, {
       user,
       line,
       type: DrawEventType.LINE,
