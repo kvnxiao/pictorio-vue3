@@ -49,6 +49,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.currentWord = null
     state.currentWordLength = null
     state.currentTurnUser = null
+    state.timeLeftSeconds = -1
 
     // Reset drawing state
     state.isDrawing = false

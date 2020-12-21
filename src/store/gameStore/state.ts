@@ -17,6 +17,7 @@ export interface GameStatusState {
   currentWord: string | null
   currentWordLength: number[] | null
   currentTurnUser: User | null
+  timeLeftSeconds: number
 }
 
 export interface DrawingState {
@@ -43,6 +44,7 @@ export const state: GameState = {
   currentWord: null,
   currentWordLength: null,
   currentTurnUser: null,
+  timeLeftSeconds: -1,
   // drawing state
   isDrawing: false,
   colourIndex: 0,
