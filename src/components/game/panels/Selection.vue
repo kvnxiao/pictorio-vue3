@@ -20,6 +20,16 @@
           </p>
         </div>
       </transition>
+      <transition name="bounce">
+        <div
+          v-if="waitingForSelection"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+        >
+          <p class="font-semibold text-xl text-yellow-900 select-none">
+            Waiting for {{ drawerName }} to pick a word
+          </p>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -42,12 +52,24 @@ export default defineComponent({
 
     const selectionsLoaded = computed<boolean>(
       () =>
+        gameStore.state.currentTurnUser !== null &&
+        gameStore.state.currentTurnUser.id === userStore.state.selfUser.id &&
         gameStore.state.wordSelections !== null &&
         gameStore.state.wordSelections.length > 0,
     )
 
+    const waitingForSelection = computed<boolean>(
+      () =>
+        gameStore.state.currentTurnUser !== null &&
+        gameStore.state.currentTurnUser.id !== userStore.state.selfUser.id,
+    )
+
     const wordSelections = computed<string[]>(
       () => gameStore.state.wordSelections ?? [],
+    )
+
+    const drawerName = computed<string>(
+      () => gameStore.state.currentTurnUser?.name ?? "",
     )
 
     const select = async (index: number) => {
@@ -59,7 +81,9 @@ export default defineComponent({
 
     return {
       selectionsLoaded,
+      waitingForSelection,
       wordSelections,
+      drawerName,
       select,
     }
   },
