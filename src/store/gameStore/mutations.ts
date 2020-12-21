@@ -100,7 +100,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.thicknessIndex = index
   },
   [GameMutations.SET_COLOUR_IDX](state: GameState, index: number) {
-    state.thicknessIndex = index
+    state.colourIndex = index
   },
   [GameMutations.SET_SCALE](state: GameState, scale: number) {
     state.scale = scale
