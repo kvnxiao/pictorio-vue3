@@ -4,7 +4,7 @@
     <div class="flex flex-col h-full items-center justify-center">
       <transition name="bounce">
         <div
-          v-if="selectionsLoaded"
+          v-if="isMyTurn && hasWordSelections"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
@@ -13,7 +13,7 @@
           <p v-for="(word, index) of wordSelections" :key="word">
             <button
               class="bg-yellow-100 p-1 rounded-md shadow-md uppercase font-semibold text-2xl text-gray-800 select-none"
-              @click="select(index)"
+              @click="selectWord(index)"
             >
               {{ word }}
             </button>
@@ -22,7 +22,7 @@
       </transition>
       <transition name="bounce">
         <div
-          v-if="waitingForSelection"
+          v-if="!isMyTurn"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
@@ -35,8 +35,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue"
-import { EventType } from "@/models/events"
+import { PropType, computed, defineComponent } from "vue"
+import { GameActions } from "@/store/gameStore/actions"
+import { User } from "@/models/user"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
@@ -44,47 +45,44 @@ import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Selection",
-  setup() {
+  props: {
+    drawer: {
+      type: Object as PropType<User | null>,
+      required: true,
+    },
+  },
+  setup(props) {
     const { send } = useGlobalWebSocket()
     const { sendEvent } = useGameEvents(send)
     const gameStore = useGameStore()
     const userStore = useUserStore()
 
-    const selectionsLoaded = computed<boolean>(
-      () =>
-        gameStore.state.currentTurnUser !== null &&
-        gameStore.state.currentTurnUser.id === userStore.state.selfUser.id &&
-        gameStore.state.wordSelections !== null &&
-        gameStore.state.wordSelections.length > 0,
-    )
+    const drawerName = computed<string>(() => props.drawer?.name ?? "")
 
-    const waitingForSelection = computed<boolean>(
-      () =>
-        gameStore.state.currentTurnUser !== null &&
-        gameStore.state.currentTurnUser.id !== userStore.state.selfUser.id,
+    const isMyTurn = computed<boolean>(
+      () => props.drawer?.id === userStore.state.selfUser.id,
     )
 
     const wordSelections = computed<string[]>(
       () => gameStore.state.wordSelections ?? [],
     )
 
-    const drawerName = computed<string>(
-      () => gameStore.state.currentTurnUser?.name ?? "",
-    )
+    const hasWordSelections = computed<boolean>(() => wordSelections.value.length > 0)
 
-    const select = async (index: number) => {
-      sendEvent(EventType.TurnWordSelected, {
+    const selectWord = async (index: number) => {
+      gameStore.dispatch(GameActions.SELECT_WORD, {
+        sendEvent,
         user: userStore.state.selfUser,
         index,
       })
     }
 
     return {
-      selectionsLoaded,
-      waitingForSelection,
-      wordSelections,
       drawerName,
-      select,
+      isMyTurn,
+      wordSelections,
+      hasWordSelections,
+      selectWord,
     }
   },
 })

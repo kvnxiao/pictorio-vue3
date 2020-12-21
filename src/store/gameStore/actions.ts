@@ -12,18 +12,28 @@ export enum GameActions {
   REDO = "REDO",
   START_DRAW_POINT = "START_DRAW_POINT",
   STOP_DRAW_POINT = "STOP_DRAW_POINT",
+  SELECT_WORD = "SELECT_WORD",
 }
 
-export interface DrawingPayload {
-  user: User
+interface Sendable {
   sendEvent<T extends keyof GameEventTypeMap>(
     eventType: T,
     eventData: GameEventTypeMap[T],
   ): void
 }
 
-export interface StopDrawingPayload extends DrawingPayload {
+export interface DrawingPayload extends Sendable {
+  user: User
+}
+
+export interface StopDrawingPayload extends Sendable {
+  user: User
   point: Point
+}
+
+export interface SelectWordPayload extends Sendable {
+  user: User
+  index: number
 }
 
 export interface Actions<C = ActionContext<GameState, Mutations>> {
@@ -35,30 +45,34 @@ export interface Actions<C = ActionContext<GameState, Mutations>> {
     context: C,
     payload: StopDrawingPayload,
   ) => Promise<Line>
+  [GameActions.SELECT_WORD]: (context: C, payload: SelectWordPayload) => Promise<void>
 }
 
 export const actions: ActionTree<GameState, GameState> & Actions = {
   [GameActions.CLEAR_DRAWING]: async (
     { commit },
-    payload: DrawingPayload,
+    { sendEvent, user }: DrawingPayload,
   ): Promise<void> => {
-    const { sendEvent, user } = payload
     commit(GameMutations.CLEAR_DRAWING)
     sendEvent(EventType.Draw, {
       user,
       type: DrawEventType.CLEAR,
     })
   },
-  [GameActions.UNDO]: async ({ commit }, payload: DrawingPayload): Promise<void> => {
-    const { sendEvent, user } = payload
+  [GameActions.UNDO]: async (
+    { commit },
+    { sendEvent, user }: DrawingPayload,
+  ): Promise<void> => {
     commit(GameMutations.UNDO)
     sendEvent(EventType.Draw, {
       user,
       type: DrawEventType.UNDO,
     })
   },
-  [GameActions.REDO]: async ({ commit }, payload: DrawingPayload): Promise<void> => {
-    const { sendEvent, user } = payload
+  [GameActions.REDO]: async (
+    { commit },
+    { sendEvent, user }: DrawingPayload,
+  ): Promise<void> => {
     commit(GameMutations.REDO)
     sendEvent(EventType.Draw, {
       user,
@@ -71,9 +85,8 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
   },
   [GameActions.STOP_DRAW_POINT]: async (
     { commit, getters },
-    payload: StopDrawingPayload,
+    { point, user, sendEvent }: StopDrawingPayload,
   ): Promise<Line> => {
-    const { point, user, sendEvent } = payload
     commit(GameMutations.SET_IS_DRAWING, false)
     commit(GameMutations.ADD_POINT, point)
 
@@ -86,5 +99,15 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
       type: DrawEventType.LINE,
     })
     return line
+  },
+  [GameActions.SELECT_WORD]: async (
+    { commit },
+    { index, user, sendEvent }: SelectWordPayload,
+  ): Promise<void> => {
+    commit(GameMutations.CLEAR_COUNTDOWN)
+    sendEvent(EventType.TurnWordSelected, {
+      index,
+      user,
+    })
   },
 }

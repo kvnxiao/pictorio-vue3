@@ -28,6 +28,7 @@ export enum GameMutations {
   BEGIN_TURN_SELECTION = "BEGIN_TURN_SELECTION",
   BEGIN_TURN_DRAWING = "BEGIN_TURN_DRAWING",
   TURN_COUNTDOWN = "TURN_COUNTDOWN",
+  CLEAR_COUNTDOWN = "CLEAR_COUNTDOWN",
 }
 
 export interface Mutations<S = GameState> {
@@ -47,6 +48,7 @@ export interface Mutations<S = GameState> {
   [GameMutations.BEGIN_TURN_SELECTION](state: S, payload: TurnBeginSelectionEvent): void
   [GameMutations.BEGIN_TURN_DRAWING](state: S, payload: TurnBeginDrawingEvent): void
   [GameMutations.TURN_COUNTDOWN](state: S, payload: TurnCountdownEvent): void
+  [GameMutations.CLEAR_COUNTDOWN](state: S): void
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
@@ -169,5 +171,8 @@ export const mutations: MutationTree<GameState> & Mutations = {
   },
   [GameMutations.TURN_COUNTDOWN](state: GameState, payload: TurnCountdownEvent) {
     state.timeLeftSeconds = payload.timeLeft
+  },
+  [GameMutations.CLEAR_COUNTDOWN](state: GameState) {
+    state.timeLeftSeconds = 0
   },
 }

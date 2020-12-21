@@ -15,14 +15,20 @@
               :canvas-height="height"
               :max-canvas-width="maxWidth"
             />
-            <Selection v-if="turnStatus === TurnStatus.SELECTION" />
+            <Guess v-if="turnStatus === TurnStatus.DRAWING" :drawer="drawingUser" />
+            <Selection
+              v-if="turnStatus === TurnStatus.SELECTION"
+              :drawer="drawingUser"
+            />
             <Timer :max-seconds="maxTime" :seconds="timeLeft" show />
           </template>
+
           <template v-else-if="gameStatus === GameStatus.WaitingReadyUp">
             <Waiting />
           </template>
+
           <template v-else>
-            <Selection />
+            <div />
           </template>
         </div>
       </div>
@@ -56,10 +62,12 @@ import { ChatMutations } from "@/store/chatStore/mutations"
 import Drawing from "@/components/game/panels/Drawing.vue"
 import { GameEvent } from "@/models/events"
 import { GameMutations } from "@/store/gameStore/mutations"
+import Guess from "@/components/game/guess/Guess.vue"
 import Players from "@/components/game/panels/Players.vue"
 import Selection from "@/components/game/panels/Selection.vue"
 import Timer from "@/components/game/timer/Timer.vue"
 import { ToastMessageMutations } from "@/store/toastMsgStore/mutations"
+import { User } from "@/models/user"
 import { UserMutations } from "@/store/userStore/mutations"
 import Waiting from "@/components/game/panels/Waiting.vue"
 import service from "@/service"
@@ -76,10 +84,11 @@ function isGameEvent(data: unknown): data is GameEvent {
 }
 
 export default defineComponent({
-  name: "Room",
+  name: "GameRoom",
   components: {
     Chat,
     Drawing,
+    Guess,
     Players,
     Selection,
     Timer,
@@ -101,6 +110,7 @@ export default defineComponent({
 
     const gameStatus = computed<GameStatus>(() => gameStore.state.gameStatus)
     const turnStatus = computed<TurnStatus>(() => gameStore.state.turnStatus)
+    const drawingUser = computed<User | null>(() => gameStore.state.currentTurnUser)
     const center = ref<HTMLDivElement | null>(null)
     const maxWidth = ref<number>(1500)
     const { width, height } = useResizeObserver(center)
@@ -172,8 +182,8 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      deregisterEventListeners()
       disconnect()
+      deregisterEventListeners()
     })
 
     // Check room is valid on initial setup
@@ -190,6 +200,7 @@ export default defineComponent({
       height,
       gameStatus,
       turnStatus,
+      drawingUser,
       maxWidth,
       maxWidthPixels,
       width,

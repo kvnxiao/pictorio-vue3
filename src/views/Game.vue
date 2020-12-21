@@ -1,7 +1,7 @@
 <template>
   <Suspense>
     <template #default>
-      <Room />
+      <GameRoom />
     </template>
     <template #fallback>
       <div class="flex w-full h-full items-center justify-center">
@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts">
-import Room from "@/components/game/Room.vue"
+import GameRoom from "@/components/game/GameRoom.vue"
 import { defineComponent } from "vue"
 
 export default defineComponent({
   name: "Game",
   components: {
-    Room,
+    GameRoom,
   },
 })
 </script>

@@ -87,8 +87,7 @@ export default defineComponent({
     const colourIdx = computed<number>(() => gameStore.state.colourIndex)
     const thicknessIdx = computed<number>(() => gameStore.state.thicknessIndex)
     const isMyTurn = computed<boolean>(
-      () =>
-        gameStore.state.currentTurnUser?.id === userStore.state.selfUser.id ?? false,
+      () => gameStore.state.currentTurnUser?.id === userStore.state.selfUser.id,
     )
 
     const drawMainCanvas = () => {
