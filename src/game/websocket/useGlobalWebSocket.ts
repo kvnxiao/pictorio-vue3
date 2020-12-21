@@ -46,7 +46,11 @@ const connect = (
   onMessage?: (event: MessageEvent) => void,
 ) => {
   if (ws) {
-    if (state.value !== WebSocketState.CLOSED) {
+    if (
+      state.value !== WebSocketState.CLOSED &&
+      state.value !== WebSocketState.CLOSING
+    ) {
+      // Connection exists
       return
     }
     ws = null
