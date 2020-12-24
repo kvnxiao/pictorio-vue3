@@ -22,6 +22,8 @@ export enum EventType {
   TurnBeginDrawing = 9,
   TurnCountdown = 10,
   TurnEnd = 11,
+  AwardPoints = 12,
+  GameOver = 13,
 }
 
 export interface GameEventTypeMap {
@@ -37,6 +39,8 @@ export interface GameEventTypeMap {
   [EventType.TurnBeginDrawing]: TurnBeginDrawingEvent
   [EventType.TurnCountdown]: TurnCountdownEvent
   [EventType.TurnEnd]: TurnEndEvent
+  [EventType.AwardPoints]: AwardPointsEvent
+  [EventType.GameOver]: GameOverEvent
 }
 
 export enum UserJoinLeaveAction {
@@ -118,6 +122,17 @@ export interface TurnCountdownEvent {
 
 export interface TurnEndEvent {
   user: User
+}
+
+export interface AwardPointsEvent {
+  guesser: User
+  drawer: User
+  guesserPoints: number
+  drawerPoints: number
+}
+
+export interface GameOverEvent {
+  winner: User
 }
 
 export interface GameEvent {

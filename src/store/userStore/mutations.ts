@@ -1,4 +1,4 @@
-import { ReadyEvent, RehydrateEvent } from "@/models/events"
+import { AwardPointsEvent, ReadyEvent, RehydrateEvent } from "@/models/events"
 import { MutationTree } from "vuex"
 import { PlayerState } from "@/models/playerState"
 import { UserState } from "./state"
@@ -9,6 +9,7 @@ export enum UserMutations {
   USER_JOINED = "USER_JOINED",
   USER_LEFT = "USER_LEFT",
   USER_READY = "USER_READY",
+  ADD_POINTS = "ADD_POINTS",
 }
 
 export interface Mutations<S = UserState> {
@@ -17,6 +18,7 @@ export interface Mutations<S = UserState> {
   [UserMutations.USER_JOINED](state: S, player: PlayerState): void
   [UserMutations.USER_LEFT](state: S, player: PlayerState): void
   [UserMutations.USER_READY](state: S, event: ReadyEvent): void
+  [UserMutations.ADD_POINTS](state: S, event: AwardPointsEvent): void
 }
 
 export const mutations: MutationTree<UserState> & Mutations = {
@@ -48,6 +50,15 @@ export const mutations: MutationTree<UserState> & Mutations = {
   [UserMutations.USER_READY](state: UserState, event: ReadyEvent) {
     if (event.user.id in state.playerStates) {
       state.playerStates[event.user.id].isReady = event.ready
+    }
+  },
+  [UserMutations.ADD_POINTS](state: UserState, event: AwardPointsEvent) {
+    if (
+      event.guesser.id in state.playerStates &&
+      event.drawer.id in state.playerStates
+    ) {
+      state.playerStates[event.guesser.id].points += event.guesserPoints
+      state.playerStates[event.drawer.id].points += event.drawerPoints
     }
   },
 }

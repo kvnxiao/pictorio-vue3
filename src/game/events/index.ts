@@ -1,4 +1,5 @@
 import {
+  AwardPointsEvent,
   ChatEvent,
   DrawEvent,
   DrawEventType,
@@ -138,6 +139,10 @@ export function registerEventListeners(): void {
 
   onEvent(EventType.TurnCountdown, (event: TurnCountdownEvent) => {
     gameStore.commit(GameMutations.TURN_COUNTDOWN, event)
+  })
+
+  onEvent(EventType.AwardPoints, (event: AwardPointsEvent) => {
+    userStore.commit(UserMutations.ADD_POINTS, event)
   })
 }
 
