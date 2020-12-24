@@ -28,7 +28,7 @@
           </p>
         </div>
         <div
-          v-else-if="!isMyTurn && !isNextUpState"
+          v-else-if="!isMyTurn && !isNextUpState && drawerName !== ''"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
