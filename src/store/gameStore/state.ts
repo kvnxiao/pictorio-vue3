@@ -13,6 +13,7 @@ export interface GameStatusState {
   gameStatus: GameStatus
   turnStatus: TurnStatus
   // Turn specific data
+  maxNextUpTime: number
   maxSelectionTime: number
   maxTurnTime: number
   playerOrderIds: string[]
@@ -43,6 +44,7 @@ export const state: GameState = {
   round: 0,
   gameStatus: GameStatus.NOT_LOADED,
   turnStatus: TurnStatus.SELECTION,
+  maxNextUpTime: 0,
   maxSelectionTime: 0,
   maxTurnTime: 0,
   playerOrderIds: [],

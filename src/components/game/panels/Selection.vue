@@ -4,7 +4,15 @@
     <div class="flex flex-col h-full items-center justify-center">
       <transition name="bounce">
         <div
-          v-if="isMyTurn && hasWordSelections"
+          v-if="isNextUpState"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+        >
+          <p class="font-semibold text-xl text-yellow-900 select-none">
+            Next up: {{ drawerName }}
+          </p>
+        </div>
+        <div
+          v-else-if="isMyTurn && hasWordSelections"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
@@ -19,10 +27,8 @@
             </button>
           </p>
         </div>
-      </transition>
-      <transition name="bounce">
         <div
-          v-if="!isMyTurn"
+          v-else-if="!isMyTurn && !isNextUpState"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
@@ -37,6 +43,7 @@
 <script lang="ts">
 import { PropType, computed, defineComponent } from "vue"
 import { GameActions } from "@/store/gameStore/actions"
+import { TurnStatus } from "@/models/status"
 import { User } from "@/models/user"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
@@ -48,7 +55,7 @@ export default defineComponent({
   props: {
     drawer: {
       type: Object as PropType<User | null>,
-      required: true,
+      default: null,
     },
   },
   setup(props) {
@@ -58,6 +65,10 @@ export default defineComponent({
     const userStore = useUserStore()
 
     const drawerName = computed<string>(() => props.drawer?.name ?? "")
+
+    const isNextUpState = computed<boolean>(
+      () => gameStore.state.turnStatus == TurnStatus.NEXT_PLAYER,
+    )
 
     const isMyTurn = computed<boolean>(
       () => props.drawer?.id === userStore.state.selfUser.id,
@@ -80,6 +91,7 @@ export default defineComponent({
     return {
       drawerName,
       isMyTurn,
+      isNextUpState,
       wordSelections,
       hasWordSelections,
       selectWord,

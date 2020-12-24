@@ -17,13 +17,14 @@ export enum EventType {
   Ready = 4,
   StartGame = 5,
   StartGameIssued = 6,
-  TurnBeginSelection = 7,
-  TurnWordSelected = 8,
-  TurnBeginDrawing = 9,
-  TurnCountdown = 10,
-  TurnEnd = 11,
-  AwardPoints = 12,
-  GameOver = 13,
+  TurnDrawingNext = 7,
+  TurnBeginSelection = 8,
+  TurnWordSelected = 9,
+  TurnBeginDrawing = 10,
+  TurnCountdown = 11,
+  TurnEnd = 12,
+  AwardPoints = 13,
+  GameOver = 14,
 }
 
 export interface GameEventTypeMap {
@@ -34,6 +35,7 @@ export interface GameEventTypeMap {
   [EventType.Ready]: ReadyEvent
   [EventType.StartGame]: StartGameEvent
   [EventType.StartGameIssued]: StartGameIssuedEvent
+  [EventType.TurnDrawingNext]: TurnDrawingNextEvent
   [EventType.TurnBeginSelection]: TurnBeginSelectionEvent
   [EventType.TurnWordSelected]: TurnWordSelectedEvent
   [EventType.TurnBeginDrawing]: TurnBeginDrawingEvent
@@ -90,11 +92,16 @@ export interface ReadyEvent {
 
 export interface StartGameEvent {
   playerOrderIds: string[]
-  currentTurnUser: User
 }
 
 export interface StartGameIssuedEvent {
   issuer: User
+}
+
+export interface TurnDrawingNextEvent {
+  nextTurnUser?: User
+  maxTime: number
+  timeLeft: number
 }
 
 export interface TurnBeginSelectionEvent {

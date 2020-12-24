@@ -23,6 +23,7 @@ export interface PlayersRehydrate {
 export interface GameRehydrate {
   game: {
     maxRounds: number
+    maxNextUpTime: number
     maxSelectionTime: number
     maxTurnTime: number
     round: number

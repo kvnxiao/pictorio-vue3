@@ -6,7 +6,8 @@ export enum GameStatus {
 }
 
 export enum TurnStatus {
-  SELECTION = 0,
-  DRAWING = 1,
-  ENDED = 2,
+  NEXT_PLAYER = 0,
+  SELECTION = 1,
+  DRAWING = 2,
+  ENDED = 3,
 }

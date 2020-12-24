@@ -6,6 +6,7 @@ import {
   TurnBeginDrawingEvent,
   TurnBeginSelectionEvent,
   TurnCountdownEvent,
+  TurnDrawingNextEvent,
 } from "@/models/events"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
@@ -25,6 +26,7 @@ export enum GameMutations {
   UNDO = "UNDO",
   REDO = "REDO",
   // Turn related
+  NEXT_PLAYER = "NEXT_PLAYER",
   BEGIN_TURN_SELECTION = "BEGIN_TURN_SELECTION",
   BEGIN_TURN_DRAWING = "BEGIN_TURN_DRAWING",
   TURN_COUNTDOWN = "TURN_COUNTDOWN",
@@ -45,6 +47,7 @@ export interface Mutations<S = GameState> {
   [GameMutations.CLEAR_DRAWING](state: S): void
   [GameMutations.UNDO](state: S): void
   [GameMutations.REDO](state: S): void
+  [GameMutations.NEXT_PLAYER](state: S, payload: TurnDrawingNextEvent): void
   [GameMutations.BEGIN_TURN_SELECTION](state: S, payload: TurnBeginSelectionEvent): void
   [GameMutations.BEGIN_TURN_DRAWING](state: S, payload: TurnBeginDrawingEvent): void
   [GameMutations.TURN_COUNTDOWN](state: S, payload: TurnCountdownEvent): void
@@ -60,6 +63,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.round = 0
     state.gameStatus = GameStatus.NOT_LOADED
     state.turnStatus = TurnStatus.SELECTION
+    state.maxNextUpTime = 0
     state.maxSelectionTime = 0
     state.maxTurnTime = 0
     state.playerOrderIds.splice(0, state.playerOrderIds.length)
@@ -84,6 +88,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.round = event.game.round
     state.gameStatus = event.game.status
     state.turnStatus = event.game.turnStatus
+    state.maxNextUpTime = event.game.maxNextUpTime
     state.maxSelectionTime = event.game.maxSelectionTime
     state.maxTurnTime = event.game.maxTurnTime
     state.playerOrderIds = event.game.playerOrderIds
@@ -99,7 +104,6 @@ export const mutations: MutationTree<GameState> & Mutations = {
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
     state.gameStatus = GameStatus.Started
     state.playerOrderIds = event.playerOrderIds
-    state.currentTurnUser = event.currentTurnUser
 
     // reset drawing
     state.lines.splice(0, state.lines.length)
@@ -144,6 +148,16 @@ export const mutations: MutationTree<GameState> & Mutations = {
     const line = state.redoStack.pop()
     if (line) {
       state.lines.push(line)
+    }
+  },
+  [GameMutations.NEXT_PLAYER](state: GameState, payload: TurnDrawingNextEvent) {
+    if (payload.nextTurnUser) {
+      state.turnStatus = TurnStatus.NEXT_PLAYER
+      state.currentTurnUser = payload.nextTurnUser
+      state.maxNextUpTime = payload.maxTime
+      state.timeLeftSeconds = payload.timeLeft
+    } else {
+      state.timeLeftSeconds = payload.timeLeft
     }
   },
   [GameMutations.BEGIN_TURN_SELECTION](

@@ -12,6 +12,7 @@ import {
   TurnBeginDrawingEvent,
   TurnBeginSelectionEvent,
   TurnCountdownEvent,
+  TurnDrawingNextEvent,
   UserJoinLeaveAction,
   UserJoinLeaveEvent,
 } from "@/models/events"
@@ -81,6 +82,7 @@ export function registerEventListeners(): void {
   const gameStore = useGameStore()
 
   onEvent(EventType.Rehydrate, (event: RehydrateEvent) => {
+    console.log(event)
     userStore.commit(UserMutations.REHYDRATE, event)
     chatStore.commit(ChatMutations.REHYDRATE, event)
     gameStore.commit(GameMutations.REHYDRATE, event)
@@ -127,6 +129,10 @@ export function registerEventListeners(): void {
         gameStore.commit(GameMutations.REDO)
         break
     }
+  })
+
+  onEvent(EventType.TurnDrawingNext, (event: TurnDrawingNextEvent) => {
+    gameStore.commit(GameMutations.NEXT_PLAYER, event)
   })
 
   onEvent(EventType.TurnBeginSelection, (event: TurnBeginSelectionEvent) => {
