@@ -1,4 +1,4 @@
-import { ReadyEvent, UserRehydrateEvent } from "@/models/events"
+import { ReadyEvent, RehydrateEvent } from "@/models/events"
 import { MutationTree } from "vuex"
 import { PlayerState } from "@/models/playerState"
 import { UserState } from "./state"
@@ -13,7 +13,7 @@ export enum UserMutations {
 
 export interface Mutations<S = UserState> {
   [UserMutations.RESET](state: S): void
-  [UserMutations.REHYDRATE](state: S, event: UserRehydrateEvent): void
+  [UserMutations.REHYDRATE](state: S, event: RehydrateEvent): void
   [UserMutations.USER_JOINED](state: S, player: PlayerState): void
   [UserMutations.USER_LEFT](state: S, player: PlayerState): void
   [UserMutations.USER_READY](state: S, event: ReadyEvent): void
@@ -24,9 +24,9 @@ export const mutations: MutationTree<UserState> & Mutations = {
     state.selfUser = { id: "", name: "" }
     state.playerStates = {}
   },
-  [UserMutations.REHYDRATE](state: UserState, event: UserRehydrateEvent) {
+  [UserMutations.REHYDRATE](state: UserState, event: RehydrateEvent) {
     state.selfUser = event.selfUser
-    for (const playerState of event.playerStates) {
+    for (const playerState of event.players.playerStates) {
       state.playerStates[playerState.user.id] = playerState
     }
   },

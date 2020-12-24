@@ -1,4 +1,10 @@
-import { GameStatus } from "./status"
+import {
+  ChatRehydrate,
+  DrawingRehydrate,
+  GameRehydrate,
+  PlayersRehydrate,
+  UserRehydrate,
+} from "./rehydrate"
 import { Line } from "./drawing"
 import { PlayerState } from "./playerState"
 import { User } from "./user"
@@ -11,11 +17,11 @@ export enum EventType {
   Ready = 4,
   StartGame = 5,
   StartGameIssued = 6,
-  TurnBeginSelection,
-  TurnWordSelected,
-  TurnBeginDrawing,
-  TurnCountdown,
-  TurnEnd,
+  TurnBeginSelection = 7,
+  TurnWordSelected = 8,
+  TurnBeginDrawing = 9,
+  TurnCountdown = 10,
+  TurnEnd = 11,
 }
 
 export interface GameEventTypeMap {
@@ -38,31 +44,16 @@ export enum UserJoinLeaveAction {
   LEAVE = 1,
 }
 
-export interface UserRehydrateEvent {
-  selfUser: User
-  playerStates: PlayerState[]
-}
-
-export interface ChatRehydrateEvent {
-  chatMessages: ChatEvent[]
-}
-
-export interface GameRehydrateEvent {
-  maxPlayers: number
-  gameStatus: GameStatus
-  playerOrderIds: string[]
-  currentTurnUser: User | null
-  lines?: Line[]
-}
-
 /**
  * RehydrateEvent should be a server-sided event that allows the connected client to
  * restore the current state of the game. Clients should not be sending a RehydrateEvent
  * to the server.
  */
-export type RehydrateEvent = UserRehydrateEvent &
-  ChatRehydrateEvent &
-  GameRehydrateEvent
+export type RehydrateEvent = UserRehydrate &
+  ChatRehydrate &
+  PlayersRehydrate &
+  GameRehydrate &
+  DrawingRehydrate
 
 export interface UserJoinLeaveEvent {
   playerState: PlayerState

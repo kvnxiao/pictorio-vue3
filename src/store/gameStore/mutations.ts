@@ -1,12 +1,12 @@
+import { GameStatus, TurnStatus } from "@/models/status"
+import { Line, Point } from "@/models/drawing"
 import {
-  GameRehydrateEvent,
+  RehydrateEvent,
   StartGameEvent,
   TurnBeginDrawingEvent,
   TurnBeginSelectionEvent,
   TurnCountdownEvent,
 } from "@/models/events"
-import { GameStatus, TurnStatus } from "@/models/status"
-import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
 
@@ -33,7 +33,7 @@ export enum GameMutations {
 
 export interface Mutations<S = GameState> {
   [GameMutations.RESET](state: S): void
-  [GameMutations.REHYDRATE](state: S, payload: GameRehydrateEvent): void
+  [GameMutations.REHYDRATE](state: S, payload: RehydrateEvent): void
   [GameMutations.START_GAME](state: S, payload: StartGameEvent): void
   [GameMutations.SET_THICKNESS_IDX](state: S, payload: number): void
   [GameMutations.SET_COLOUR_IDX](state: S, payload: number): void
@@ -78,13 +78,22 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.redoStack.splice(0, state.redoStack.length)
     state.scale = 1
   },
-  [GameMutations.REHYDRATE](state: GameState, event: GameRehydrateEvent) {
-    state.maxPlayers = event.maxPlayers
-    state.gameStatus = event.gameStatus
-    state.playerOrderIds = event.playerOrderIds
+  [GameMutations.REHYDRATE](state: GameState, event: RehydrateEvent) {
+    state.maxPlayers = event.players.maxPlayers
+    state.maxRounds = event.game.maxRounds
+    state.round = event.game.round
+    state.gameStatus = event.game.status
+    state.turnStatus = event.game.turnStatus
+    state.maxSelectionTime = event.game.maxSelectionTime
+    state.maxTurnTime = event.game.maxTurnTime
+    state.playerOrderIds = event.game.playerOrderIds
+    state.wordSelections = event.game.words.selections
+    state.currentWord = event.game.words.word
+    state.currentWordLength = event.game.words.wordLength
     if (event.currentTurnUser) {
       state.currentTurnUser = event.currentTurnUser
     }
+    state.timeLeftSeconds = event.game.timeLeft
     state.lines = event.lines ? event.lines : []
   },
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
