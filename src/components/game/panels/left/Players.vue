@@ -1,10 +1,34 @@
 <template>
-  <div class="select-none p-4">
-    <ul class="space-y-4">
-      <li v-for="player of players" :key="player.id">
-        <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-      </li>
-    </ul>
+  <div class="flex flex-col h-full p-4">
+    <div class="select-none flex-grow h-0 overflow-y-auto scrollbar">
+      <ul class="space-y-4">
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+        <li v-for="player of players" :key="player.id">
+          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+        </li>
+      </ul>
+    </div>
+    <div class="pt-2 border-t mt-2">{{ subText }}</div>
   </div>
 </template>
 
@@ -15,6 +39,7 @@ import PlayerEntry from "@/components/game/player/PlayerEntry.vue"
 import { PlayerState } from "@/models/playerState"
 import { User } from "@/models/user"
 import { useGameStore } from "@/store/gameStore"
+import { useRounds } from "@/composables/gameState/useRounds"
 import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
@@ -44,6 +69,7 @@ export default defineComponent({
   setup(props) {
     const userStore = useUserStore()
     const gameStore = useGameStore()
+    const { rounds, maxRounds } = useRounds()
 
     const players = computed<PlayerState[]>(() => {
       if (props.status === GameStatus.STARTED) {
@@ -59,9 +85,19 @@ export default defineComponent({
 
     const drawingUserId = computed<string>(() => props.drawingUser?.id ?? "")
 
+    const subText = computed<string>(() => {
+      return props.status === GameStatus.STARTED
+        ? `Round: ${rounds.value} / ${maxRounds.value}`
+        : "Waiting..."
+    })
+
     return {
       players,
       drawingUserId,
+      rounds,
+      maxRounds,
+      GameStatus,
+      subText,
     }
   },
 })
