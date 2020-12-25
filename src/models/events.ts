@@ -9,6 +9,7 @@ import { BaseTurnEvent } from "./turn"
 import { Line } from "./drawing"
 import { PlayerState } from "./playerState"
 import { User } from "./user"
+import { Winner } from "./winner"
 
 export enum EventType {
   UserJoinLeave = 0,
@@ -138,7 +139,7 @@ export interface AwardPointsEvent {
 }
 
 export interface GameOverEvent {
-  winner: User
+  winners: Winner[]
 }
 
 export interface GameEvent {

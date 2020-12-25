@@ -1,6 +1,7 @@
 import { GameStatus, TurnStatus } from "@/models/status"
 import { Line, Point } from "@/models/drawing"
 import {
+  GameOverEvent,
   RehydrateEvent,
   StartGameEvent,
   TurnDrawingEvent,
@@ -10,6 +11,7 @@ import {
 } from "@/models/events"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
+
 
 export enum GameMutations {
   RESET = "RESET",
@@ -30,7 +32,8 @@ export enum GameMutations {
   TURN_WORD_SELECTION = "BEGIN_TURN_SELECTION",
   TURN_DRAWING = "BEGIN_TURN_DRAWING",
   TURN_END = "TURN_END",
-  CLEAR_COUNTDOWN = "CLEAR_COUNTDOWN",
+  GAME_OVER = "GAME_OVER",
+  NEW_GAME = "NEW_GAME",
 }
 
 export interface Mutations<S = GameState> {
@@ -51,7 +54,8 @@ export interface Mutations<S = GameState> {
   [GameMutations.TURN_WORD_SELECTION](state: S, payload: TurnWordSelectionEvent): void
   [GameMutations.TURN_DRAWING](state: S, payload: TurnDrawingEvent): void
   [GameMutations.TURN_END](state: S, payload: TurnEndEvent): void
-  [GameMutations.CLEAR_COUNTDOWN](state: S): void
+  [GameMutations.GAME_OVER](state: S, payload: GameOverEvent): void
+  [GameMutations.NEW_GAME](state: S): void
 }
 
 export const mutations: MutationTree<GameState> & Mutations = {
@@ -73,6 +77,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.currentWordLength = null
     state.currentTurnUser = null
     state.timeLeftSeconds = -1
+    state.winners = null
 
     // Reset drawing state
     state.isDrawing = false
@@ -196,7 +201,12 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.timeLeftSeconds = event.timeLeft
     state.turnStatus = event.status
   },
-  [GameMutations.CLEAR_COUNTDOWN](state: GameState) {
-    state.timeLeftSeconds = 0
+  [GameMutations.GAME_OVER](state: GameState, event: GameOverEvent) {
+    state.gameStatus = GameStatus.GAME_OVER
+    state.winners = event.winners
   },
+  [GameMutations.NEW_GAME](state: GameState) {
+    state.gameStatus = GameStatus.WAITING_READY_UP
+    state.winners = null
+  }
 }

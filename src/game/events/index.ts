@@ -6,6 +6,7 @@ import {
   EventType,
   GameEvent,
   GameEventTypeMap,
+  GameOverEvent,
   ReadyEvent,
   RehydrateEvent,
   StartGameEvent,
@@ -148,6 +149,10 @@ export function registerEventListeners(): void {
 
   onEvent(EventType.AwardPoints, (event: AwardPointsEvent) => {
     userStore.commit(UserMutations.ADD_POINTS, event)
+  })
+
+  onEvent(EventType.GameOver, (event: GameOverEvent) => {
+    gameStore.commit(GameMutations.GAME_OVER, event)
   })
 }
 

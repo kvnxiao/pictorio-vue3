@@ -104,7 +104,6 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
     { commit },
     { index, user, sendEvent }: SelectWordPayload,
   ): Promise<void> => {
-    commit(GameMutations.CLEAR_COUNTDOWN)
     sendEvent(EventType.TurnWordSelected, {
       index,
       user,

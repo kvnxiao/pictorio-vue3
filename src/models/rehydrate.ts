@@ -3,6 +3,7 @@ import { ChatEvent } from "./events"
 import { PlayerState } from "./playerState"
 import { GameStatus, TurnStatus } from "./status"
 import { User } from "./user"
+import { Winner } from "./winner"
 
 export interface UserRehydrate {
   selfUser: User
@@ -37,6 +38,7 @@ export interface GameRehydrate {
       wordLength: number[] | null
       selections: string[] | null
     }
+    winners: Winner[] | null
   }
 }
 
