@@ -2,7 +2,7 @@
   <!-- Overlay (absolute, full width and height) -->
   <div class="absolute top-0 left-0 w-full h-full">
     <div class="flex flex-col h-full items-center justify-center">
-      <transition name="bounce">
+      <transition name="bounce" mode="out-in">
         <div
           v-if="isNextUpState"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
