@@ -91,7 +91,9 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.maxNextUpTime = event.game.maxNextUpTime
     state.maxSelectionTime = event.game.maxSelectionTime
     state.maxTurnTime = event.game.maxTurnTime
-    state.playerOrderIds = event.game.playerOrderIds
+    if (event.game.playerOrderIds) {
+      state.playerOrderIds = event.game.playerOrderIds
+    }
     state.wordSelections = event.game.words.selections
     state.currentWord = event.game.words.word
     state.currentWordLength = event.game.words.wordLength
@@ -102,7 +104,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.lines = event.lines ? event.lines : []
   },
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
-    state.gameStatus = GameStatus.Started
+    state.gameStatus = GameStatus.STARTED
     state.playerOrderIds = event.playerOrderIds
 
     // reset drawing

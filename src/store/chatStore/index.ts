@@ -15,6 +15,8 @@ export const chatStore = createStore<ChatState>({
   actions,
 })
 
-export function useChatStore(): Store<ChatState, Mutations, Actions, Getters> {
+export type ChatStore = Store<ChatState, Mutations, Actions, Getters>
+
+export function useChatStore(): ChatStore {
   return useStore(chatStoreKey)
 }

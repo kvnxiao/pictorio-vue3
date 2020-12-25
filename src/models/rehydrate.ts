@@ -30,7 +30,7 @@ export interface GameRehydrate {
     timeLeft: number
     status: GameStatus
     turnStatus: TurnStatus
-    playerOrderIds: string[]
+    playerOrderIds: string[] | null
     words: {
       word: string
       wordLength: number[] | null

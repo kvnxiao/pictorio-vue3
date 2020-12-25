@@ -13,18 +13,7 @@
         </div>
         <button
           class="w-24 flex-shrink-0 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2"
-          :class="{
-            'bg-blue-500': !ready,
-            'hover:bg-blue-600': !ready,
-            'active:bg-blue-700': !ready,
-            'focus:ring-blue-500': !ready,
-            'focus:ring-offset-blue-200': !ready,
-            'bg-indigo-500': ready,
-            'hover:bg-indigo-600': ready,
-            'active:bg-indigo-700': ready,
-            'focus:ring-indigo-500': ready,
-            'focus:ring-offset-indigo-200': ready,
-          }"
+          :class="readyButtonStyles"
           @click="readyToggle"
         >
           {{ readyText }}
@@ -48,9 +37,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue"
+import { PropType, computed, defineComponent } from "vue"
 import { EventType } from "@/models/events"
 import { PlayerState } from "@/models/playerState"
+import { User } from "@/models/user"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
@@ -58,7 +48,13 @@ import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Waiting",
-  setup() {
+  props: {
+    selfUser: {
+      type: Object as PropType<User>,
+      required: true,
+    },
+  },
+  setup(props) {
     const gameStore = useGameStore()
     const userStore = useUserStore()
     const { send } = useGlobalWebSocket()
@@ -69,12 +65,13 @@ export default defineComponent({
     const currPlayerCount = computed<number>(
       () =>
         Object.values(userStore.state.playerStates).filter(
-          (playerState: PlayerState) => playerState.isConnected,
+          (playerState: PlayerState) =>
+            playerState.isConnected && !playerState.isSpectator,
         ).length,
     )
 
-    const ready = computed<boolean>(
-      () => userStore.state.playerStates[userStore.state.selfUser.id]?.isReady ?? false,
+    const isReady = computed<boolean>(
+      () => userStore.state.playerStates[props.selfUser.id]?.isReady ?? false,
     )
 
     const readyPlayerCount = computed<number>(() => {
@@ -83,7 +80,7 @@ export default defineComponent({
       ).length
     })
 
-    const readyText = computed<string>(() => (ready.value ? "Unready" : "Ready"))
+    const readyText = computed<string>(() => (isReady.value ? "Unready" : "Ready"))
 
     const startDisabled = computed<boolean>(
       () =>
@@ -91,34 +88,51 @@ export default defineComponent({
     )
 
     const isRoomLeader = computed<boolean>(
-      () =>
-        userStore.state.playerStates[userStore.state.selfUser.id]?.isRoomLeader ??
-        false,
+      () => userStore.state.playerStates[props.selfUser.id]?.isRoomLeader ?? false,
     )
 
     const readyToggle = () => {
       sendEvent(EventType.Ready, {
-        user: userStore.state.selfUser,
-        ready: !ready.value,
+        user: props.selfUser,
+        ready: !isReady.value,
       })
     }
 
     const startGame = () => {
       sendEvent(EventType.StartGameIssued, {
-        issuer: userStore.state.selfUser,
+        issuer: props.selfUser,
       })
     }
+
+    const readyButtonStyles = computed(() => {
+      const ready = isReady.value
+      return {
+        // Colour to un-ready
+        "bg-indigo-500": ready,
+        "hover:bg-indigo-600": ready,
+        "active:bg-indigo-700": ready,
+        "focus:ring-indigo-500": ready,
+        "focus:ring-offset-indigo-200": ready,
+        // Colour to ready up
+        "bg-blue-500": !ready,
+        "hover:bg-blue-600": !ready,
+        "active:bg-blue-700": !ready,
+        "focus:ring-blue-500": !ready,
+        "focus:ring-offset-blue-200": !ready,
+      }
+    })
 
     return {
       currPlayerCount,
       maxPlayers,
-      ready,
       readyPlayerCount,
       readyText,
       readyToggle,
       startGame,
       startDisabled,
       isRoomLeader,
+      // Style objects
+      readyButtonStyles,
     }
   },
 })

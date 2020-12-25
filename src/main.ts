@@ -1,4 +1,4 @@
-import "@/styles/index.css"
+import "@/styles/index.scss"
 import { chatStore, chatStoreKey } from "./store/chatStore"
 import { gameStateStore, gameStoreKey } from "@/store/gameStore"
 import { toastMsgStore, toastMsgStoreKey } from "./store/toastMsgStore"

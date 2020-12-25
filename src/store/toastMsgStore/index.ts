@@ -15,11 +15,8 @@ export const toastMsgStore = createStore<ToastMessageState>({
   actions,
 })
 
-export function useToastMsgStore(): Store<
-  ToastMessageState,
-  Mutations,
-  Actions,
-  Getters
-> {
+export type ToastMessageStore = Store<ToastMessageState, Mutations, Actions, Getters>
+
+export function useToastMsgStore(): ToastMessageStore {
   return useStore(toastMsgStoreKey)
 }

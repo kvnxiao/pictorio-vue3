@@ -20,7 +20,6 @@
         <div class="flex flex-col items-center justify-start space-y-4">
           <p class="text-gray-800">Or join an existing room</p>
           <input
-            id="price"
             v-model="roomID"
             class="focus:ring-yellow-500 focus:border-yellow-400 block mx-auto px-4 border-gray-300 shadow-sm rounded-md max-w-full"
             type="text"
@@ -44,19 +43,29 @@
 import { ROOM_CREATE, ROOM_EXISTS, ROOM_REDIRECT } from "@/api/endpoints"
 import { RoomRequest, RoomResponse } from "@/service/room"
 import { defineComponent, ref } from "vue"
-import service from "@/service"
+import { ToastMessageMutations } from "@/store/toastMsgStore/mutations"
+import { service } from "@/service"
 import { useRouter } from "vue-router"
+import { useToastMsgStore } from "@/store/toastMsgStore"
 
 export default defineComponent({
   name: "Home",
   setup() {
     const roomID = ref<string>("")
     const router = useRouter()
+    const toastMsgStore = useToastMsgStore()
 
     const createRoom = async () => {
-      const resp = await service.post<RoomResponse>(ROOM_CREATE)
-      if (resp.data.exists) {
-        router.push(ROOM_REDIRECT(resp.data.roomID))
+      try {
+        const resp = await service.post<RoomResponse>(ROOM_CREATE)
+        if (resp.data.exists) {
+          router.push(ROOM_REDIRECT(resp.data.roomID))
+        }
+      } catch (err) {
+        toastMsgStore.commit(ToastMessageMutations.SET, {
+          message: "Unable to connect to server.",
+          type: "error",
+        })
       }
     }
 

@@ -1,0 +1,59 @@
+/*! @import */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scrollbar {
+  scrollbar-width: thin;
+}
+
+.scrollbar::-webkit-scrollbar {
+  @apply w-2.5;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-3xl;
+}
+
+.tool-spacer::before {
+  @apply text-gray-400;
+  content: "|";
+  line-height: 40px;
+}
+
+.panel-center {
+  width: 70%;
+}
+
+.aspect-ratio {
+  padding-top: (10 / 16) * 100%;
+}
+
+.panel-left,
+.panel-right {
+  width: 15%;
+}
+
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+
+.bounce-leave-active {
+  animation: bounce-in 0.3s reverse;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0) rotate(-3deg);
+  }
+  50% {
+    transform: scale(1.25) rotate(7deg);
+  }
+  100% {
+    transform: scale(1) rotate(3deg);
+  }
+}

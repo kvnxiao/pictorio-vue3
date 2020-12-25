@@ -2,10 +2,10 @@
   <div
     class="flex rounded-lg shadow-sm p-2"
     :class="{
-      'border-yellow-400': isCurrentTurn,
-      'border-2': isCurrentTurn,
-      border: !isCurrentTurn,
-      'border-gray-200': !isCurrentTurn,
+      'border-yellow-400': isDrawerTurn,
+      'border-2': isDrawerTurn,
+      border: !isDrawerTurn,
+      'border-gray-200': !isDrawerTurn,
     }"
   >
     <div class="pointer-events-none mr-4 w-12 h-12 flex justify-center items-center">
@@ -13,8 +13,8 @@
     </div>
     <div class="h-12">
       <p class="text-xl">
-        {{ state.user.name }}
-        <span v-if="state.isRoomLeader" class="inline-block">
+        {{ player.user.name }}
+        <span v-if="player.isRoomLeader" class="inline-block">
           <svg
             class="w-4 h-4"
             xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@
           </svg>
         </span>
       </p>
-      <p class="points">{{ state.points }} PTS</p>
+      <p class="points">{{ player.points }} PTS</p>
     </div>
   </div>
 </template>
@@ -35,38 +35,29 @@
 <script lang="ts">
 import { PropType, computed, defineComponent } from "vue"
 import { PlayerState } from "@/models/playerState"
-import { useGameStore } from "@/store/gameStore"
 
 export default defineComponent({
   name: "PlayerEntry",
   props: {
-    state: {
+    player: {
       type: Object as PropType<PlayerState>,
-      default: {
-        user: {
-          name: "",
-          id: "",
-        },
-        points: 0,
-        wins: 0,
-        isSpectator: false,
-        isConnected: false,
-        isReady: false,
-        isRoomLeader: false,
-      },
+      required: true,
+    },
+    drawingUserId: {
+      type: String,
+      required: true,
     },
   },
   setup(props) {
-    const gameStore = useGameStore()
-
-    const isCurrentTurn = computed<boolean>(
-      () => gameStore.state.currentTurnUser?.id === props.state.user.id,
+    const isDrawerTurn = computed<boolean>(
+      () => props.drawingUserId === props.player.user.id,
     )
 
-    const character = computed<string>(() => props.state.user.name[0])
+    const character = computed<string>(() => props.player.user.name[0])
+
     return {
       character,
-      isCurrentTurn,
+      isDrawerTurn,
     }
   },
 })

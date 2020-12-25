@@ -42,17 +42,23 @@
 
 <script lang="ts">
 import { ChatEvent, EventType } from "@/models/events"
-import { computed, defineComponent, nextTick, ref, watch } from "vue"
+import { PropType, computed, defineComponent, nextTick, ref, watch } from "vue"
+import { User } from "@/models/user"
 import { useChatStore } from "@/store/chatStore"
 import { useGameEvents } from "@/game/events"
 import { useGlobalWebSocket } from "@/game/websocket"
-import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
   name: "Chat",
-  setup() {
+  props: {
+    selfUser: {
+      type: Object as PropType<User>,
+      required: true,
+    },
+  },
+  setup(props) {
     const chatStore = useChatStore()
-    const userStore = useUserStore()
+
     const { send } = useGlobalWebSocket()
     const { sendEvent } = useGameEvents(send)
     const input = ref<string>("")
@@ -63,7 +69,7 @@ export default defineComponent({
     const sendMessage = () => {
       if (input.value.length > 0) {
         const chatEvent: ChatEvent = {
-          user: userStore.state.selfUser,
+          user: props.selfUser,
           message: input.value,
         }
         sendEvent(EventType.Chat, chatEvent)

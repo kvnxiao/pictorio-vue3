@@ -15,6 +15,8 @@ export const userStore = createStore<UserState>({
   actions,
 })
 
-export function useUserStore(): Store<UserState, Mutations, Actions, Getters> {
+export type UserStore = Store<UserState, Mutations, Actions, Getters>
+
+export function useUserStore(): UserStore {
   return useStore(userStoreKey)
 }

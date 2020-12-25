@@ -1,8 +1,8 @@
 export enum GameStatus {
   NOT_LOADED = -1,
-  WaitingReadyUp = 0,
-  Started = 1,
-  GameOver = 2,
+  WAITING_READY_UP = 0,
+  STARTED = 1,
+  GAME_OVER = 2,
 }
 
 export enum TurnStatus {

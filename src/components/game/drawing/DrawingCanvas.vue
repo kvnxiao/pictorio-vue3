@@ -1,28 +1,25 @@
 <template>
-  <div id="drawing" class="h-0">
-    <canvas
-      id="canvas"
-      ref="canvasRef"
-      class="bg-white w-full h-full absolute top-0 left-0 rounded-md"
-    />
-    <canvas
-      id="top-canvas"
-      ref="topCanvasRef"
-      class="pointer-events-none w-full h-full absolute top-0 left-0 rounded-md"
-    />
-    <Toolbelt
-      v-if="isMyTurn"
-      @tool-clear="clearDrawing()"
-      @tool-undo="undoDrawing()"
-      @tool-redo="redoDrawing()"
-    />
-  </div>
+  <canvas
+    ref="canvasRef"
+    class="bg-white w-full h-full absolute top-0 left-0 rounded-md"
+  />
+  <canvas
+    ref="topCanvasRef"
+    class="pointer-events-none w-full h-full absolute top-0 left-0 rounded-md"
+  />
+  <Toolbelt
+    v-if="isDrawerTurn"
+    @tool-clear="clearDrawing()"
+    @tool-undo="undoDrawing()"
+    @tool-redo="redoDrawing()"
+  />
 </template>
 
 <script lang="ts">
 import { InputEvent, useInputCoordinates } from "@/composables/useInputCoordinates"
 import { Line, scaledPoint } from "@/models/drawing"
 import {
+  PropType,
   computed,
   defineComponent,
   onMounted,
@@ -34,16 +31,28 @@ import {
 import { GameActions } from "@/store/gameStore/actions"
 import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
+import { User } from "@/models/user"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
-import { useUserStore } from "@/store/userStore"
 
 export default defineComponent({
-  name: "Drawing",
+  name: "DrawingCanvas",
   components: { Toolbelt },
   props: {
+    selfUser: {
+      type: Object as PropType<User>,
+      required: true,
+    },
+    enabled: {
+      type: Boolean,
+      default: false,
+    },
+    isDrawerTurn: {
+      type: Boolean,
+      default: false,
+    },
     canvasHeight: {
       type: Number,
       default: 0,
@@ -80,15 +89,11 @@ export default defineComponent({
     } = useDualLayerCanvasContext(canvasRef, topCanvasRef)
 
     const gameStore = useGameStore()
-    const userStore = useUserStore()
     const lines = computed<Line[]>(() => gameStore.state.lines)
     const scale = computed<number>(() => gameStore.state.scale)
     const isDrawing = computed<boolean>(() => gameStore.state.isDrawing)
     const colourIdx = computed<number>(() => gameStore.state.colourIndex)
     const thicknessIdx = computed<number>(() => gameStore.state.thicknessIndex)
-    const isMyTurn = computed<boolean>(
-      () => gameStore.state.currentTurnUser?.id === userStore.state.selfUser.id,
-    )
 
     const drawMainCanvas = () => {
       for (const line of lines.value) {
@@ -117,7 +122,7 @@ export default defineComponent({
     watch(
       () => gameStore.state.lines.length,
       (len) => {
-        if (!isMyTurn.value) {
+        if (!props.isDrawerTurn) {
           if (len === 0) {
             clearTemp()
             clearMain()
@@ -136,7 +141,7 @@ export default defineComponent({
     })
 
     const onDrawStart = async (x: number, y: number) => {
-      if (isMyTurn.value) {
+      if (props.enabled && props.isDrawerTurn) {
         await gameStore.dispatch(
           GameActions.START_DRAW_POINT,
           scaledPoint(x, y, scale.value),
@@ -145,7 +150,7 @@ export default defineComponent({
     }
 
     const onDrawMove = async (x: number, y: number) => {
-      if (isMyTurn.value && isDrawing.value) {
+      if (isDrawing.value) {
         gameStore.commit(GameMutations.ADD_POINT, scaledPoint(x, y, scale.value))
 
         const [p1, p2] = gameStore.getters.getLatestTwoPoints()
@@ -154,11 +159,11 @@ export default defineComponent({
     }
 
     const onDrawStop = async (x: number, y: number) => {
-      if (isMyTurn.value && isDrawing.value) {
+      if (isDrawing.value) {
         const line = await gameStore.dispatch(GameActions.STOP_DRAW_POINT, {
           point: scaledPoint(x, y, scale.value),
           sendEvent,
-          user: userStore.state.selfUser,
+          user: props.selfUser,
         })
 
         drawMain(line, scale.value)
@@ -188,7 +193,7 @@ export default defineComponent({
     const clearDrawing = async () => {
       await gameStore.dispatch(GameActions.CLEAR_DRAWING, {
         sendEvent,
-        user: userStore.state.selfUser,
+        user: props.selfUser,
       })
       clearTemp()
       clearMain()
@@ -197,7 +202,7 @@ export default defineComponent({
     const undoDrawing = async () => {
       await gameStore.dispatch(GameActions.UNDO, {
         sendEvent,
-        user: userStore.state.selfUser,
+        user: props.selfUser,
       })
       clearMain()
       drawMainCanvas()
@@ -206,7 +211,7 @@ export default defineComponent({
     const redoDrawing = async () => {
       await gameStore.dispatch(GameActions.REDO, {
         sendEvent,
-        user: userStore.state.selfUser,
+        user: props.selfUser,
       })
       clearMain()
       drawMainCanvas()
@@ -218,7 +223,6 @@ export default defineComponent({
       clearDrawing,
       undoDrawing,
       redoDrawing,
-      isMyTurn,
     }
   },
 })
