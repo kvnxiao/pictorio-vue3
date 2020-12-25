@@ -17,7 +17,9 @@ export function useTimer(turnStatus: Ref<TurnStatus>): TimerState {
       case TurnStatus.SELECTION:
         return gameStore.state.maxSelectionTime
       case TurnStatus.DRAWING:
-        return gameStore.state.maxTurnTime
+        return gameStore.state.maxDrawingTime
+      case TurnStatus.ENDED:
+        return gameStore.state.maxEndTime
       default:
         return 0
     }

@@ -7,6 +7,7 @@
       :max-canvas-width="maxCanvasWidth"
       :enabled="canvasEnabled"
       :is-drawer-turn="isDrawerTurn"
+      :turn-status="turnStatus"
     />
     <transition name="bounce">
       <Guess

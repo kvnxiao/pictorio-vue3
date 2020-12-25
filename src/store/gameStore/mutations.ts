@@ -3,10 +3,10 @@ import { Line, Point } from "@/models/drawing"
 import {
   RehydrateEvent,
   StartGameEvent,
-  TurnBeginDrawingEvent,
-  TurnBeginSelectionEvent,
-  TurnCountdownEvent,
-  TurnDrawingNextEvent,
+  TurnDrawingEvent,
+  TurnEndEvent,
+  TurnNextPlayerEvent,
+  TurnWordSelectionEvent,
 } from "@/models/events"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
@@ -27,9 +27,9 @@ export enum GameMutations {
   REDO = "REDO",
   // Turn related
   NEXT_PLAYER = "NEXT_PLAYER",
-  BEGIN_TURN_SELECTION = "BEGIN_TURN_SELECTION",
-  BEGIN_TURN_DRAWING = "BEGIN_TURN_DRAWING",
-  TURN_COUNTDOWN = "TURN_COUNTDOWN",
+  TURN_WORD_SELECTION = "BEGIN_TURN_SELECTION",
+  TURN_DRAWING = "BEGIN_TURN_DRAWING",
+  TURN_END = "TURN_END",
   CLEAR_COUNTDOWN = "CLEAR_COUNTDOWN",
 }
 
@@ -47,10 +47,10 @@ export interface Mutations<S = GameState> {
   [GameMutations.CLEAR_DRAWING](state: S): void
   [GameMutations.UNDO](state: S): void
   [GameMutations.REDO](state: S): void
-  [GameMutations.NEXT_PLAYER](state: S, payload: TurnDrawingNextEvent): void
-  [GameMutations.BEGIN_TURN_SELECTION](state: S, payload: TurnBeginSelectionEvent): void
-  [GameMutations.BEGIN_TURN_DRAWING](state: S, payload: TurnBeginDrawingEvent): void
-  [GameMutations.TURN_COUNTDOWN](state: S, payload: TurnCountdownEvent): void
+  [GameMutations.NEXT_PLAYER](state: S, payload: TurnNextPlayerEvent): void
+  [GameMutations.TURN_WORD_SELECTION](state: S, payload: TurnWordSelectionEvent): void
+  [GameMutations.TURN_DRAWING](state: S, payload: TurnDrawingEvent): void
+  [GameMutations.TURN_END](state: S, payload: TurnEndEvent): void
   [GameMutations.CLEAR_COUNTDOWN](state: S): void
 }
 
@@ -65,7 +65,8 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.turnStatus = TurnStatus.SELECTION
     state.maxNextUpTime = 0
     state.maxSelectionTime = 0
-    state.maxTurnTime = 0
+    state.maxDrawingTime = 0
+    state.maxEndTime = 0
     state.playerOrderIds.splice(0, state.playerOrderIds.length)
     state.wordSelections = null
     state.currentWord = null
@@ -90,7 +91,8 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.turnStatus = event.game.turnStatus
     state.maxNextUpTime = event.game.maxNextUpTime
     state.maxSelectionTime = event.game.maxSelectionTime
-    state.maxTurnTime = event.game.maxTurnTime
+    state.maxDrawingTime = event.game.maxDrawingTime
+    state.maxEndTime = event.game.maxEndTime
     if (event.game.playerOrderIds) {
       state.playerOrderIds = event.game.playerOrderIds
     }
@@ -152,50 +154,47 @@ export const mutations: MutationTree<GameState> & Mutations = {
       state.lines.push(line)
     }
   },
-  [GameMutations.NEXT_PLAYER](state: GameState, payload: TurnDrawingNextEvent) {
-    if (payload.nextTurnUser) {
-      state.turnStatus = TurnStatus.NEXT_PLAYER
-      state.currentTurnUser = payload.nextTurnUser
-      state.maxNextUpTime = payload.maxTime
-      state.timeLeftSeconds = payload.timeLeft
-    } else {
-      state.timeLeftSeconds = payload.timeLeft
+  [GameMutations.NEXT_PLAYER](state: GameState, event: TurnNextPlayerEvent) {
+    if (event.nonce) {
+      state.currentTurnUser = event.nonce.nextTurnUser
     }
+    state.maxNextUpTime = event.maxTime
+    state.timeLeftSeconds = event.timeLeft
+    state.turnStatus = event.status
   },
-  [GameMutations.BEGIN_TURN_SELECTION](
-    state: GameState,
-    event: TurnBeginSelectionEvent,
-  ) {
-    // set turn status to word selection state
-    state.turnStatus = TurnStatus.SELECTION
-
-    // set time limits
-    state.maxSelectionTime = event.maxTime
-    state.timeLeftSeconds = event.maxTime
-
+  [GameMutations.TURN_WORD_SELECTION](state: GameState, event: TurnWordSelectionEvent) {
     // set word selections (null for non-drawing players)
-    state.wordSelections = event.words ?? null
+    if (event.nonce) {
+      state.wordSelections = event.nonce.words ?? null
+    }
+    state.maxSelectionTime = event.maxTime
+    state.timeLeftSeconds = event.timeLeft
+    state.turnStatus = event.status
 
     // current word is resetted
     state.currentWord = null
     state.currentWordLength = null
   },
-  [GameMutations.BEGIN_TURN_DRAWING](state: GameState, event: TurnBeginDrawingEvent) {
-    // set turn status to drawing state
-    state.turnStatus = TurnStatus.DRAWING
-
+  [GameMutations.TURN_DRAWING](state: GameState, event: TurnDrawingEvent) {
     // clear word selection memory, even for current drawer
     state.wordSelections = null
 
-    // set time limits
-    state.maxTurnTime = event.maxTime
-
     // set current word (null for non-drawing players)
-    state.currentWord = event.word ?? null
-    state.currentWordLength = event.wordLength
+    if (event.nonce) {
+      state.currentWord = event.nonce.word ?? null
+      state.currentWordLength = event.nonce.wordLength
+    }
+    state.maxDrawingTime = event.maxTime
+    state.timeLeftSeconds = event.timeLeft
+    state.turnStatus = event.status
   },
-  [GameMutations.TURN_COUNTDOWN](state: GameState, payload: TurnCountdownEvent) {
-    state.timeLeftSeconds = payload.timeLeft
+  [GameMutations.TURN_END](state: GameState, event: TurnEndEvent) {
+    if (event.nonce) {
+      state.currentWord = event.nonce.answer
+    }
+    state.maxEndTime = event.maxTime
+    state.timeLeftSeconds = event.timeLeft
+    state.turnStatus = event.status
   },
   [GameMutations.CLEAR_COUNTDOWN](state: GameState) {
     state.timeLeftSeconds = 0

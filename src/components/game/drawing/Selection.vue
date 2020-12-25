@@ -4,15 +4,21 @@
     <div class="flex flex-col h-full items-center justify-center">
       <transition name="bounce" mode="out-in">
         <div
-          v-if="isWaitingNextPlayer"
+          v-if="showNextUp"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
             Next up: {{ drawerName }}
           </p>
+          <p
+            v-if="isDrawerTurn"
+            class="font-semibold text-xl text-yellow-900 select-none"
+          >
+            That means you!
+          </p>
         </div>
         <div
-          v-else-if="isDrawerTurn && hasWordSelections"
+          v-else-if="isDrawerTurn && showSelection && hasWordSelections"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
@@ -28,11 +34,20 @@
           </p>
         </div>
         <div
-          v-else-if="!isDrawerTurn && !isWaitingNextPlayer && drawerName !== ''"
+          v-else-if="!isDrawerTurn && showSelection"
           class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
             Waiting for {{ drawerName }} to pick a word
+          </p>
+        </div>
+        <div
+          v-else-if="showTurnEnd"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+        >
+          <p class="font-semibold text-xl text-yellow-900 select-none">
+            The word was
+            <span class="uppercase text-red-600"> {{ answer }} </span>!
           </p>
         </div>
       </transition>
@@ -79,11 +94,21 @@ export default defineComponent({
     const { wordSelections } = useWords()
     const drawerName = computed<string>(() => props.drawingUser?.name ?? "")
 
-    const isWaitingNextPlayer = computed<boolean>(
-      () => props.turnStatus == TurnStatus.NEXT_PLAYER,
+    const hasWordSelections = computed<boolean>(() => wordSelections.value.length > 0)
+
+    const showNextUp = computed<boolean>(
+      () => props.turnStatus === TurnStatus.NEXT_PLAYER,
+    )
+    const showSelection = computed<boolean>(
+      () => props.turnStatus === TurnStatus.SELECTION && drawerName.value !== "",
+    )
+    const showTurnEnd = computed<boolean>(
+      () => props.turnStatus === TurnStatus.ENDED && drawerName.value !== "",
     )
 
-    const hasWordSelections = computed<boolean>(() => wordSelections.value.length > 0)
+    const answer = computed<string>(() =>
+      showTurnEnd.value ? gameStore.state.currentWord ?? "" : "",
+    )
 
     const selectWord = async (index: number) => {
       gameStore.dispatch(GameActions.SELECT_WORD, {
@@ -95,10 +120,13 @@ export default defineComponent({
 
     return {
       drawerName,
-      isWaitingNextPlayer,
       wordSelections,
       hasWordSelections,
       selectWord,
+      showNextUp,
+      showSelection,
+      showTurnEnd,
+      answer,
     }
   },
 })

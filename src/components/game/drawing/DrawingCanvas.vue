@@ -31,6 +31,7 @@ import {
 import { GameActions } from "@/store/gameStore/actions"
 import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
+import { TurnStatus } from "@/models/status"
 import { User } from "@/models/user"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { useGameEvents } from "@/game/events"
@@ -64,6 +65,10 @@ export default defineComponent({
     maxCanvasWidth: {
       type: Number,
       default: 0,
+    },
+    turnStatus: {
+      type: Number as PropType<TurnStatus>,
+      required: true,
     },
   },
   setup(props) {
@@ -130,6 +135,18 @@ export default defineComponent({
             clearMain()
             drawMainCanvas()
           }
+        }
+      },
+    )
+
+    // Watch turn status to clear the canvas on each new turn
+    watch(
+      () => props.turnStatus,
+      (curr: TurnStatus) => {
+        if (curr === TurnStatus.NEXT_PLAYER || curr === TurnStatus.ENDED) {
+          gameStore.commit(GameMutations.CLEAR_DRAWING)
+          clearTemp()
+          clearMain()
         }
       },
     )

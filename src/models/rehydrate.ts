@@ -25,7 +25,8 @@ export interface GameRehydrate {
     maxRounds: number
     maxNextUpTime: number
     maxSelectionTime: number
-    maxTurnTime: number
+    maxDrawingTime: number
+    maxEndTime: number
     round: number
     timeLeft: number
     status: GameStatus

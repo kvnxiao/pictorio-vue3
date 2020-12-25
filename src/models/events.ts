@@ -5,6 +5,7 @@ import {
   PlayersRehydrate,
   UserRehydrate,
 } from "./rehydrate"
+import { BaseTurnEvent } from "./turn"
 import { Line } from "./drawing"
 import { PlayerState } from "./playerState"
 import { User } from "./user"
@@ -17,14 +18,13 @@ export enum EventType {
   Ready = 4,
   StartGame = 5,
   StartGameIssued = 6,
-  TurnDrawingNext = 7,
-  TurnBeginSelection = 8,
+  TurnNextPlayer = 7,
+  TurnWordSelection = 8,
   TurnWordSelected = 9,
-  TurnBeginDrawing = 10,
-  TurnCountdown = 11,
-  TurnEnd = 12,
-  AwardPoints = 13,
-  GameOver = 14,
+  TurnDrawing = 10,
+  TurnEnd = 11,
+  AwardPoints = 12,
+  GameOver = 13,
 }
 
 export interface GameEventTypeMap {
@@ -35,11 +35,10 @@ export interface GameEventTypeMap {
   [EventType.Ready]: ReadyEvent
   [EventType.StartGame]: StartGameEvent
   [EventType.StartGameIssued]: StartGameIssuedEvent
-  [EventType.TurnDrawingNext]: TurnDrawingNextEvent
-  [EventType.TurnBeginSelection]: TurnBeginSelectionEvent
+  [EventType.TurnNextPlayer]: TurnNextPlayerEvent
+  [EventType.TurnWordSelection]: TurnWordSelectionEvent
   [EventType.TurnWordSelected]: TurnWordSelectedEvent
-  [EventType.TurnBeginDrawing]: TurnBeginDrawingEvent
-  [EventType.TurnCountdown]: TurnCountdownEvent
+  [EventType.TurnDrawing]: TurnDrawingEvent
   [EventType.TurnEnd]: TurnEndEvent
   [EventType.AwardPoints]: AwardPointsEvent
   [EventType.GameOver]: GameOverEvent
@@ -98,16 +97,17 @@ export interface StartGameIssuedEvent {
   issuer: User
 }
 
-export interface TurnDrawingNextEvent {
-  nextTurnUser?: User
-  maxTime: number
-  timeLeft: number
+export interface TurnNextPlayerEvent extends BaseTurnEvent {
+  nonce?: {
+    nextTurnUser: User
+  }
 }
 
-export interface TurnBeginSelectionEvent {
-  user: User
-  maxTime: number
-  words?: string[]
+export interface TurnWordSelectionEvent extends BaseTurnEvent {
+  nonce?: {
+    user: User
+    words?: string[]
+  }
 }
 
 export interface TurnWordSelectedEvent {
@@ -115,20 +115,19 @@ export interface TurnWordSelectedEvent {
   index: number
 }
 
-export interface TurnBeginDrawingEvent {
-  user: User
-  maxTime: number
-  wordLength: number[]
-  word?: string
+export interface TurnDrawingEvent extends BaseTurnEvent {
+  nonce?: {
+    user: User
+    wordLength: number[]
+    word?: string
+  }
 }
 
-export interface TurnCountdownEvent {
-  user: User
-  timeLeft: number
-}
-
-export interface TurnEndEvent {
-  user: User
+export interface TurnEndEvent extends BaseTurnEvent {
+  nonce?: {
+    user: User
+    answer: string
+  }
 }
 
 export interface AwardPointsEvent {

@@ -9,10 +9,10 @@ import {
   ReadyEvent,
   RehydrateEvent,
   StartGameEvent,
-  TurnBeginDrawingEvent,
-  TurnBeginSelectionEvent,
-  TurnCountdownEvent,
-  TurnDrawingNextEvent,
+  TurnDrawingEvent,
+  TurnEndEvent,
+  TurnNextPlayerEvent,
+  TurnWordSelectionEvent,
   UserJoinLeaveAction,
   UserJoinLeaveEvent,
 } from "@/models/events"
@@ -82,7 +82,6 @@ export function registerEventListeners(): void {
   const gameStore = useGameStore()
 
   onEvent(EventType.Rehydrate, (event: RehydrateEvent) => {
-    console.log(event)
     userStore.commit(UserMutations.REHYDRATE, event)
     chatStore.commit(ChatMutations.REHYDRATE, event)
     gameStore.commit(GameMutations.REHYDRATE, event)
@@ -131,20 +130,20 @@ export function registerEventListeners(): void {
     }
   })
 
-  onEvent(EventType.TurnDrawingNext, (event: TurnDrawingNextEvent) => {
+  onEvent(EventType.TurnNextPlayer, (event: TurnNextPlayerEvent) => {
     gameStore.commit(GameMutations.NEXT_PLAYER, event)
   })
 
-  onEvent(EventType.TurnBeginSelection, (event: TurnBeginSelectionEvent) => {
-    gameStore.commit(GameMutations.BEGIN_TURN_SELECTION, event)
+  onEvent(EventType.TurnWordSelection, (event: TurnWordSelectionEvent) => {
+    gameStore.commit(GameMutations.TURN_WORD_SELECTION, event)
   })
 
-  onEvent(EventType.TurnBeginDrawing, (event: TurnBeginDrawingEvent) => {
-    gameStore.commit(GameMutations.BEGIN_TURN_DRAWING, event)
+  onEvent(EventType.TurnDrawing, (event: TurnDrawingEvent) => {
+    gameStore.commit(GameMutations.TURN_DRAWING, event)
   })
 
-  onEvent(EventType.TurnCountdown, (event: TurnCountdownEvent) => {
-    gameStore.commit(GameMutations.TURN_COUNTDOWN, event)
+  onEvent(EventType.TurnEnd, (event: TurnEndEvent) => {
+    gameStore.commit(GameMutations.TURN_END, event)
   })
 
   onEvent(EventType.AwardPoints, (event: AwardPointsEvent) => {
