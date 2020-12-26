@@ -68,11 +68,19 @@
         />
       </svg>
     </div>
+    <audio ref="sine440">
+      <source src="@/assets/440.wav" type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio ref="sine880">
+      <source src="@/assets/880.wav" type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue"
+import { computed, defineComponent, ref, watch } from "vue"
 
 export default defineComponent({
   name: "Timer",
@@ -119,6 +127,17 @@ export default defineComponent({
         (normalizedSeconds.value / props.maxSeconds) * circumference.value,
     )
 
+    const sine440 = ref<HTMLAudioElement | null>(null)
+    const sine880 = ref<HTMLAudioElement | null>(null)
+
+    watch(normalizedSeconds, (seconds: number) => {
+      if (seconds <= 0) {
+        sine880.value?.play()
+      } else if (seconds <= 3) {
+        sine440.value?.play()
+      }
+    })
+
     return {
       stroke,
       outerRadius,
@@ -130,6 +149,8 @@ export default defineComponent({
       innerSmallDegree,
       normalizedSeconds,
       strokeDashoffset,
+      sine440,
+      sine880,
     }
   },
 })
