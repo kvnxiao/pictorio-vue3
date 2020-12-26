@@ -11,7 +11,22 @@
       <template v-else>
         <p class="text-xl">{{ drawerName }} is drawing:</p>
         <p class="text-xl text-red-600">
-          hint: <span class="uppercase">{{ wordHint }}</span>
+          hint:
+          <span class="uppercase space-x-5">
+            <span
+              v-for="(word, index) of wordHint"
+              :key="index"
+              class="inline-block space-x-1.5"
+            >
+              <span
+                v-for="(char, charIndex) of word"
+                :key="charIndex"
+                class="inline-block"
+              >
+                {{ char }}
+              </span>
+            </span>
+          </span>
         </p>
         <p class="">Writing out the word is cheating!</p>
       </template>

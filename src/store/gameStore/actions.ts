@@ -101,7 +101,7 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
     return line
   },
   [GameActions.SELECT_WORD]: async (
-    { commit },
+    _: ActionContext<GameState, Mutations>,
     { index, user, sendEvent }: SelectWordPayload,
   ): Promise<void> => {
     sendEvent(EventType.TurnWordSelected, {

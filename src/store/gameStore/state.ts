@@ -1,5 +1,6 @@
 import { GameStatus, TurnStatus } from "@/models/status"
 import { Line, Point } from "@/models/drawing"
+import { Hint } from "@/models/hint"
 import { User } from "@/models/user"
 import { Winner } from "@/models/winner"
 
@@ -26,6 +27,7 @@ export interface GameStatusState {
   currentTurnUser: User | null
   timeLeftSeconds: number
   winners: Winner[] | null
+  hints: Hint[] | null
 }
 
 export interface DrawingState {
@@ -63,6 +65,7 @@ export const state: GameState = {
   currentTurnUser: null,
   timeLeftSeconds: -1,
   winners: null,
+  hints: null,
   // Drawing state
   isDrawing: false,
   colourIndex: 0,

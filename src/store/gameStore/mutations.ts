@@ -1,5 +1,3 @@
-import { GameStatus, TurnStatus } from "@/models/status"
-import { Line, Point } from "@/models/drawing"
 import {
   GameOverEvent,
   RehydrateEvent,
@@ -9,9 +7,11 @@ import {
   TurnNextPlayerEvent,
   TurnWordSelectionEvent,
 } from "@/models/events"
+import { GameStatus, TurnStatus } from "@/models/status"
+import { Line, Point } from "@/models/drawing"
 import { GameState } from "./state"
 import { MutationTree } from "vuex"
-
+import { isEmpty } from "lodash"
 
 export enum GameMutations {
   RESET = "RESET",
@@ -78,6 +78,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.currentTurnUser = null
     state.timeLeftSeconds = -1
     state.winners = null
+    state.hints = null
 
     // Reset drawing state
     state.isDrawing = false
@@ -90,14 +91,14 @@ export const mutations: MutationTree<GameState> & Mutations = {
   },
   [GameMutations.REHYDRATE](state: GameState, event: RehydrateEvent) {
     state.maxPlayers = event.players.maxPlayers
-    state.maxRounds = event.game.maxRounds
+    state.maxRounds = event.game.settings.maxRounds
     state.round = event.game.round
     state.gameStatus = event.game.status
     state.turnStatus = event.game.turnStatus
-    state.maxNextUpTime = event.game.maxNextUpTime
-    state.maxSelectionTime = event.game.maxSelectionTime
-    state.maxDrawingTime = event.game.maxDrawingTime
-    state.maxEndTime = event.game.maxEndTime
+    state.maxNextUpTime = event.game.settings.maxTurnNextSec
+    state.maxSelectionTime = event.game.settings.maxTurnSelectSec
+    state.maxDrawingTime = event.game.settings.maxTurnDrawSec
+    state.maxEndTime = event.game.settings.maxTurnEndSec
     if (event.game.playerOrderIds) {
       state.playerOrderIds = event.game.playerOrderIds
     }
@@ -189,6 +190,9 @@ export const mutations: MutationTree<GameState> & Mutations = {
       state.currentWord = event.nonce.word ?? null
       state.currentWordLength = event.nonce.wordLength
     }
+    if (event.hints && !isEmpty(event.hints)) {
+      state.hints = event.hints
+    }
     state.maxDrawingTime = event.maxTime
     state.timeLeftSeconds = event.timeLeft
     state.turnStatus = event.status
@@ -200,6 +204,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     state.maxEndTime = event.maxTime
     state.timeLeftSeconds = event.timeLeft
     state.turnStatus = event.status
+    state.hints = null
   },
   [GameMutations.GAME_OVER](state: GameState, event: GameOverEvent) {
     state.gameStatus = GameStatus.GAME_OVER
@@ -208,5 +213,5 @@ export const mutations: MutationTree<GameState> & Mutations = {
   [GameMutations.NEW_GAME](state: GameState) {
     state.gameStatus = GameStatus.WAITING_READY_UP
     state.winners = null
-  }
+  },
 }

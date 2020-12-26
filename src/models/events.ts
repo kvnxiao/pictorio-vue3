@@ -6,6 +6,7 @@ import {
   UserRehydrate,
 } from "./rehydrate"
 import { BaseTurnEvent } from "./turn"
+import { Hint } from "./hint"
 import { Line } from "./drawing"
 import { PlayerState } from "./playerState"
 import { User } from "./user"
@@ -122,6 +123,7 @@ export interface TurnDrawingEvent extends BaseTurnEvent {
     wordLength: number[]
     word?: string
   }
+  hints?: Hint[]
 }
 
 export interface TurnEndEvent extends BaseTurnEvent {

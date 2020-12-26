@@ -5,27 +5,6 @@
         <li v-for="player of players" :key="player.id">
           <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
         </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
-        <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
-        </li>
       </ul>
     </div>
     <div class="pt-2 border-t mt-2">{{ subText }}</div>
