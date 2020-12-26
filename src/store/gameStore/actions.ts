@@ -38,6 +38,7 @@ export interface SelectWordPayload extends Sendable {
 }
 
 // TODO: split payload to send to server
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function splitLinesPayload(line: Line): Line[] {
   const chunkedPoints = chunk<Point>(line.points, 100)
   return chunkedPoints.map((points: Point[]) => {

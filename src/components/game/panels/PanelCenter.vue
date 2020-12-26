@@ -13,7 +13,7 @@
     />
   </template>
   <template v-else-if="status === GameStatus.GAME_OVER">
-    <div>Game over!</div>
+    <GameOver :self-user="selfUser" />
   </template>
 </template>
 
@@ -21,6 +21,7 @@
 import { GameStatus, TurnStatus } from "@/models/status"
 import { PropType, defineComponent } from "vue"
 import Drawing from "@/components/game/panels/center/Drawing.vue"
+import GameOver from "@/components/game/panels/center/GameOver.vue"
 import { User } from "@/models/user"
 import Waiting from "@/components/game/panels/center/Waiting.vue"
 
@@ -28,6 +29,7 @@ export default defineComponent({
   name: "PanelCenter",
   components: {
     Drawing,
+    GameOver,
     Waiting,
   },
   props: {

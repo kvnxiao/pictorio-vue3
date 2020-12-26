@@ -7,6 +7,7 @@ import {
   GameEvent,
   GameEventTypeMap,
   GameOverEvent,
+  NewGameResetEvent,
   ReadyEvent,
   RehydrateEvent,
   StartGameEvent,
@@ -153,6 +154,12 @@ export function registerEventListeners(): void {
 
   onEvent(EventType.GameOver, (event: GameOverEvent) => {
     gameStore.commit(GameMutations.GAME_OVER, event)
+  })
+
+  onEvent(EventType.NewGameReset, (event: NewGameResetEvent) => {
+    gameStore.commit(GameMutations.RESET)
+    gameStore.commit(GameMutations.NEW_GAME)
+    userStore.commit(UserMutations.NEW_GAME, event)
   })
 }
 

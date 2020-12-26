@@ -66,7 +66,7 @@ export default defineComponent({
 
     const subText = computed<string>(() => {
       return props.status === GameStatus.STARTED
-        ? `Round: ${rounds.value} / ${maxRounds.value}`
+        ? `Round: ${rounds.value + 1} / ${maxRounds.value}`
         : "Waiting..."
     })
 

@@ -61,16 +61,9 @@ export interface Mutations<S = GameState> {
 export const mutations: MutationTree<GameState> & Mutations = {
   [GameMutations.RESET](state: GameState) {
     // Reset game status state
-    state.maxPlayers = 0
-    state.playerCount = 0
-    state.maxRounds = 0
     state.round = 0
     state.gameStatus = GameStatus.NOT_LOADED
     state.turnStatus = TurnStatus.SELECTION
-    state.maxNextUpTime = 0
-    state.maxSelectionTime = 0
-    state.maxDrawingTime = 0
-    state.maxEndTime = 0
     state.playerOrderIds.splice(0, state.playerOrderIds.length)
     state.wordSelections = null
     state.currentWord = null

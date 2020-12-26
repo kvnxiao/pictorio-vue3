@@ -27,6 +27,11 @@ export enum EventType {
   TurnEnd = 11,
   AwardPoints = 12,
   GameOver = 13,
+  NewGameIssued = 14,
+  NewGameReset = 15,
+
+  // For big payloads sent by the client
+  MultiPartPayload = 99,
 }
 
 export interface GameEventTypeMap {
@@ -44,6 +49,8 @@ export interface GameEventTypeMap {
   [EventType.TurnEnd]: TurnEndEvent
   [EventType.AwardPoints]: AwardPointsEvent
   [EventType.GameOver]: GameOverEvent
+  [EventType.NewGameIssued]: NewGameIssuedEvent
+  [EventType.NewGameReset]: NewGameResetEvent
 }
 
 export enum UserJoinLeaveAction {
@@ -142,6 +149,14 @@ export interface AwardPointsEvent {
 
 export interface GameOverEvent {
   winners: Winner[]
+}
+
+export interface NewGameIssuedEvent {
+  issuer: User
+}
+
+export interface NewGameResetEvent {
+  playerStates: PlayerState[]
 }
 
 export interface GameEvent {
