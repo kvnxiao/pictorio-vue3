@@ -1,5 +1,5 @@
 export const BASE_URL = `${window.location.protocol}//${window.location.host}`
-export const BASE_WS_URL = `ws://${window.location.host}`
+export const BASE_WS_URL = `${process.env.VUE_APP_WS_PROTOCOL}://${window.location.host}`
 
 export const FLASH_MESSAGE = `/api/flash`
 
