@@ -54,7 +54,6 @@ export function useWords(): WordsState {
         (wordLength: number, wordIndex: number) =>
           mappedWord(wordLength, mappedHints(wordIndex, hints.value)),
       )
-      console.log(words)
       return words
     }
     return []
