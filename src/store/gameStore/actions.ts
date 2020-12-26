@@ -5,6 +5,7 @@ import type { ActionContext } from "../types"
 import { ActionTree } from "vuex"
 import { GameState } from "./state"
 import { User } from "@/models/user"
+import { chunk } from "lodash"
 
 export enum GameActions {
   CLEAR_DRAWING = "CLEAR_DRAWING",
@@ -34,6 +35,18 @@ export interface StopDrawingPayload extends Sendable {
 export interface SelectWordPayload extends Sendable {
   user: User
   index: number
+}
+
+// TODO: split payload to send to server
+function splitLinesPayload(line: Line): Line[] {
+  const chunkedPoints = chunk<Point>(line.points, 100)
+  return chunkedPoints.map((points: Point[]) => {
+    return {
+      points: points,
+      colourIdx: line.colourIdx,
+      thicknessIdx: line.thicknessIdx,
+    }
+  })
 }
 
 export interface Actions<C = ActionContext<GameState, Mutations>> {

@@ -33,6 +33,7 @@ import { GameMutations } from "@/store/gameStore/mutations"
 import Toolbelt from "@/components/game/drawing/Toolbelt.vue"
 import { TurnStatus } from "@/models/status"
 import { User } from "@/models/user"
+import { throttle } from "lodash"
 import { useDualLayerCanvasContext } from "@/game/canvas"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
@@ -143,7 +144,7 @@ export default defineComponent({
     watch(
       () => props.turnStatus,
       (curr: TurnStatus) => {
-        if (curr === TurnStatus.NEXT_PLAYER || curr === TurnStatus.ENDED) {
+        if (curr === TurnStatus.NEXT_PLAYER) {
           gameStore.commit(GameMutations.CLEAR_DRAWING)
           clearTemp()
           clearMain()
@@ -188,10 +189,12 @@ export default defineComponent({
       }
     }
 
+    const throttledDrawMove = throttle(onDrawMove, 1000 / 120)
+
     watchEffect(async () => {
       switch (eventType.value) {
         case InputEvent.MOVE: {
-          await onDrawMove(x.value, y.value)
+          await throttledDrawMove(x.value, y.value)
           break
         }
         case InputEvent.CLICK: {
