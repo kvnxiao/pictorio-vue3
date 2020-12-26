@@ -18,7 +18,9 @@
     </transition>
     <Selection
       v-if="
-        turnStatus === TurnStatus.SELECTION || turnStatus === TurnStatus.NEXT_PLAYER
+        turnStatus === TurnStatus.SELECTION ||
+        turnStatus === TurnStatus.NEXT_PLAYER ||
+        turnStatus === TurnStatus.ENDED
       "
       :self-user="selfUser"
       :drawing-user="drawingUser"

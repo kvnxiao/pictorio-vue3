@@ -1,11 +1,11 @@
 <template>
   <!-- Overlay (absolute, full width and height) -->
-  <div class="absolute top-0 left-0 w-full h-full">
+  <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
     <div class="flex flex-col h-full items-center justify-center">
       <transition name="bounce-r" mode="out-in">
         <div
           v-if="showNextUp"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
             Next up: {{ drawerName }}
@@ -19,7 +19,7 @@
         </div>
         <div
           v-else-if="isDrawerTurn && showSelection && hasWordSelections"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
             Choose your word to draw
@@ -35,7 +35,7 @@
         </div>
         <div
           v-else-if="!isDrawerTurn && showSelection"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
             Waiting for {{ drawerName }} to pick a word
@@ -43,11 +43,11 @@
         </div>
         <div
           v-else-if="showTurnEnd"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3"
+          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
         >
           <p class="font-semibold text-xl text-yellow-900 select-none">
             The word was
-            <span class="uppercase text-red-600"> {{ answer }} </span>!
+            <span class="uppercase text-red-600"> {{ answer }} </span>&nbsp;!
           </p>
         </div>
       </transition>
@@ -100,11 +100,9 @@ export default defineComponent({
       () => props.turnStatus === TurnStatus.NEXT_PLAYER,
     )
     const showSelection = computed<boolean>(
-      () => props.turnStatus === TurnStatus.SELECTION && drawerName.value !== "",
+      () => props.turnStatus === TurnStatus.SELECTION,
     )
-    const showTurnEnd = computed<boolean>(
-      () => props.turnStatus === TurnStatus.ENDED && drawerName.value !== "",
-    )
+    const showTurnEnd = computed<boolean>(() => props.turnStatus === TurnStatus.ENDED)
 
     const answer = computed<string>(() =>
       showTurnEnd.value ? gameStore.state.currentWord ?? "" : "",

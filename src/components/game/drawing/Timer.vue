@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="show"
-    class="absolute top-0 right-0 transform rotate-12"
+    class="absolute top-0 right-0 transform rotate-12 pointer-events-none"
     :style="{
       width: `${2 * radius}px`,
       height: `${2 * radius}px`,

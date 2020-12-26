@@ -12,7 +12,7 @@
       <div class="text-4xl">{{ character }}</div>
     </div>
     <div class="h-12">
-      <p class="text-xl">
+      <p class="text-lg">
         {{ player.user.name }}
         <span v-if="player.isRoomLeader" class="inline-block">
           <svg
