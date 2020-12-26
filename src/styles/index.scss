@@ -39,15 +39,15 @@
   width: 15%;
 }
 
-.bounce-enter-active {
-  animation: bounce-in 0.5s;
+.bounce-r-enter-active {
+  animation: bounce-r 0.5s;
 }
 
-.bounce-leave-active {
-  animation: bounce-in 0.3s reverse;
+.bounce-r-leave-active {
+  animation: bounce-r 0.3s reverse;
 }
 
-@keyframes bounce-in {
+@keyframes bounce-r {
   0% {
     transform: scale(0) rotate(-3deg);
   }
@@ -56,5 +56,25 @@
   }
   100% {
     transform: scale(1) rotate(3deg);
+  }
+}
+
+.bounce-l-enter-active {
+  animation: bounce-l 0.5s;
+}
+
+.bounce-l-leave-active {
+  animation: bounce-l 0.3s reverse;
+}
+
+@keyframes bounce-l {
+  0% {
+    transform: scale(0) rotate(-3deg);
+  }
+  50% {
+    transform: scale(1.25) rotate(7deg);
+  }
+  100% {
+    transform: scale(1) rotate(-2deg);
   }
 }

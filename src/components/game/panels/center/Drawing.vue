@@ -9,7 +9,7 @@
       :is-drawer-turn="isDrawerTurn"
       :turn-status="turnStatus"
     />
-    <transition name="bounce">
+    <transition name="bounce-l">
       <Guess
         v-if="turnStatus === TurnStatus.DRAWING"
         :drawing-user="drawingUser"
