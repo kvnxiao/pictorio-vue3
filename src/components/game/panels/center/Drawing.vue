@@ -27,7 +27,7 @@
       :is-drawer-turn="isDrawerTurn"
       :turn-status="turnStatus"
     />
-    <Timer :max-seconds="maxTime" :seconds="timeLeft" show />
+    <Timer :max-seconds="maxTime" :seconds="timeLeft" :turn-status="turnStatus" show />
   </div>
 </template>
 

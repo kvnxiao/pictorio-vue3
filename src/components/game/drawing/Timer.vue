@@ -80,7 +80,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue"
+import { PropType, computed, defineComponent, ref, watch } from "vue"
+import { TurnStatus } from "@/models/status"
 
 export default defineComponent({
   name: "Timer",
@@ -95,6 +96,10 @@ export default defineComponent({
     },
     seconds: {
       type: Number,
+      required: true,
+    },
+    turnStatus: {
+      type: Number as PropType<TurnStatus>,
       required: true,
     },
     show: {
@@ -131,10 +136,12 @@ export default defineComponent({
     const sine880 = ref<HTMLAudioElement | null>(null)
 
     watch(normalizedSeconds, (seconds: number) => {
-      if (seconds <= 0) {
-        sine880.value?.play()
-      } else if (seconds <= 3) {
-        sine440.value?.play()
+      if (props.turnStatus === TurnStatus.NEXT_PLAYER) {
+        if (seconds <= 0) {
+          sine880.value?.play()
+        } else if (seconds <= 3) {
+          sine440.value?.play()
+        }
       }
     })
 
