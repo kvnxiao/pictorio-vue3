@@ -3,8 +3,9 @@
     class="flex rounded-lg shadow-sm p-2"
     :class="{
       'border-yellow-400': isDrawerTurn,
-      'border-2': isDrawerTurn,
-      border: !isDrawerTurn,
+      'border-blue-400': showPointsAward && !isDrawerTurn,
+      'border-2': isDrawerTurn || showPointsAward,
+      border: !isDrawerTurn && !showPointsAward,
       'border-gray-200': !isDrawerTurn,
       'opacity-30': isDisconnected,
     }"
@@ -32,7 +33,7 @@
       </div>
       <transition name="bounce-l">
         <div
-          v-if="canAward && points > 0"
+          v-if="showPointsAward"
           class="absolute right-7 rounded-md px-2.5 py-1.5 z-10 border opacity-95 font-semibold"
           :class="{
             'border-yellow-400': isDrawerTurn,
@@ -87,6 +88,8 @@ export default defineComponent({
 
     const isDisconnected = computed<boolean>(() => !props.player.isConnected)
 
+    const showPointsAward = computed<boolean>(() => props.canAward && points.value > 0)
+
     watch(
       () => props.player.points,
       (currPts: number, oldPts: number) => {
@@ -109,6 +112,7 @@ export default defineComponent({
       isSelfUser,
       points,
       isDisconnected,
+      showPointsAward,
     }
   },
 })
