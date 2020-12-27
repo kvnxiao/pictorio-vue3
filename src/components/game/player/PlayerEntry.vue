@@ -6,6 +6,7 @@
       'border-2': isDrawerTurn,
       border: !isDrawerTurn,
       'border-gray-200': !isDrawerTurn,
+      'opacity-30': isDisconnected,
     }"
   >
     <div class="pointer-events-none mr-1 w-12 h-12 flex justify-center items-center">
@@ -84,6 +85,8 @@ export default defineComponent({
 
     const character = computed<string>(() => props.player.user.name[0])
 
+    const isDisconnected = computed<boolean>(() => !props.player.isConnected)
+
     watch(
       () => props.player.points,
       (currPts: number, oldPts: number) => {
@@ -105,6 +108,7 @@ export default defineComponent({
       isDrawerTurn,
       isSelfUser,
       points,
+      isDisconnected,
     }
   },
 })
