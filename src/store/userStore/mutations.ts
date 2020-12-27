@@ -43,6 +43,8 @@ export const mutations: MutationTree<UserState> & Mutations = {
     if (player.user.id in state.playerStates) {
       state.playerStates[player.user.id].isConnected = true
       state.playerStates[player.user.id].isReady = false
+      // Update user name in case the user changed their name
+      state.playerStates[player.user.id].user.name = player.user.name
     } else {
       // New user joined
       state.playerStates[player.user.id] = player
