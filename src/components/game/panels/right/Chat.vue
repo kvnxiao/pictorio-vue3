@@ -43,6 +43,7 @@
 <script lang="ts">
 import { ChatEvent, EventType } from "@/models/events"
 import { PropType, computed, defineComponent, nextTick, ref, watch } from "vue"
+import { isEmpty, trim } from "lodash"
 import { User } from "@/models/user"
 import { useChatStore } from "@/store/chatStore"
 import { useGameEvents } from "@/game/events"
@@ -67,10 +68,11 @@ export default defineComponent({
     const chatHistory = computed<ChatEvent[]>(() => chatStore.state.messages)
 
     const sendMessage = () => {
-      if (input.value.length > 0) {
+      const trimmed = trim(input.value)
+      if (!isEmpty(trimmed)) {
         const chatEvent: ChatEvent = {
           user: props.selfUser,
-          message: input.value,
+          message: trimmed,
         }
         sendEvent(EventType.Chat, chatEvent)
         // clear input
