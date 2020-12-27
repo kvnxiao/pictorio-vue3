@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, computed, defineComponent } from "vue"
+import { PropType, computed, defineComponent, watch } from "vue"
 import { PlayerState } from "@/models/playerState"
 
 export default defineComponent({
@@ -54,6 +54,14 @@ export default defineComponent({
     )
 
     const character = computed<string>(() => props.player.user.name[0])
+
+    watch(
+      () => props.player.points,
+      (currPts: number, oldPts: number) => {
+        const diff = currPts - oldPts
+        
+      },
+    )
 
     return {
       character,

@@ -103,6 +103,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
     }
     state.timeLeftSeconds = event.game.timeLeft
     state.lines = event.lines ? event.lines : []
+    state.winners = event.game.winners
   },
   [GameMutations.START_GAME](state: GameState, event: StartGameEvent) {
     state.gameStatus = GameStatus.STARTED

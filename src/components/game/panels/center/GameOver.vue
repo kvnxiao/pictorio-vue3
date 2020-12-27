@@ -3,12 +3,20 @@
   <div class="absolute top-0 left-0 w-full h-full">
     <div class="flex flex-col h-full items-center justify-center">
       <img class="block w-36 h-auto" src="@/assets/logo.svg" alt="Pictorio Logo" />
-      <div class="mt-8 space-y-4">
+      <div class="flex flex-col justify-center items-center mt-8 space-y-4">
         <div class="text-2xl">Game Over!</div>
+        <div
+          v-if="winners !== null && winners.length > 0"
+          class="flex flex-col justify-center text-left"
+        >
+          <p v-for="(winner, index) of winners" :key="winner.user.id">
+            {{ index + 1 }}. {{ winner.user.name }} @ {{ winner.points }} PTS
+          </p>
+        </div>
         <p v-if="!isRoomLeader">Waiting for the room leader to start a new game.</p>
         <button
           v-if="isRoomLeader"
-          class="w-30 flex-shrink-0 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200"
+          class="flex-shrink-0 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200"
           @click="restartGame"
         >
           Play Again
@@ -22,7 +30,9 @@
 import { PropType, computed, defineComponent } from "vue"
 import { EventType } from "@/models/events"
 import { User } from "@/models/user"
+import { Winner } from "@/models/winner"
 import { useGameEvents } from "@/game/events"
+import { useGameStore } from "@/store/gameStore"
 import { useGlobalWebSocket } from "@/game/websocket"
 import { useUserStore } from "@/store/userStore"
 
@@ -36,6 +46,7 @@ export default defineComponent({
   },
   setup(props) {
     const userStore = useUserStore()
+    const gameStore = useGameStore()
     const { send } = useGlobalWebSocket()
     const { sendEvent } = useGameEvents(send)
 
@@ -49,9 +60,12 @@ export default defineComponent({
       })
     }
 
+    const winners = computed<Winner[] | null>(() => gameStore.state.winners)
+
     return {
       isRoomLeader,
       restartGame,
+      winners,
     }
   },
 })
