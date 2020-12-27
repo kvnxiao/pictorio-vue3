@@ -45,6 +45,14 @@
           + {{ points }}
         </div>
       </transition>
+      <transition name="slide-show">
+        <div
+          v-if="hasChat && latestMsg !== null"
+          class="chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-md border border-gray-600 whitespace-nowrap font-semibold text-lg"
+        >
+          {{ latestMsg }}
+        </div>
+      </transition>
       <p class="w-full points">{{ player.points }} PTS</p>
     </div>
   </div>
@@ -53,15 +61,12 @@
 <script lang="ts">
 import { PropType, computed, defineComponent, ref, watch } from "vue"
 import { PlayerState } from "@/models/playerState"
-import { User } from "@/models/user"
+import { debounce } from "lodash"
+import { useChatStore } from "@/store/chatStore"
 
 export default defineComponent({
   name: "PlayerEntry",
   props: {
-    selfUser: {
-      type: Object as PropType<User>,
-      required: true,
-    },
     player: {
       type: Object as PropType<PlayerState>,
       required: true,
@@ -76,19 +81,38 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const chatStore = useChatStore()
+
     const isDrawerTurn = computed<boolean>(
       () => props.drawingUserId === props.player.user.id,
     )
-    const isSelfUser = computed<boolean>(
-      () => props.selfUser.id === props.player.user.id,
-    )
     const points = ref<number>(0)
-
     const character = computed<string>(() => props.player.user.name[0])
-
     const isDisconnected = computed<boolean>(() => !props.player.isConnected)
-
     const showPointsAward = computed<boolean>(() => props.canAward && points.value > 0)
+    const hasChat = ref<boolean>(false)
+    const latestMsg = ref<string | null>(null)
+
+    const hideMessage = () => {
+      hasChat.value = false
+      latestMsg.value = null
+    }
+
+    const debouncedHideMessage = debounce(hideMessage, 1500)
+
+    watch(
+      () => chatStore.state.messages.length,
+      (len: number) => {
+        if (len > 0) {
+          const msg = chatStore.state.messages[len - 1]
+          if (msg.user.id === props.player.user.id) {
+            hasChat.value = true
+            latestMsg.value = msg.message
+            debouncedHideMessage()
+          }
+        }
+      },
+    )
 
     watch(
       () => props.player.points,
@@ -109,11 +133,18 @@ export default defineComponent({
     return {
       character,
       isDrawerTurn,
-      isSelfUser,
       points,
       isDisconnected,
       showPointsAward,
+      latestMsg,
+      hasChat,
     }
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.chat-msg {
+  transform-origin: left;
+}
+</style>

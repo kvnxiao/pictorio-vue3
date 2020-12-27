@@ -78,3 +78,29 @@
     transform: scale(1) rotate(-2deg);
   }
 }
+
+.slide-show-enter-active {
+  animation: slide-show 0.3s;
+}
+
+.slide-show-leave-active {
+  animation: slide-hide 0.3s;
+}
+
+@keyframes slide-show {
+  0% {
+    transform: scaleX(0) translateX(-2rem);
+  }
+  100% {
+    transform: scaleX(1) translateX(0);
+  }
+}
+
+@keyframes slide-hide {
+  0% {
+    transform: translateX(0) scaleY(1);
+  }
+  100% {
+    transform: translateX(0.5rem) scaleY(0);
+  }
+}
