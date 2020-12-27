@@ -48,7 +48,7 @@
       <transition name="slide-show">
         <div
           v-if="hasChat && latestMsg !== null"
-          class="chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-md border border-gray-600 whitespace-nowrap font-semibold text-lg"
+          class="chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-lg border border-gray-600 whitespace-nowrap font-semibold text-lg"
         >
           {{ latestMsg }}
         </div>
@@ -146,5 +146,25 @@ export default defineComponent({
 <style lang="scss" scoped>
 .chat-msg {
   transform-origin: left;
+  &:before,
+  &:after {
+    position: absolute;
+    content: "";
+    top: 0.5em;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid transparent;
+  }
+  &:before {
+    left: -9px;
+    border-right-color: black;
+  }
+
+  &:after {
+    left: -8px;
+    border-right-color: white;
+  }
 }
 </style>
