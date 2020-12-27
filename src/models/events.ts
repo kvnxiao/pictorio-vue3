@@ -109,6 +109,7 @@ export interface StartGameIssuedEvent {
 export interface TurnNextPlayerEvent extends BaseTurnEvent {
   nonce?: {
     nextTurnUser: User
+    round: number
   }
 }
 

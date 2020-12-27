@@ -157,6 +157,7 @@ export const mutations: MutationTree<GameState> & Mutations = {
   [GameMutations.NEXT_PLAYER](state: GameState, event: TurnNextPlayerEvent) {
     if (event.nonce) {
       state.currentTurnUser = event.nonce.nextTurnUser
+      state.round = event.nonce.round
     }
     state.maxNextUpTime = event.maxTime
     state.timeLeftSeconds = event.timeLeft
