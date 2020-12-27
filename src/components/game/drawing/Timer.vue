@@ -76,6 +76,10 @@
       <source src="@/assets/880.wav" type="audio/wav" />
       Your browser does not support the audio element.
     </audio>
+    <audio ref="tick3">
+      <source src="@/assets/tick3.wav" type="audio/wav" />
+      Your browser does not support the audio element.
+    </audio>
   </div>
 </template>
 
@@ -134,14 +138,23 @@ export default defineComponent({
 
     const sine440 = ref<HTMLAudioElement | null>(null)
     const sine880 = ref<HTMLAudioElement | null>(null)
+    const tick3 = ref<HTMLAudioElement | null>(null)
 
     watch(normalizedSeconds, (seconds: number) => {
-      if (props.turnStatus === TurnStatus.NEXT_PLAYER) {
-        if (seconds <= 0) {
-          sine880.value?.play()
-        } else if (seconds <= 3) {
-          sine440.value?.play()
-        }
+      switch (props.turnStatus) {
+        case TurnStatus.NEXT_PLAYER:
+          if (seconds <= 0) {
+            sine880.value?.play()
+          } else if (seconds <= 3) {
+            sine440.value?.play()
+          }
+          break
+        case TurnStatus.SELECTION:
+        case TurnStatus.DRAWING:
+          if (seconds < 3) {
+            tick3.value?.play()
+          }
+          break
       }
     })
 
@@ -158,6 +171,7 @@ export default defineComponent({
       strokeDashoffset,
       sine440,
       sine880,
+      tick3,
     }
   },
 })
