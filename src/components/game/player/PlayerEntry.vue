@@ -48,7 +48,7 @@
       <transition name="slide-show">
         <div
           v-if="hasChat && latestMsg !== null"
-          class="chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-lg border border-gray-600 whitespace-nowrap font-semibold text-lg"
+          class="chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-lg border border-gray-600 whitespace-nowrap font-medium text-lg"
         >
           {{ latestMsg }}
         </div>
