@@ -3,7 +3,11 @@
     <div class="select-none flex-grow h-0 overflow-y-auto scrollbar">
       <ul class="space-y-4">
         <li v-for="player of players" :key="player.id">
-          <PlayerEntry :player="player" :drawing-user-id="drawingUserId" />
+          <PlayerEntry
+            :player="player"
+            :drawing-user-id="drawingUserId"
+            :can-award="canAwardPoints"
+          />
         </li>
       </ul>
     </div>
@@ -70,6 +74,12 @@ export default defineComponent({
         : "Waiting..."
     })
 
+    const canAwardPoints = computed<boolean>(
+      () =>
+        props.turnStatus === TurnStatus.DRAWING ||
+        props.turnStatus === TurnStatus.ENDED,
+    )
+
     return {
       players,
       drawingUserId,
@@ -77,6 +87,7 @@ export default defineComponent({
       maxRounds,
       GameStatus,
       subText,
+      canAwardPoints,
     }
   },
 })
