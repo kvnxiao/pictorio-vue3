@@ -72,6 +72,7 @@ export const mutations: MutationTree<UserState> & Mutations = {
     for (const playerState of event.playerStates) {
       if (state.playerStates[playerState.user.id]) {
         state.playerStates[playerState.user.id].isReady = false
+        state.playerStates[playerState.user.id].points = 0
       }
     }
   },
