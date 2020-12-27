@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col h-full">
     <NavBar />
-    <ToastMessage />
     <router-view />
+    <ToastMessage />
   </div>
 </template>
 
