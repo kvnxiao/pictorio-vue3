@@ -60,6 +60,7 @@
 
 <script lang="ts">
 import { PropType, computed, defineComponent, ref, watch } from "vue"
+import { ChatEventType } from "@/models/events"
 import { PlayerState } from "@/models/playerState"
 import { debounce } from "lodash"
 import { useChatStore } from "@/store/chatStore"
@@ -105,7 +106,7 @@ export default defineComponent({
       (len: number) => {
         if (len > 0) {
           const msg = chatStore.state.messages[len - 1]
-          if (msg.user.id === props.player.user.id) {
+          if (msg.type === ChatEventType.USER && msg.user.id === props.player.user.id) {
             hasChat.value = true
             latestMsg.value = msg.message
             debouncedHideMessage()

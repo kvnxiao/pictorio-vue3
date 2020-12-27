@@ -98,11 +98,7 @@ export function registerEventListeners(): void {
   })
 
   onEvent(EventType.Chat, (event: ChatEvent) => {
-    chatStore.commit(ChatMutations.ADD_MESSAGE, {
-      message: event.message,
-      user: event.user,
-      isSystem: event.isSystem,
-    })
+    chatStore.commit(ChatMutations.ADD_MESSAGE, event)
   })
 
   onEvent(EventType.UserJoinLeave, (event: UserJoinLeaveEvent) => {

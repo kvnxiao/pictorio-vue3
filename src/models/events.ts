@@ -74,10 +74,19 @@ export interface UserJoinLeaveEvent {
   action: UserJoinLeaveAction
 }
 
+export enum ChatEventType {
+  SYSTEM = 0,
+  USER = 1,
+  JOIN = 2,
+  LEAVE = 3,
+  GUESSED = 4,
+}
+
 export interface ChatEvent {
   user: User
   message: string
-  isSystem?: boolean
+  format: string
+  type: ChatEventType
 }
 
 export enum DrawEventType {

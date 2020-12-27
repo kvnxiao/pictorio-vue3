@@ -3,10 +3,7 @@
     <div ref="convoRef" class="scrollbar overflow-y-auto flex-grow">
       <ul class="break-words">
         <li v-for="(msg, index) in chatHistory" :key="index" class="text-left">
-          <template v-if="msg.isSystem">
-            {{ msg.message }}
-          </template>
-          <template v-else> {{ msg.user.name }}: {{ msg.message }} </template>
+          <ChatMessage :message="msg" />
         </li>
       </ul>
     </div>
@@ -41,9 +38,10 @@
 </template>
 
 <script lang="ts">
-import { ChatEvent, EventType } from "@/models/events"
+import { ChatEvent, ChatEventType, EventType } from "@/models/events"
 import { PropType, computed, defineComponent, nextTick, ref, watch } from "vue"
 import { isEmpty, trim } from "lodash"
+import ChatMessage from "@/components/game/panels/right/ChatMessage.vue"
 import { User } from "@/models/user"
 import { useChatStore } from "@/store/chatStore"
 import { useGameEvents } from "@/game/events"
@@ -51,6 +49,9 @@ import { useGlobalWebSocket } from "@/game/websocket"
 
 export default defineComponent({
   name: "Chat",
+  components: {
+    ChatMessage,
+  },
   props: {
     selfUser: {
       type: Object as PropType<User>,
@@ -73,6 +74,8 @@ export default defineComponent({
         const chatEvent: ChatEvent = {
           user: props.selfUser,
           message: trimmed,
+          format: "%u: %m",
+          type: ChatEventType.USER,
         }
         sendEvent(EventType.Chat, chatEvent)
         // clear input
