@@ -4,6 +4,7 @@
     :class="{
       'border-yellow-400': isDrawerTurn,
       'border-blue-400': showPointsAward && !isDrawerTurn,
+      'border-green-400': isReady,
       'border-2': isDrawerTurn || showPointsAward,
       border: !isDrawerTurn && !showPointsAward,
       'border-gray-200': !isDrawerTurn,
@@ -90,6 +91,7 @@ export default defineComponent({
     const points = ref<number>(0)
     const character = computed<string>(() => props.player.user.name[0])
     const isDisconnected = computed<boolean>(() => !props.player.isConnected)
+    const isReady = computed<boolean>(() => props.player.isReady)
     const showPointsAward = computed<boolean>(() => props.canAward && points.value > 0)
     const hasChat = ref<boolean>(false)
     const latestMsg = ref<string | null>(null)
@@ -136,6 +138,7 @@ export default defineComponent({
       isDrawerTurn,
       points,
       isDisconnected,
+      isReady,
       showPointsAward,
       latestMsg,
       hasChat,

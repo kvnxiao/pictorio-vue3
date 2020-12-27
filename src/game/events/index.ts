@@ -95,6 +95,7 @@ export function registerEventListeners(): void {
 
   onEvent(EventType.StartGame, (event: StartGameEvent) => {
     gameStore.commit(GameMutations.START_GAME, event)
+    userStore.commit(UserMutations.START_GAME, event)
   })
 
   onEvent(EventType.Chat, (event: ChatEvent) => {
