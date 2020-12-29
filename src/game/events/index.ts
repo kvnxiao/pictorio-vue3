@@ -3,6 +3,9 @@ import {
   ChatEvent,
   DrawEvent,
   DrawEventType,
+  DrawSelectColourEvent,
+  DrawSelectThicknessEvent,
+  DrawTempEvent,
   EventType,
   GameEvent,
   GameEventTypeMap,
@@ -113,9 +116,7 @@ export function registerEventListeners(): void {
   onEvent(EventType.Draw, (event: DrawEvent) => {
     switch (event.type) {
       case DrawEventType.LINE:
-        if (event.line) {
-          gameStore.commit(GameMutations.ADD_LINE, event.line)
-        }
+        gameStore.commit(GameMutations.PROMOTE_LINE, gameStore.getters.getLatestLine())
         break
       case DrawEventType.CLEAR:
         gameStore.commit(GameMutations.CLEAR_DRAWING)
@@ -127,6 +128,10 @@ export function registerEventListeners(): void {
         gameStore.commit(GameMutations.REDO)
         break
     }
+  })
+
+  onEvent(EventType.DrawTemp, (event: DrawTempEvent) => {
+    gameStore.commit(GameMutations.ADD_TEMP_POINTS, event.line.points)
   })
 
   onEvent(EventType.TurnNextPlayer, (event: TurnNextPlayerEvent) => {
@@ -157,6 +162,14 @@ export function registerEventListeners(): void {
     gameStore.commit(GameMutations.RESET)
     gameStore.commit(GameMutations.NEW_GAME)
     userStore.commit(UserMutations.NEW_GAME, event)
+  })
+
+  onEvent(EventType.DrawSelectColour, (event: DrawSelectColourEvent) => {
+    gameStore.commit(GameMutations.SET_COLOUR_IDX, event.colourIdx)
+  })
+
+  onEvent(EventType.DrawSelectThickness, (event: DrawSelectThicknessEvent) => {
+    gameStore.commit(GameMutations.SET_THICKNESS_IDX, event.thicknessIdx)
   })
 }
 

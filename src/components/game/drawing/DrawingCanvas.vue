@@ -9,6 +9,7 @@
   />
   <Toolbelt
     v-if="isDrawerTurn"
+    :self-user="selfUser"
     @tool-clear="clearDrawing()"
     @tool-undo="undoDrawing()"
     @tool-redo="redoDrawing()"
@@ -133,8 +134,24 @@ export default defineComponent({
             clearTemp()
             clearMain()
           } else {
+            clearTemp()
             clearMain()
             drawMainCanvas()
+          }
+        }
+      },
+    )
+
+    // Hydration watcher for temporary line, for players who are not drawing
+    watch(
+      () => gameStore.state.points.length,
+      (length: number, prevLength: number) => {
+        if (length > 0 && !props.isDrawerTurn) {
+          const startingIndex = prevLength > 1 ? prevLength - 2 : 0
+          for (let i = startingIndex; i < length - 2; i++) {
+            const p1 = gameStore.state.points[i]
+            const p2 = gameStore.state.points[i + 1]
+            drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)
           }
         }
       },
@@ -169,7 +186,11 @@ export default defineComponent({
 
     const onDrawMove = async (x: number, y: number) => {
       if (isDrawing.value) {
-        gameStore.commit(GameMutations.ADD_POINT, scaledPoint(x, y, scale.value))
+        gameStore.dispatch(GameActions.ADD_POINT, {
+          point: scaledPoint(x, y, scale.value),
+          sendEvent,
+          user: props.selfUser,
+        })
 
         const [p1, p2] = gameStore.getters.getLatestTwoPoints()
         drawTemp(p1, p2, scale.value, colourIdx.value, thicknessIdx.value)

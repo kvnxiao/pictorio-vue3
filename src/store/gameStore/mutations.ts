@@ -22,7 +22,8 @@ export enum GameMutations {
   SET_SCALE = "SET_SCALE",
   SET_IS_DRAWING = "SET_IS_DRAWING",
   ADD_POINT = "ADD_POINT",
-  ADD_LINE = "ADD_LINE",
+  ADD_TEMP_POINTS = "ADD_TEMP_POINTS",
+  PROMOTE_LINE = "PROMOTE_LINE",
   ADD_REDO_STACK_LINE = "ADD_REDO_STACK_LINE",
   CLEAR_DRAWING = "CLEAR_DRAWING",
   UNDO = "UNDO",
@@ -45,7 +46,8 @@ export interface Mutations<S = GameState> {
   [GameMutations.SET_SCALE](state: S, payload: number): void
   [GameMutations.SET_IS_DRAWING](state: S, payload: boolean): void
   [GameMutations.ADD_POINT](state: S, payload: Point): void
-  [GameMutations.ADD_LINE](state: S, payload: Line): void
+  [GameMutations.ADD_TEMP_POINTS](state: S, payload: Point[]): void
+  [GameMutations.PROMOTE_LINE](state: S, payload: Line): void
   [GameMutations.ADD_REDO_STACK_LINE](state: S, payload: Line): void
   [GameMutations.CLEAR_DRAWING](state: S): void
   [GameMutations.UNDO](state: S): void
@@ -131,7 +133,12 @@ export const mutations: MutationTree<GameState> & Mutations = {
   [GameMutations.ADD_POINT](state: GameState, point: Point) {
     state.points.push(point)
   },
-  [GameMutations.ADD_LINE](state: GameState, line: Line) {
+  [GameMutations.ADD_TEMP_POINTS](state: GameState, points: Point[]): void {
+    for (const point of points) {
+      state.points.push(point)
+    }
+  },
+  [GameMutations.PROMOTE_LINE](state: GameState, line: Line) {
     state.lines.push(line)
     state.points.splice(0, state.points.length)
   },

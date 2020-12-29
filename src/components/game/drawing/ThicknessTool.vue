@@ -14,20 +14,30 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue"
-import { GameMutations } from "@/store/gameStore/mutations"
+import { PropType, computed, defineComponent } from "vue"
+import { GameActions } from "@/store/gameStore/actions"
 import { THICKNESSES } from "@/models/drawing"
+import { User } from "@/models/user"
+import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
+import { useGlobalWebSocket } from "@/game/websocket/useGlobalWebSocket"
 
 export default defineComponent({
   name: "ThicknessTool",
   props: {
+    selfUser: {
+      type: Object as PropType<User>,
+      required: true,
+    },
     thicknessIdx: {
       type: Number,
       default: 0,
     },
   },
   setup(props) {
+    const { send } = useGlobalWebSocket()
+    const { sendEvent } = useGameEvents(send)
+
     const gameStore = useGameStore()
 
     const thickness = computed<string>(() => `${THICKNESSES[props.thicknessIdx]}px`)
@@ -36,8 +46,12 @@ export default defineComponent({
       () => gameStore.state.thicknessIndex === props.thicknessIdx,
     )
 
-    const setThickness = () => {
-      gameStore.commit(GameMutations.SET_THICKNESS_IDX, props.thicknessIdx)
+    const setThickness = async () => {
+      await gameStore.dispatch(GameActions.SELECT_THICKNESS, {
+        user: props.selfUser,
+        thicknessIdx: props.thicknessIdx,
+        sendEvent,
+      })
     }
 
     return {

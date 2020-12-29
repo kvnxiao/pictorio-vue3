@@ -29,6 +29,9 @@ export enum EventType {
   GameOver = 13,
   NewGameIssued = 14,
   NewGameReset = 15,
+  DrawTemp = 16,
+  DrawSelectColour = 17,
+  DrawSelectThickness = 18,
 
   // For big payloads sent by the client
   MultiPartPayload = 99,
@@ -51,6 +54,9 @@ export interface GameEventTypeMap {
   [EventType.GameOver]: GameOverEvent
   [EventType.NewGameIssued]: NewGameIssuedEvent
   [EventType.NewGameReset]: NewGameResetEvent
+  [EventType.DrawTemp]: DrawTempEvent
+  [EventType.DrawSelectColour]: DrawSelectColourEvent
+  [EventType.DrawSelectThickness]: DrawSelectThicknessEvent
 }
 
 export enum UserJoinLeaveAction {
@@ -98,8 +104,22 @@ export enum DrawEventType {
 
 export interface DrawEvent {
   user: User
-  line?: Line
   type: DrawEventType
+}
+
+export interface DrawTempEvent {
+  user: User
+  line: Line
+}
+
+export interface DrawSelectColourEvent {
+  user: User
+  colourIdx: number
+}
+
+export interface DrawSelectThicknessEvent {
+  user: User
+  thicknessIdx: number
 }
 
 export interface ReadyEvent {
