@@ -32,6 +32,7 @@ export enum EventType {
   DrawTemp = 16,
   DrawSelectColour = 17,
   DrawSelectThickness = 18,
+  DrawTempStop = 19,
 
   // For big payloads sent by the client
   MultiPartPayload = 99,
@@ -57,6 +58,7 @@ export interface GameEventTypeMap {
   [EventType.DrawTemp]: DrawTempEvent
   [EventType.DrawSelectColour]: DrawSelectColourEvent
   [EventType.DrawSelectThickness]: DrawSelectThicknessEvent
+  [EventType.DrawTempStop]: DrawTempEvent
 }
 
 export enum UserJoinLeaveAction {
@@ -96,10 +98,9 @@ export interface ChatEvent {
 }
 
 export enum DrawEventType {
-  LINE = 0,
-  UNDO = 1,
-  REDO = 2,
-  CLEAR = 3,
+  UNDO = 0,
+  REDO = 1,
+  CLEAR = 2,
 }
 
 export interface DrawEvent {

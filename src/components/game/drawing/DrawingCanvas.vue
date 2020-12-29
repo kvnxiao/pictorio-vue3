@@ -129,15 +129,13 @@ export default defineComponent({
     watch(
       () => gameStore.state.lines.length,
       (len) => {
-        if (!props.isDrawerTurn) {
-          if (len === 0) {
-            clearTemp()
-            clearMain()
-          } else {
-            clearTemp()
-            clearMain()
-            drawMainCanvas()
-          }
+        if (len === 0) {
+          clearTemp()
+          clearMain()
+        } else {
+          clearTemp()
+          clearMain()
+          drawMainCanvas()
         }
       },
     )
@@ -177,10 +175,11 @@ export default defineComponent({
 
     const onDrawStart = async (x: number, y: number) => {
       if (props.enabled && props.isDrawerTurn) {
-        await gameStore.dispatch(
-          GameActions.START_DRAW_POINT,
-          scaledPoint(x, y, scale.value),
-        )
+        await gameStore.dispatch(GameActions.START_DRAW_POINT, {
+          point: scaledPoint(x, y, scale.value),
+          sendEvent,
+          user: props.selfUser,
+        })
       }
     }
 
@@ -199,14 +198,11 @@ export default defineComponent({
 
     const onDrawStop = async (x: number, y: number) => {
       if (isDrawing.value) {
-        const line = await gameStore.dispatch(GameActions.STOP_DRAW_POINT, {
+        await gameStore.dispatch(GameActions.STOP_DRAW_POINT, {
           point: scaledPoint(x, y, scale.value),
           sendEvent,
           user: props.selfUser,
         })
-
-        drawMain(line, scale.value)
-        clearTemp()
       }
     }
 
@@ -245,6 +241,7 @@ export default defineComponent({
         sendEvent,
         user: props.selfUser,
       })
+      clearTemp()
       clearMain()
       drawMainCanvas()
     }
@@ -254,6 +251,7 @@ export default defineComponent({
         sendEvent,
         user: props.selfUser,
       })
+      clearTemp()
       clearMain()
       drawMainCanvas()
     }

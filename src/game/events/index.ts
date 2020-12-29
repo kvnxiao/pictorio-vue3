@@ -115,9 +115,6 @@ export function registerEventListeners(): void {
 
   onEvent(EventType.Draw, (event: DrawEvent) => {
     switch (event.type) {
-      case DrawEventType.LINE:
-        gameStore.commit(GameMutations.PROMOTE_LINE, gameStore.getters.getLatestLine())
-        break
       case DrawEventType.CLEAR:
         gameStore.commit(GameMutations.CLEAR_DRAWING)
         break
@@ -170,6 +167,11 @@ export function registerEventListeners(): void {
 
   onEvent(EventType.DrawSelectThickness, (event: DrawSelectThicknessEvent) => {
     gameStore.commit(GameMutations.SET_THICKNESS_IDX, event.thicknessIdx)
+  })
+
+  onEvent(EventType.DrawTempStop, (event: DrawTempEvent) => {
+    gameStore.commit(GameMutations.ADD_TEMP_POINTS, event.line.points)
+    gameStore.commit(GameMutations.PROMOTE_LINE, gameStore.getters.getLatestLine())
   })
 }
 

@@ -1,9 +1,9 @@
 import { DrawEventType, EventType, GameEventTypeMap } from "@/models/events"
 import { GameMutations, Mutations } from "./mutations"
-import { Line, Point } from "@/models/drawing"
 import type { ActionContext } from "../types"
 import { ActionTree } from "vuex"
 import { GameState } from "./state"
+import { Point } from "@/models/drawing"
 import { User } from "@/models/user"
 import { throttle } from "lodash"
 
@@ -59,12 +59,13 @@ const sendTempDrawingPoint = (
   user: User,
   colourIdx: number,
   thicknessIdx: number,
+  eventType: EventType.DrawTemp | EventType.DrawTempStop,
 ) => {
   const cutOffPoints = tempPoints.splice(0, tempPoints.length)
   if (cutOffPoints.length === 0) {
     return
   }
-  sendEvent(EventType.DrawTemp, {
+  sendEvent(eventType, {
     user,
     line: {
       colourIdx,
@@ -81,11 +82,14 @@ export interface Actions<C = ActionContext<GameState, Mutations>> {
   [GameActions.UNDO]: (context: C, payload: DrawingPayload) => Promise<void>
   [GameActions.REDO]: (context: C, payload: DrawingPayload) => Promise<void>
   [GameActions.ADD_POINT]: (context: C, payload: PointDrawingPayload) => Promise<void>
-  [GameActions.START_DRAW_POINT]: (context: C, payload: Point) => Promise<void>
+  [GameActions.START_DRAW_POINT]: (
+    context: C,
+    payload: PointDrawingPayload,
+  ) => Promise<void>
   [GameActions.STOP_DRAW_POINT]: (
     context: C,
     payload: PointDrawingPayload,
-  ) => Promise<Line>
+  ) => Promise<void>
   [GameActions.SELECT_WORD]: (context: C, payload: SelectWordPayload) => Promise<void>
   [GameActions.SELECT_COLOUR]: (
     context: C,
@@ -140,30 +144,41 @@ export const actions: ActionTree<GameState, GameState> & Actions = {
       user,
       state.colourIndex,
       state.thicknessIndex,
+      EventType.DrawTemp,
     )
   },
-  [GameActions.START_DRAW_POINT]: async ({ commit }, point: Point): Promise<void> => {
+  [GameActions.START_DRAW_POINT]: async (
+    { commit, state },
+    { point, user, sendEvent }: PointDrawingPayload,
+  ): Promise<void> => {
     tempPoints.push(point)
     commit(GameMutations.SET_IS_DRAWING, true)
     commit(GameMutations.ADD_POINT, point)
+
+    sendTempDrawingPoint(
+      sendEvent,
+      user,
+      state.colourIndex,
+      state.thicknessIndex,
+      EventType.DrawTemp,
+    )
   },
   [GameActions.STOP_DRAW_POINT]: async (
-    { commit, getters },
+    { commit, state },
     { point, user, sendEvent }: PointDrawingPayload,
-  ): Promise<Line> => {
+  ): Promise<void> => {
     tempPoints.push(point)
-    commit(GameMutations.SET_IS_DRAWING, false)
     commit(GameMutations.ADD_POINT, point)
+    commit(GameMutations.SET_IS_DRAWING, false)
 
-    const line: Line = getters.getLatestLine()
-
-    commit(GameMutations.PROMOTE_LINE, line)
-    sendEvent(EventType.Draw, {
+    sendTempDrawingPoint(
+      sendEvent,
       user,
-      type: DrawEventType.LINE,
-    })
+      state.colourIndex,
+      state.thicknessIndex,
+      EventType.DrawTempStop,
+    )
     tempPoints.splice(0, tempPoints.length)
-    return line
   },
   [GameActions.SELECT_WORD]: async (
     _: ActionContext<GameState, Mutations>,
