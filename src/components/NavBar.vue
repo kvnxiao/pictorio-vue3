@@ -5,17 +5,16 @@
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button -->
           <button
-            class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            ref="navBurgerRef"
+            class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
             aria-expanded="false"
+            @click="hamburger"
           >
             <span class="sr-only">Open main menu</span>
             <!-- Icon when menu is closed. -->
-            <!--
-              Heroicon name: menu
-              Menu open: "hidden", Menu closed: "block"
-            -->
             <svg
-              class="block h-6 w-6"
+              class="h-6 w-6"
+              :class="{ block: !isEnabled, hidden: isEnabled }"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -30,12 +29,9 @@
               />
             </svg>
             <!-- Icon when menu is open. -->
-            <!--
-              Heroicon name: x
-              Menu open: "block", Menu closed: "hidden"
-            -->
             <svg
-              class="hidden h-6 w-6"
+              class="h-6 w-6"
+              :class="{ block: isEnabled, hidden: !isEnabled }"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -127,6 +123,22 @@
         </div>
       </div>
     </div>
+
+    <!-- Mobile nav menu -->
+    <div
+      ref="navMenuRef"
+      class="sm:hidden"
+      :class="{ block: isEnabled, hidden: !isEnabled }"
+    >
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <router-link
+          to="/"
+          class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
+        >
+          Home
+        </router-link>
+      </div>
+    </div>
   </nav>
 </template>
 
@@ -136,31 +148,34 @@ import { defineComponent, ref } from "vue"
 export default defineComponent({
   name: "NavBar",
   setup() {
-    // const enabledMobile = ref<boolean>(false)
-    // const navBurger = ref<HTMLElement | null>(null)
-    const navMenu = ref<HTMLElement | null>(null)
+    const isEnabled = ref<boolean>(false)
+    const navBurgerRef = ref<HTMLButtonElement | null>(null)
+    const navMenuRef = ref<HTMLElement | null>(null)
 
-    // const hideListener = (event: MouseEvent) => {
-    //   const target: Node = event.target as Node
-    //   if (!navMenu.value?.contains(target) && !navBurger.value?.contains(target)) {
-    //     enabledMobile.value = false
-    //     document.removeEventListener("click", hideListener)
-    //   }
-    // }
+    const hideListener = (event: MouseEvent) => {
+      const target: Node = event.target as Node
+      if (
+        !navMenuRef.value?.contains(target) &&
+        !navBurgerRef.value?.contains(target)
+      ) {
+        isEnabled.value = false
+        document.removeEventListener("click", hideListener)
+      }
+    }
 
-    // const hamburger = (event: MouseEvent) => {
-    //   event.preventDefault()
-    //   enabledMobile.value = !enabledMobile.value
-    //   if (enabledMobile.value) {
-    //     document.addEventListener("click", hideListener)
-    //   }
-    // }
+    const hamburger = (event: MouseEvent) => {
+      event.preventDefault()
+      isEnabled.value = !isEnabled.value
+      if (isEnabled.value) {
+        document.addEventListener("click", hideListener)
+      }
+    }
 
     return {
-      // enabledMobile,
-      // navBurger,
-      navMenu,
-      // hamburger,
+      isEnabled,
+      navMenuRef,
+      navBurgerRef,
+      hamburger,
     }
   },
 })
