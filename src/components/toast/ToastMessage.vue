@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-fade">
-    <div v-if="msg !== null" class="absolute right-0 bottom-0 m-8">
+    <div v-if="msg !== null" class="absolute top-0 right-0 xl:bottom-0 xl:top-auto m-8">
       <div
         class="flex items-center border-l-4 p-4 rounded-md text-white"
         :class="{

@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col h-full p-4">
+  <div class="flex h-full p-2 flex-col-reverse xl:flex-col xl:p-4">
     <div class="select-none flex-grow h-0 overflow-y-auto scrollbar">
-      <ul class="space-y-4">
+      <ul class="space-y-1.5 xl:space-y-4">
         <li v-for="player of players" :key="player.id">
           <PlayerEntry
             :player="player"
@@ -11,7 +11,9 @@
         </li>
       </ul>
     </div>
-    <div class="pt-2 border-t mt-2">{{ subText }}</div>
+    <div class="border-b mb-2.5 xl:border-b-0 xl:mb-0 xl:pt-2 xl:border-t xl:mt-2">
+      {{ subText }}
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 h-full flex flex-col space-y-4">
+  <div class="p-2 h-full flex flex-col-reverse xl:space-y-4 xl:p-4 xl:flex-col">
     <div ref="convoRef" class="scrollbar overflow-y-auto flex-grow">
       <ul class="break-words">
         <li v-for="(msg, index) in chatHistory" :key="index" class="text-left">
@@ -8,7 +8,7 @@
       </ul>
     </div>
 
-    <div class="flex w-full h-10 shadow-sm">
+    <div class="flex w-full h-10 shadow-sm mb-2 xl:mb-0">
       <input
         v-model="input"
         type="text"

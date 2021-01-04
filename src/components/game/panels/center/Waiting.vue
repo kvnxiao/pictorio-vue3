@@ -2,9 +2,15 @@
   <!-- Overlay (absolute, full width and height) -->
   <div class="absolute top-0 left-0 w-full h-full">
     <div class="flex flex-col h-full items-center justify-center">
-      <img class="block w-36 h-auto" src="@/assets/logo.svg" alt="Pictorio Logo" />
-      <div class="mt-8 space-y-4">
-        <div class="text-2xl">Waiting for all players to be ready</div>
+      <img
+        class="hidden xl:block w-36 h-auto"
+        src="@/assets/logo.svg"
+        alt="Pictorio Logo"
+      />
+      <div class="xl:mt-8 space-y-1 xl:space-y-4">
+        <div class="font-semibold xl:font-normal xl:text-2xl">
+          Waiting for all players to be ready
+        </div>
         <div class="text-base">
           <p>
             {{ readyPlayerCount }} / {{ currPlayerCount }} (max

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex rounded-lg shadow-sm p-2"
+    class="flex rounded-lg shadow-sm p-1 xl:p2"
     :class="{
       'border-yellow-400': isDrawerTurn,
       'border-blue-400': showPointsAward && !isDrawerTurn,
@@ -49,7 +49,7 @@
       <transition name="slide-show">
         <div
           v-if="hasChat && latestMsg !== null"
-          class="chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-lg border border-gray-600 whitespace-nowrap font-medium text-lg"
+          class="hidden xl:block chat-msg absolute left-full z-20 bg-white px-2 p-1 rounded-lg border border-gray-600 whitespace-nowrap font-medium text-lg"
         >
           {{ latestMsg }}
         </div>

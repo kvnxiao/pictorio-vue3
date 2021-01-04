@@ -30,7 +30,16 @@
 .panel-left,
 .panel-right {
   width: 100%;
-  min-height: 6rem;
+}
+
+.panel-left {
+  min-height: 7rem;
+  max-height: 7rem;
+}
+
+.panel-right {
+  min-height: 10rem;
+  max-height: 10rem;
 }
 
 @media (min-width: 1280px) {
@@ -41,6 +50,7 @@
   .panel-left,
   .panel-right {
     width: 15%;
+    max-height: none;
   }
 }
 
