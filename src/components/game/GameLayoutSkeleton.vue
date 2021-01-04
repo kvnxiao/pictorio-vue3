@@ -1,6 +1,8 @@
 <template>
-  <div class="flex w-full h-full items-center justify-center space-x-4 p-4">
-    <div ref="left" class="panel-left" :style="{ height: centerHeight }">
+  <div
+    class="flex w-full h-full items-center justify-center flex-col p-2 space-y-2 xl:flex-row xl:space-x-4 xl:space-y-0 xl:p-4"
+  >
+    <div ref="left" class="panel-left" :style="desktopPanelStyle">
       <div class="bg-white rounded-lg w-full h-full shadow-lg block relative" />
     </div>
 
@@ -36,7 +38,7 @@
       </div>
     </div>
 
-    <div ref="right" class="panel-right" :style="{ height: centerHeight }">
+    <div ref="right" class="panel-right" :style="desktopPanelStyle">
       <div class="bg-white rounded-lg w-full h-full shadow-lg block relative" />
     </div>
   </div>
@@ -58,17 +60,26 @@ export default defineComponent({
     const { left, center, right } = toRefs(panels)
 
     const { height } = useResizeObserver(center)
+    const { width: vw } = useResizeObserver(ref(document.body))
     const maxWidth = ref<number>(1500)
 
-    const centerHeight = computed<string>(() => `${height.value}px`)
     const maxWidthPx = computed<string>(() => `${maxWidth.value}px`)
+
+    const isDesktopWidth = computed<boolean>(() => vw.value > 1280)
+
+    const desktopPanelStyle = computed(() => {
+      return {
+        height: isDesktopWidth.value ? `${height.value}px` : "auto",
+      }
+    })
 
     return {
       left,
       center,
       right,
-      centerHeight,
       maxWidthPx,
+      vw,
+      desktopPanelStyle,
     }
   },
 })

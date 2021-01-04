@@ -26,17 +26,26 @@
   line-height: 40px;
 }
 
-.panel-center {
-  width: 70%;
+.panel-center,
+.panel-left,
+.panel-right {
+  width: 100%;
+  min-height: 6rem;
+}
+
+@media (min-width: 1280px) {
+  .panel-center {
+    width: 70%;
+  }
+
+  .panel-left,
+  .panel-right {
+    width: 15%;
+  }
 }
 
 .aspect-ratio {
   padding-top: (10 / 16) * 100%;
-}
-
-.panel-left,
-.panel-right {
-  width: 15%;
 }
 
 .bounce-r-enter-active {

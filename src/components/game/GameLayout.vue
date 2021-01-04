@@ -1,6 +1,8 @@
 <template>
-  <div class="flex w-full h-full items-center justify-center space-x-4 p-4">
-    <div ref="left" class="panel-left" :style="{ height: centerHeight }">
+  <div
+    class="flex w-full h-full items-center justify-center flex-col p-2 space-y-2 xl:flex-row xl:space-x-4 xl:space-y-0 xl:p-4"
+  >
+    <div ref="left" class="panel-left" :style="desktopPanelStyle">
       <div class="bg-white rounded-lg w-full h-full shadow-lg block relative">
         <PanelLeft
           :self-user="selfUser"
@@ -27,7 +29,7 @@
       </div>
     </div>
 
-    <div ref="right" class="panel-right" :style="{ height: centerHeight }">
+    <div ref="right" class="panel-right" :style="desktopPanelStyle">
       <div class="bg-white rounded-lg w-full h-full shadow-lg block relative">
         <PanelRight
           :self-user="selfUser"
@@ -105,8 +107,14 @@ export default defineComponent({
     const { left, center, right } = toRefs(panels)
     const { width, height } = useResizeObserver(center)
     const maxWidth = ref<number>(1500)
-    const centerHeight = computed<string>(() => `${height.value}px`)
+    const { width: vw } = useResizeObserver(ref(document.body))
     const maxWidthPx = computed<string>(() => `${maxWidth.value}px`)
+    const isDesktopWidth = computed<boolean>(() => vw.value > 1280)
+    const desktopPanelStyle = computed(() => {
+      return {
+        height: isDesktopWidth.value ? `${height.value}px` : "auto",
+      }
+    })
 
     // WebSocket events
     const ws = useGlobalWebSocket()
@@ -156,7 +164,7 @@ export default defineComponent({
       left,
       center,
       right,
-      centerHeight,
+      vw,
       maxWidthPx,
       selfUser,
       drawingUser,
@@ -165,6 +173,7 @@ export default defineComponent({
       width,
       height,
       maxWidth,
+      desktopPanelStyle,
     }
   },
 })
