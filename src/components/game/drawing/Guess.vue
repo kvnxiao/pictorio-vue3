@@ -3,16 +3,16 @@
     class="absolute -top-8 w-full flex justify-center items-center pointer-events-none"
   >
     <div
-      class="bg-yellow-200 p-4 space-y-1 shadow-md text-gray-800 font-semibold select-none transform -rotate-2"
+      class="bg-yellow-200 p-2 xl:p-4 xl:space-y-1 shadow-md text-gray-800 font-semibold select-none transform -rotate-2 opacity-90"
     >
       <template v-if="isDrawerTurn">
-        <p class="text-xl">You are drawing:</p>
-        <p class="text-xl uppercase text-red-600">{{ word }}</p>
+        <p class="text-sm xl:text-xl">You are drawing:</p>
+        <p class="text-sm xl:text-xl uppercase text-red-600">{{ word }}</p>
         <p class="">Writing out the word is cheating!</p>
       </template>
       <template v-else>
-        <p class="text-xl">{{ drawerName }} is drawing:</p>
-        <p class="text-xl text-red-600">
+        <p class="text-sm xl:text-xl">{{ drawerName }} is drawing:</p>
+        <p class="text-sm xl:text-xl text-red-600">
           hint:
           <span class="uppercase space-x-5">
             <span
@@ -30,7 +30,7 @@
             </span>
           </span>
         </p>
-        <p class="">Writing out the word is cheating!</p>
+        <p class="text-sm xl:text-base">Writing out the word is cheating!</p>
       </template>
     </div>
   </div>

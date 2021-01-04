@@ -5,28 +5,28 @@
       <transition name="bounce-r" mode="out-in">
         <div
           v-if="showNextUp"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
+          class="bg-yellow-200 p-2 space-y-2 shadow-lg transform rotate-3 pointer-events-auto xl:p-8 xl:space-y-4"
         >
-          <p class="font-semibold text-xl text-yellow-900 select-none">
+          <p class="font-semibold xl:text-xl text-yellow-900 select-none">
             Next up: {{ drawerName }}
           </p>
           <p
             v-if="isDrawerTurn"
-            class="font-semibold text-xl text-yellow-900 select-none"
+            class="font-semibold xl:text-xl text-yellow-900 select-none"
           >
             That means you!
           </p>
         </div>
         <div
           v-else-if="isDrawerTurn && showSelection && hasWordSelections"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
+          class="bg-yellow-200 p-2 space-y-2 shadow-lg transform rotate-3 pointer-events-auto xl:p-8 xl:space-y-4"
         >
-          <p class="font-semibold text-xl text-yellow-900 select-none">
+          <p class="font-semibold xl:text-xl text-yellow-900 select-none">
             Choose your word to draw
           </p>
           <p v-for="(word, index) of wordSelections" :key="word">
             <button
-              class="bg-yellow-100 p-1 rounded-md shadow-md uppercase font-semibold text-2xl text-gray-800 select-none"
+              class="bg-yellow-100 p-1 rounded-md shadow-md uppercase font-semibold xl:text-2xl text-gray-800 select-none"
               @click="selectWord(index)"
             >
               {{ word }}
@@ -35,17 +35,17 @@
         </div>
         <div
           v-else-if="!isDrawerTurn && showSelection"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
+          class="bg-yellow-200 p-2 space-y-2 shadow-lg transform rotate-3 pointer-events-auto xl:p-8 xl:space-y-4"
         >
-          <p class="font-semibold text-xl text-yellow-900 select-none">
+          <p class="font-semibold xl:text-xl text-yellow-900 select-none">
             Waiting for {{ drawerName }} to pick a word
           </p>
         </div>
         <div
           v-else-if="showTurnEnd"
-          class="bg-yellow-200 p-8 space-y-4 shadow-lg transform rotate-3 pointer-events-auto"
+          class="bg-yellow-200 p-2 space-y-2 shadow-lg transform rotate-3 pointer-events-auto xl:p-8 xl:space-y-4"
         >
-          <p class="font-semibold text-xl text-yellow-900 select-none">
+          <p class="font-semibold xl:text-xl text-yellow-900 select-none">
             The word was
             <span class="uppercase text-red-600"> {{ answer }} </span>&nbsp;!
           </p>
