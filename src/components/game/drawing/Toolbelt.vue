@@ -1,18 +1,20 @@
 <template>
-  <div class="max-w-screen-md flex justify-center mx-auto relative bottom-14">
-    <div class="rounded-l-full flex bg-gray-200 p-2 pl-3 space-x-2">
+  <div
+    class="relative mx-2 max-w-full flex justify-start bottom-8 overflow-x-scroll xl:overflow-x-auto xl:bottom-14 xl:justify-center xl:mx-auto"
+  >
+    <div class="rounded-l-full flex bg-gray-200 p-2 space-x-1 xl:space-x-2 xl:pl-3">
       <template v-for="(colour, index) of COLOURS" :key="colour">
         <ColourTool :colour-idx="index" :self-user="selfUser" />
       </template>
     </div>
-    <div class="tool-spacer w-2 bg-gray-200" />
-    <div class="flex bg-gray-200 p-2 space-x-2">
+    <div class="tool-spacer w-1 bg-gray-200" />
+    <div class="flex bg-gray-200 p-2 space-x-1 xl:space-x-2">
       <template v-for="(thickness, index) of THICKNESSES" :key="thickness">
         <ThicknessTool :thickness-idx="index" :self-user="selfUser" />
       </template>
     </div>
-    <div class="tool-spacer w-2 bg-gray-200" />
-    <div class="rounded-r-full flex bg-gray-200 p-2 pr-3 space-x-2">
+    <div class="tool-spacer w-1 bg-gray-200" />
+    <div class="rounded-r-full flex bg-gray-200 p-2 space-x-1 xl:space-x-2 xl:pr-3">
       <ClearTool @tool-clear="$emit('tool-clear')" />
       <UndoTool @tool-undo="$emit('tool-undo')" />
       <RedoTool @tool-redo="$emit('tool-redo')" />

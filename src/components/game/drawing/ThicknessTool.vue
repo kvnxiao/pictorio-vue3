@@ -1,22 +1,19 @@
 <template>
   <button
-    class="flex justify-center items-center w-tool h-tool bg-white shadow-md rounded-full focus:outline-none ring ring-white transform active:ring-blue-200"
+    class="flex justify-center items-center w-tool-sm h-tool-sm xl:w-tool xl:h-tool bg-white shadow-md rounded-full focus:outline-none ring ring-white transform active:ring-blue-200"
     :class="{
       'ring-blue-300': isSelected,
     }"
     @click="setThickness()"
   >
-    <div
-      class="rounded-full bg-black"
-      :style="{ width: thickness, height: thickness }"
-    />
+    <div class="rounded-full bg-black" :style="thicknessStyle" />
   </button>
 </template>
 
 <script lang="ts">
 import { PropType, computed, defineComponent } from "vue"
+import { THICKNESSES, Thickness } from "@/models/drawing"
 import { GameActions } from "@/store/gameStore/actions"
-import { THICKNESSES } from "@/models/drawing"
 import { User } from "@/models/user"
 import { useGameEvents } from "@/game/events"
 import { useGameStore } from "@/store/gameStore"
@@ -42,6 +39,13 @@ export default defineComponent({
 
     const thickness = computed<string>(() => `${THICKNESSES[props.thicknessIdx]}px`)
 
+    const thicknessStyle = computed(() => {
+      return {
+        width: `${(THICKNESSES[props.thicknessIdx] / Thickness.LARGE) * 100}%`,
+        height: `${(THICKNESSES[props.thicknessIdx] / Thickness.LARGE) * 100}%`,
+      }
+    })
+
     const isSelected = computed<boolean>(
       () => gameStore.state.thicknessIndex === props.thicknessIdx,
     )
@@ -56,6 +60,7 @@ export default defineComponent({
 
     return {
       thickness,
+      thicknessStyle,
       setThickness,
       isSelected,
     }

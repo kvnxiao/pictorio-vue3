@@ -23,7 +23,7 @@
 .tool-spacer::before {
   @apply text-gray-400;
   content: "|";
-  line-height: 40px;
+  line-height: 30px;
 }
 
 .panel-center,
@@ -51,6 +51,10 @@
   .panel-right {
     width: 15%;
     max-height: none;
+  }
+
+  .tool-spacer::before {
+    line-height: 45px;
   }
 }
 

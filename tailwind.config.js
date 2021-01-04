@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       spacing: {
         tool: "30px",
+        "tool-sm": "15px",
       },
     },
   },
