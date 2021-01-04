@@ -3,15 +3,17 @@
     class="w-full h-full p-4 max-w-screen-sm mx-auto flex flex-col items-center justify-center"
   >
     <div
-      class="w-full bg-white rounded-md shadow-md flex flex-col items-center px-16 py-8"
+      class="w-full bg-white rounded-md shadow-md flex flex-col items-center px-2 py-1 md:px-16 md:py-8"
     >
       <div class="w-full p-6 border-b mb-6">
         <img class="w-48 mx-auto h-auto" src="@/assets/logo.svg" alt="Pictorio Logo" />
       </div>
       <div>Welcome to Pictorio, a draw-and-guess game!</div>
       <div class="w-full p-6 flex flex-col items-center justify-between space-y-6">
-        <div class="w-full flex justify-between">
-          <div class="flex items-center">
+        <div
+          class="w-full flex justify-between items-center flex-col md:flex-row space-y-2 md:space-y-0"
+        >
+          <div class="flex items-center flex-col md:flex-row">
             <p class="mr-2">Your name:</p>
             <input
               v-model="uname"
@@ -22,14 +24,14 @@
             />
           </div>
           <button
-            class="flex-shrink-0 bg-blue-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
+            class="w-29 flex-shrink-0 bg-blue-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
             type="button"
             @click="changeName"
           >
             Change Name
           </button>
         </div>
-        <div class="w-full flex justify-between items-center">
+        <div class="w-full flex justify-between items-center flex-col md:flex-row">
           <p class="text-gray-800">Create your own room</p>
           <button
             class="flex-shrink-0 bg-green-500 text-white text-base font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 active:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-green-200"
