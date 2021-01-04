@@ -10,6 +10,7 @@
       :canvas-height="dynHeight"
       :max-canvas-width="dynMaxWidth"
       :turn-status="turnStatus"
+      :is-desktop-width="isDesktopWidth"
     />
   </template>
   <template v-else-if="status === GameStatus.GAME_OVER">
@@ -65,6 +66,10 @@ export default defineComponent({
     dynMaxWidth: {
       type: Number,
       default: 0,
+    },
+    isDesktopWidth: {
+      type: Boolean,
+      required: true,
     },
   },
   setup(props) {

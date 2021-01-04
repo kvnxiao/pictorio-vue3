@@ -24,6 +24,7 @@
             :dyn-width="width"
             :dyn-height="height"
             :dyn-max-width="maxWidth"
+            :is-desktop-width="isDesktopWidth"
           />
         </div>
       </div>
@@ -174,6 +175,7 @@ export default defineComponent({
       height,
       maxWidth,
       desktopPanelStyle,
+      isDesktopWidth,
     }
   },
 })

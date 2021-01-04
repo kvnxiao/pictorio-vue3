@@ -27,7 +27,13 @@
       :is-drawer-turn="isDrawerTurn"
       :turn-status="turnStatus"
     />
-    <Timer :max-seconds="maxTime" :seconds="timeLeft" :turn-status="turnStatus" show />
+    <Timer
+      :max-seconds="maxTime"
+      :seconds="timeLeft"
+      :turn-status="turnStatus"
+      :is-desktop-width="isDesktopWidth"
+      show
+    />
   </div>
 </template>
 
@@ -73,6 +79,10 @@ export default defineComponent({
     },
     turnStatus: {
       type: Number as PropType<TurnStatus>,
+      required: true,
+    },
+    isDesktopWidth: {
+      type: Boolean,
       required: true,
     },
   },

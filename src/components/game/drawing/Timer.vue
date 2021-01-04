@@ -3,14 +3,14 @@
     v-if="show"
     class="absolute top-0 right-0 transform rotate-12 pointer-events-none"
     :style="{
-      width: `${2 * radius}px`,
-      height: `${2 * radius}px`,
+      width: `${2 * normalizedRadius}px`,
+      height: `${2 * normalizedRadius}px`,
     }"
   >
     <!-- Background -->
     <div class="w-full h-full flex justify-center items-center">
       <div
-        class="rounded-full bg-gray-100 flex justify-center items-center text-4xl text-gray-800 font-semibold shadow-lg"
+        class="rounded-full bg-gray-100 flex justify-center items-center text-xl xl:text-4xl text-gray-800 font-semibold shadow-lg"
         :style="{
           width: `${2 * outerRadius + stroke * 1.5}px`,
           height: `${2 * outerRadius + stroke * 1.5}px`,
@@ -21,15 +21,15 @@
     </div>
     <!-- Circle SVG -->
     <div class="absolute top-0">
-      <svg :width="radius * 2" :height="radius * 2">
+      <svg :width="normalizedRadius * 2" :height="normalizedRadius * 2">
         <circle
           stroke="#D1D5DB"
           fill="transparent"
           :stroke-dasharray="circumference + ' ' + circumference"
           :stroke-width="stroke"
           :r="outerRadius"
-          :cx="radius"
-          :cy="radius"
+          :cx="normalizedRadius"
+          :cy="normalizedRadius"
         />
         <circle
           class="progress"
@@ -39,8 +39,8 @@
           :stroke-dashoffset="strokeDashoffset"
           :stroke-width="stroke"
           :r="outerRadius"
-          :cx="radius"
-          :cy="radius"
+          :cx="normalizedRadius"
+          :cy="normalizedRadius"
         />
         <circle
           class="progress"
@@ -50,8 +50,8 @@
           :stroke-dashoffset="innerDegree / 2"
           :stroke-width="stroke"
           :r="innerRadius"
-          :cx="radius"
-          :cy="radius"
+          :cx="normalizedRadius"
+          :cy="normalizedRadius"
         />
         <circle
           class="progress"
@@ -63,8 +63,8 @@
           :stroke-dashoffset="innerSmallDegree / 2"
           :stroke-width="stroke / 2"
           :r="innerRadius"
-          :cx="radius"
-          :cy="radius"
+          :cx="normalizedRadius"
+          :cy="normalizedRadius"
         />
       </svg>
     </div>
@@ -106,15 +106,25 @@ export default defineComponent({
       type: Number as PropType<TurnStatus>,
       required: true,
     },
+    isDesktopWidth: {
+      type: Boolean,
+      required: true,
+    },
     show: {
       type: Boolean,
       default: false,
     },
   },
   setup(props) {
-    const stroke = computed<number>(() => Math.ceil(props.radius / 7.5))
-    const outerRadius = computed<number>(() => props.radius - stroke.value)
-    const innerRadius = computed<number>(() => props.radius - 2.5 * stroke.value)
+    const normalizedRadius = computed<number>(() =>
+      props.isDesktopWidth ? props.radius : props.radius / 2.5,
+    )
+
+    const stroke = computed<number>(() => Math.ceil(normalizedRadius.value / 7.5))
+    const outerRadius = computed<number>(() => normalizedRadius.value - stroke.value)
+    const innerRadius = computed<number>(
+      () => normalizedRadius.value - 2.5 * stroke.value,
+    )
     const circumference = computed<number>(() => outerRadius.value * 2 * Math.PI)
     const innerBase = ref<number>(60)
     const innerDegree = computed<number>(
@@ -159,6 +169,7 @@ export default defineComponent({
     })
 
     return {
+      normalizedRadius,
       stroke,
       outerRadius,
       innerRadius,
