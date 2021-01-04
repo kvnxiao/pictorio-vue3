@@ -2,12 +2,18 @@
   <!-- Overlay (absolute, full width and height) -->
   <div class="absolute top-0 left-0 w-full h-full">
     <div class="flex flex-col h-full items-center justify-center">
-      <img class="block w-36 h-auto" src="@/assets/logo.svg" alt="Pictorio Logo" />
-      <div class="flex flex-col justify-center items-center mt-8 space-y-4">
-        <div class="text-2xl">Game Over!</div>
+      <img
+        class="hidden xl:block w-36 h-auto"
+        src="@/assets/logo.svg"
+        alt="Pictorio Logo"
+      />
+      <div
+        class="flex flex-col justify-center items-center space-y-2 xl:mt-8 xl:space-y-4"
+      >
+        <div class="font-semibold xl:font-normal xl:text-2xl">Game Over!</div>
         <div
           v-if="winners !== null && winners.length > 0"
-          class="flex flex-col justify-center text-left"
+          class="flex flex-col justify-center text-left h-12 overflow-y-scroll xl:h-auto xl:overflow-y-auto"
         >
           <p v-for="(winner, index) of winners" :key="winner.user.id">
             {{ index + 1 }}. {{ winner.user.name }} @ {{ winner.points }} PTS
